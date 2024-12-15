@@ -1,10 +1,8 @@
 package ject.componote.domain.bookmark.api;
 
-import jakarta.validation.Valid;
-import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
-import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
+import ject.componote.domain.bookmark.application.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
