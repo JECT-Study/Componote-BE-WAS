@@ -17,6 +17,10 @@ public class EntityWithImageHandler {
 
     @Transactional
     public <T> T persist(final String tempKey, final Function<String, T> callback) {
+        if (tempKey == null) {
+            return callback.apply(null);
+        }
+
         final String permanentKey = ObjectKeyTransformer.toPermanentKey(tempKey);
         fileClient.moveFile(tempKey, permanentKey)
                 .publishOn(Schedulers.boundedElastic())
