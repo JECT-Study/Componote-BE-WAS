@@ -11,6 +11,7 @@ import ject.componote.domain.auth.error.DuplicatedSignupException;
 import ject.componote.domain.auth.error.NotFoundMemberException;
 import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
+import ject.componote.domain.auth.util.MemberMapper;
 import ject.componote.domain.auth.util.TokenProvider;
 import ject.componote.domain.common.application.EntityWithImageHandler;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class AuthService {
     private final SocialAccountRepository socialAccountRepository;
     private final TokenProvider tokenProvider;
     private final EntityWithImageHandler entityWithImageHandler;
+    private final MemberMapper memberMapper;
 
     public MemberSignupResponse signup(final MemberSignupRequest request) {
         final Long socialAccountId = request.socialAccountId();
@@ -34,12 +36,9 @@ public class AuthService {
             throw new DuplicatedSignupException(socialAccountId);
         }
 
-        // request.profileImageTempKey() 가 필수가 아님. null일 수 있음
         final Member member = entityWithImageHandler.persist(
                 request.profileImageTempKey(),
-                permanentKey -> memberRepository.save(
-                        request.toMember(socialAccountId, permanentKey)
-                )
+                permanentKey -> memberRepository.save(memberMapper.mapFrom(request, permanentKey))
         );
 
         return MemberSignupResponse.from(member);
