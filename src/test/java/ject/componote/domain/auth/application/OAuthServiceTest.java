@@ -6,6 +6,7 @@ import ject.componote.domain.auth.dto.authorize.response.OAuthAuthorizationUrlRe
 import ject.componote.domain.auth.dto.login.response.OAuthLoginResponse;
 import ject.componote.infra.oauth.application.OAuthClient;
 import ject.componote.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
+import ject.componote.infra.oauth.error.InvalidAuthorizationCodeException;
 import ject.componote.infra.oauth.error.UnsupportedProviderException;
 import ject.componote.infra.oauth.model.OAuthProvider;
 import ject.componote.infra.oauth.model.profile.OAuthProfile;
@@ -21,7 +22,6 @@ import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.nio.file.ProviderNotFoundException;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,7 +47,7 @@ class OAuthServiceTest {
 
     @DisplayName("소셜 인가 코드 요청 URL 조회")
     @ParameterizedTest
-    @ValueSource(strings = {"google, github, naver"})
+    @ValueSource(strings = {"google", "github", "naver"})
     public void getOAuthAuthorizationCodeUrl(final String providerType) throws Exception {
         // given
         final OAuthAuthorizePayload payload = new OAuthAuthorizePayload(HttpMethod.GET, URI.create("authorizeUrl"));
@@ -64,20 +64,20 @@ class OAuthServiceTest {
 
     @DisplayName("소셜 인가 코드 요청 URL 조회 시 지원하지 않는 providerType은 예외 발생")
     @ParameterizedTest
-    @ValueSource(strings = {"kakao, okky"})
+    @ValueSource(strings = {"kakao", "okky"})
     public void getOAuthAuthorizationCodeUrlWhenInvalidProviderType(final String providerType) throws Exception {
         // when
-        doThrow(ProviderNotFoundException.class).when(oAuthClient)
+        doThrow(UnsupportedProviderException.class).when(oAuthClient)
                 .getAuthorizePayload(providerType);
 
         // then
         assertThatThrownBy(() -> oAuthService.getOAuthAuthorizationCodeUrl(providerType))
-                .isInstanceOf(ProviderNotFoundException.class);
+                .isInstanceOf(UnsupportedProviderException.class);
     }
 
     @DisplayName("소셜 로그인")
     @ParameterizedTest
-    @ValueSource(strings = {"google, github, naver"})
+    @ValueSource(strings = {"google", "github", "naver"})
     public void login(final String providerType) throws Exception {
         // given
         final String code = "code";
@@ -101,26 +101,30 @@ class OAuthServiceTest {
 
     @DisplayName("소셜 로그인 시 잘못된 인가 코드시 예외 발생")
     @ParameterizedTest
-    @ValueSource(strings = {"google, github, naver"})
+    @ValueSource(strings = {"google", "github", "naver"})
     public void loginWhenInvalidCode(final String providerType) throws Exception {
         // given
         final String code = "code";
 
         // when
-        doThrow(new RuntimeException()).when(oAuthClient)
+        doThrow(new InvalidAuthorizationCodeException(code)).when(oAuthClient)
                 .getProfile(providerType, code);
 
         // then
         assertThatThrownBy(() -> oAuthService.login(providerType, code))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(InvalidAuthorizationCodeException.class);
     }
 
     @DisplayName("소셜 로그인 시 지원하지 않는 providerType은 예외 발생")
     @ParameterizedTest
-    @ValueSource(strings = {"kakao1, okky"})
+    @ValueSource(strings = {"kakao", "okky"})
     public void loginWhenInvalidProviderType(final String providerType) throws Exception {
         // given
         final String code = "code";
+
+        // when
+        doThrow(UnsupportedProviderException.class).when(oAuthClient)
+                .getProfile(providerType, code);
 
         // then
         assertThatThrownBy(() -> oAuthService.login(providerType, code))
