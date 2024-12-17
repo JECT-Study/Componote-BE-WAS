@@ -23,7 +23,9 @@ public class OAuthProfileService {
     private final WebClient webClient;
 
     public Mono<OAuthProfile> getProfile(final OAuthProvider oAuthProvider,
-                                         final OAuthTokenResponse oAuthTokenResponse, final int maxRetry, final int timeout) {
+                                         final OAuthTokenResponse oAuthTokenResponse,
+                                         final int maxRetry,
+                                         final int timeout) {
         return timeoutDecorator.decorate(
                 getProfileAttributeByToken(oAuthProvider, oAuthTokenResponse.access_token())
                         .map(attribute -> OAuthProfileFactory.of(attribute, oAuthProvider)),
@@ -36,6 +38,7 @@ public class OAuthProfileService {
                                                                  final String socialAccessToken) {
         return webClient.method(oAuthProvider.profileMethod())
                 .uri(oAuthProvider.profileUrl())
+                .accept(MediaType.parseMediaType("application/vnd.github+json"))
                 .headers(header -> header.setBearerAuth(socialAccessToken))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .retrieve()

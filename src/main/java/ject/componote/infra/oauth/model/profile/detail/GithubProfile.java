@@ -4,14 +4,14 @@ import ject.componote.infra.oauth.model.profile.OAuthProfile;
 
 import java.util.Map;
 
-public class KakaoProfile extends OAuthProfile {
-    public KakaoProfile(final Map<String, Object> attributes) {
+public class GithubProfile extends OAuthProfile {
+    public GithubProfile(final Map<String, Object> attributes) {
         super(attributes);
     }
 
     @Override
     public String getProviderType() {
-        return "KAKAO";
+        return "GITHUB";
     }
 
     @Override

@@ -40,19 +40,19 @@ public class OAuthClient {
 
     public OAuthAuthorizePayload getAuthorizePayload(final String providerType) {
         validateProviderType(providerType);
-        final OAuthProvider oAuthProvider = getProviderByName(providerType);
+        final OAuthProvider oAuthProvider = getProviderByType(providerType);
         return oAuthAuthorizeService.getAuthorizePayload(oAuthProvider);
     }
 
     public Mono<OAuthProfile> getProfile(final String providerType, final String code) {
         validateAuthorizationCode(code);
         validateProviderType(providerType);
-        final OAuthProvider oAuthProvider = getProviderByName(providerType);
+        final OAuthProvider oAuthProvider = getProviderByType(providerType);
         return oAuthTokenService.getToken(oAuthProvider, code, maxRetry, timeout)
                 .flatMap(response -> oAuthProfileService.getProfile(oAuthProvider, response, maxRetry, timeout));
     }
 
-    private OAuthProvider getProviderByName(final String providerType) {
+    private OAuthProvider getProviderByType(final String providerType) {
         return inMemoryOAuthProviderRepository.findByProviderType(providerType);
     }
 

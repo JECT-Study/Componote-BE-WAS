@@ -24,7 +24,7 @@ public class OAuthTokenService {
     private final WebClient webClient;
 
     public Mono<OAuthTokenResponse> getToken(final OAuthProvider oAuthProvider, final String code, final int maxRetry, final int timeout) {
-        return timeoutDecorator.decorate(getTokenFromCode(oAuthProvider, code, maxRetry, timeout), maxRetry, timeout)
+        return timeoutDecorator.decorate(getTokenFromCode(oAuthProvider, code), maxRetry, timeout)
                 .flatMap(response -> {
                     if (failedTokenIssue(response)) {
                         return Mono.error(OAuthTokenIssueException.createWhenResponseIsNullOrEmpty());
@@ -34,9 +34,10 @@ public class OAuthTokenService {
                 });
     }
 
-    private Mono<OAuthTokenResponse> getTokenFromCode(final OAuthProvider provider, final String code, final int maxRetry, final int timeout) {
+    private Mono<OAuthTokenResponse> getTokenFromCode(final OAuthProvider provider, final String code) {
         return webClient.method(provider.tokenMethod())
                 .uri(provider.tokenUrl())
+                .accept(MediaType.parseMediaType("application/vnd.github+json"))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(oAuthParamConverter.convertToTokenParams(provider, code)))
                 .retrieve()
@@ -46,6 +47,6 @@ public class OAuthTokenService {
     }
 
     private boolean failedTokenIssue(final OAuthTokenResponse oAuthTokenResponse) {
-        return Objects.isNull(oAuthTokenResponse) || oAuthTokenResponse.access_token().isEmpty();
+        return Objects.isNull(oAuthTokenResponse) || oAuthTokenResponse.access_token() == null || oAuthTokenResponse.access_token().isEmpty();
     }
 }
