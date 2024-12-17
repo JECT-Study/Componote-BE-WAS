@@ -57,7 +57,6 @@ class AuthServiceTest {
     public void signup() throws Exception {
         // given
         final MemberSignupRequest request = new MemberSignupRequest(
-                member.getEmail().getValue(),
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 tempObjectKey,
@@ -83,7 +82,6 @@ class AuthServiceTest {
     public void signupWhenAlreadyExist() throws Exception {
         // given
         final MemberSignupRequest request = new MemberSignupRequest(
-                member.getEmail().getValue(),
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 tempObjectKey,
@@ -106,7 +104,6 @@ class AuthServiceTest {
     public void signupWhenInvalidSocialAccountId() throws Exception {
         // given
         final MemberSignupRequest request = new MemberSignupRequest(
-                member.getEmail().getValue(),
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 tempObjectKey,
@@ -127,7 +124,6 @@ class AuthServiceTest {
     public void signupWhenMoveFail() throws Exception {
         // given
         final MemberSignupRequest request = new MemberSignupRequest(
-                member.getEmail().getValue(),
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 tempObjectKey,
