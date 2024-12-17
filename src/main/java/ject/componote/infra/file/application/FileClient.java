@@ -6,6 +6,7 @@ import ject.componote.infra.file.error.FileClientException;
 import ject.componote.infra.util.TimeoutDecorator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -17,15 +18,21 @@ import reactor.core.publisher.Mono;
 public class FileClient {
     private final int maxRetry;
     private final int timeout;
+    private final HttpMethod method;
+    private final String uri;
     private final TimeoutDecorator timeoutDecorator;
     private final WebClient webClient;
 
     public FileClient(@Value("${file.max-retry}") final int maxRetry,
                       @Value("${file.timeout}") final int timeout,
+                      @Value("${file.client.move.method}") final HttpMethod method,
+                      @Value("${file.client.move.uri}") final String uri,
                       final TimeoutDecorator timeoutDecorator,
                       final WebClient webClient) {
         this.maxRetry = maxRetry;
         this.timeout = timeout;
+        this.method = method;
+        this.uri = uri;
         this.timeoutDecorator = timeoutDecorator;
         this.webClient = webClient;
     }
@@ -35,8 +42,8 @@ public class FileClient {
     }
 
     private Mono<Void> move(final String tempKey, final String permanentKey) {
-        return webClient.post()
-                .uri("http://localhost:8081/move")
+        return webClient.method(method)
+                .uri(uri)
                 .bodyValue(MoveRequest.of(tempKey, permanentKey))
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, this::handle4xxError)
