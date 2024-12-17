@@ -1,6 +1,6 @@
 package ject.componote.domain.common.model;
 
-import ject.componote.domain.auth.error.InvalidEmailException;
+import ject.componote.domain.common.error.InvalidImageExtensionException;
 import ject.componote.domain.common.error.NotFoundImageException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,7 +34,7 @@ public class Image {
 
         final String extension = StringUtils.getFilenameExtension(objectKey);
         if (!ALLOWED_IMAGE_EXTENSIONS.contains(extension)) {
-            throw new InvalidEmailException(extension);
+            throw new InvalidImageExtensionException(extension);
         }
     }
 }
