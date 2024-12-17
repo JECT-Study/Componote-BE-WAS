@@ -1,5 +1,6 @@
 package ject.componote.domain.auth.application;
 
+import ject.componote.domain.auth.domain.ProviderType;
 import ject.componote.domain.auth.domain.SocialAccount;
 import ject.componote.domain.auth.domain.SocialAccountRepository;
 import ject.componote.domain.auth.util.SocialAccountMapper;
@@ -15,7 +16,9 @@ public class OAuthResultHandler {
     private final SocialAccountRepository socialAccountRepository;
     private final SocialAccountMapper socialAccountMapper;
 
-    public SocialAccount save(final OAuthProfile oAuthProfile) {
-        return socialAccountRepository.save(socialAccountMapper.mapFrom(oAuthProfile));
+    @Transactional
+    public SocialAccount saveOrGet(final OAuthProfile oAuthProfile) {
+        return socialAccountRepository.findBySocialIdAndProviderType(oAuthProfile.getSocialId(), ProviderType.from(oAuthProfile.getProviderType()))
+                .orElseGet(() -> socialAccountRepository.save(socialAccountMapper.mapFrom(oAuthProfile)));
     }
 }
