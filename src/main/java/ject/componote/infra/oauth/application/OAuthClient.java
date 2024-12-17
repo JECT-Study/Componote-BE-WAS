@@ -4,16 +4,14 @@ import ject.componote.infra.oauth.application.authorize.OAuthAuthorizeService;
 import ject.componote.infra.oauth.application.profile.OAuthProfileService;
 import ject.componote.infra.oauth.application.token.OAuthTokenService;
 import ject.componote.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
-import ject.componote.infra.oauth.error.param.OAuthParamException;
+import ject.componote.infra.oauth.error.InvalidAuthorizationCodeException;
+import ject.componote.infra.oauth.error.UnsupportedProviderException;
 import ject.componote.infra.oauth.model.OAuthProvider;
 import ject.componote.infra.oauth.model.profile.OAuthProfile;
 import ject.componote.infra.oauth.repository.InMemoryOAuthProviderRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
-import static ject.componote.infra.oauth.error.param.OAuthParamErrorCode.INVALID_AUTHORIZATION_CODE;
-import static ject.componote.infra.oauth.error.param.OAuthParamErrorCode.INVALID_PROVIDER_TYPE;
 
 @Service
 public class OAuthClient {
@@ -58,13 +56,13 @@ public class OAuthClient {
 
     private void validateAuthorizationCode(final String code) {
         if (isNullOrBlank(code)) {
-            throw new OAuthParamException(INVALID_AUTHORIZATION_CODE);   // 예외 처리 커스텀 예정
+            throw new InvalidAuthorizationCodeException(code);
         }
     }
 
     private void validateProviderType(final String providerType) {
         if (isNullOrBlank(providerType)) {
-            throw new OAuthParamException(INVALID_PROVIDER_TYPE);   // 예외 처리 커스텀 예정
+            throw new UnsupportedProviderException(providerType);
         }
     }
 
