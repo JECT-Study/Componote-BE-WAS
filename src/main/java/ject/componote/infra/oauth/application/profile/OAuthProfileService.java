@@ -1,6 +1,6 @@
 package ject.componote.infra.oauth.application.profile;
 
-import ject.componote.infra.oauth.application.decorator.OAuthTimeoutDecorator;
+import ject.componote.infra.util.TimeoutDecorator;
 import ject.componote.infra.oauth.dto.token.response.OAuthTokenResponse;
 import ject.componote.infra.oauth.model.OAuthProvider;
 import ject.componote.infra.oauth.model.profile.OAuthProfile;
@@ -18,15 +18,17 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class OAuthProfileService {
-    private final OAuthTimeoutDecorator oAuthTimeoutDecorator;
+    private final TimeoutDecorator timeoutDecorator;
     private final ProfileFailHandler profileFailHandler;
     private final WebClient webClient;
 
     public Mono<OAuthProfile> getProfile(final OAuthProvider oAuthProvider,
-                                         final OAuthTokenResponse oAuthTokenResponse) {
-        return oAuthTimeoutDecorator.decorate(
+                                         final OAuthTokenResponse oAuthTokenResponse, final int maxRetry, final int timeout) {
+        return timeoutDecorator.decorate(
                 getProfileAttributeByToken(oAuthProvider, oAuthTokenResponse.access_token())
-                        .map(attribute -> OAuthProfileFactory.of(attribute, oAuthProvider))
+                        .map(attribute -> OAuthProfileFactory.of(attribute, oAuthProvider)),
+                maxRetry,
+                timeout
         );
     }
 
