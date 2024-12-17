@@ -48,30 +48,25 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "social_id", nullable = false)
-    private String socialId;
+    @Column(name = "social_account_id", nullable = false)
+    private Long socialAccountId;
 
-    @Column(name = "provider_type", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProviderType providerType;
-
-    private Member(final Nickname nickname, final Email email, final Job job, final Image profileImage, final String socialId, final ProviderType providerType) {
+    private Member(final Nickname nickname, final Email email, final Job job, final Image profileImage, final Long socialAccountId) {
         this.nickname = nickname;
         this.email = email;
         this.job = job;
         this.profileImage = profileImage;
         this.role = Role.USER;
-        this.socialId = socialId;
-        this.providerType = providerType;
+        this.socialAccountId = socialAccountId;
     }
 
-    public static Member of(final String nickname, final String email, final String job, final String profileImage, final String socialId, final String providerType) {
+    public static Member of(final String nickname, final String email, final String job, final String profileImage, final Long socialAccountId) {
         return new Member(
                 Nickname.from(nickname),
                 Email.from(email),
                 Job.from(job),
                 Image.from(profileImage),
-                socialId, ProviderType.from(providerType)
+                socialAccountId
         );
     }
 }
