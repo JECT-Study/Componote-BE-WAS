@@ -3,6 +3,7 @@ package ject.componote.domain.bookmark.api;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
 import ject.componote.domain.bookmark.application.BookmarkService;
+import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

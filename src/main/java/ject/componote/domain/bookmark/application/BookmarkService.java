@@ -5,6 +5,7 @@ import ject.componote.domain.auth.domain.MemberRepository;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.bookmark.domain.BookmarkRepository;
+import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.component.domain.Component;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
