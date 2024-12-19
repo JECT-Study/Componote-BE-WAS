@@ -4,6 +4,7 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
 import ject.componote.domain.bookmark.application.BookmarkService;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
+import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,12 @@ public class BookmarkController {
     }
 
     @GetMapping
-    public ResponseEntity<BookmarkResponse> getBookmark(@Authenticated final AuthPrincipal authPrincipal) {
-        return ResponseEntity.ok()
-                .body(bookmarkService.getBookmark(authPrincipal));
+    public ResponseEntity<PageResponse<BookmarkResponse>> getBookmark(
+        @Authenticated final AuthPrincipal authPrincipal,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(bookmarkService.getBookmark(authPrincipal, page, size));
     }
 
     @DeleteMapping("{componentId}")

@@ -1,7 +1,13 @@
 package ject.componote.domain.bookmark.dto.response;
 
-import ject.componote.domain.auth.dto.find.MemberSummaryDto;
-import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
+import ject.componote.domain.bookmark.domain.Bookmark;
 
-public record BookmarkResponse(Long bookmarkId) {}
+public record BookmarkResponse(Long bookmarkId) {
+
+  public static BookmarkResponse of(Bookmark bookmark) {
+    return new BookmarkResponse(
+        bookmark.getId()
+    );
+  }
+}
 
