@@ -15,7 +15,6 @@ import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.component.domain.ComponentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,16 +40,13 @@ public class BookmarkService {
         Bookmark bookmark = Bookmark.of(member, component);
         bookmarkRepository.save(bookmark);
 
-        return BookmarkResponse.of(bookmark);
+        return BookmarkResponse.from(bookmark);
     }
 
     @Transactional(readOnly = true)
     public PageResponse<BookmarkResponse> getBookmark(AuthPrincipal authPrincipal, Pageable pageable) {
-        Page<Bookmark> bookmarkPage = bookmarkRepository.findAllByMemberId(authPrincipal.id(), pageable);
-
-        Page<BookmarkResponse> bookmarkResponsePage = bookmarkPage.map(bookmark ->
-            new BookmarkResponse(bookmark.getId())
-        );
+        Page<BookmarkResponse> bookmarkResponsePage = bookmarkRepository.findAllByMemberId(authPrincipal.id(), pageable)
+                .map(BookmarkResponse::from);
 
         return PageResponse.from(bookmarkResponsePage);
     }
@@ -59,6 +55,6 @@ public class BookmarkService {
         Bookmark bookmark = bookmarkRepository.findByMemberIdAndComponentId(authPrincipal.id(), componentId)
                 .orElseThrow(() -> new NotFoundBookmarkException(authPrincipal.id(), componentId));
         bookmarkRepository.delete(bookmark);
-        return BookmarkResponse.of(bookmark);
+        return BookmarkResponse.from(bookmark);
     }
 }
