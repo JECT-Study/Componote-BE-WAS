@@ -1,8 +1,8 @@
 package ject.componote.domain.auth.application;
 
+import ject.componote.domain.auth.dao.MemberRepository;
+import ject.componote.domain.auth.dao.SocialAccountRepository;
 import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.auth.domain.MemberRepository;
-import ject.componote.domain.auth.domain.SocialAccountRepository;
 import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
@@ -11,8 +11,9 @@ import ject.componote.domain.auth.error.DuplicatedSignupException;
 import ject.componote.domain.auth.error.NotFoundMemberException;
 import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
+import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.domain.auth.util.TokenProvider;
-import ject.componote.domain.common.application.EntityWithImageHandler;
+import ject.componote.infra.file.application.FileService;
 import ject.componote.infra.file.error.FileClientException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,12 +28,15 @@ import static ject.componote.fixture.MemberFixture.KIM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
+    @Mock
+    FileService fileService;
+
     @Mock
     MemberRepository memberRepository;
 
@@ -42,15 +46,13 @@ class AuthServiceTest {
     @Mock
     TokenProvider tokenProvider;
 
-    @Mock
-    EntityWithImageHandler entityWithImageHandler;
-
     @InjectMocks
     AuthService authService;
 
     Long socialAccountId = 1L;
-    String tempObjectKey = "temp";
     Member member = KIM.생성(socialAccountId);
+    ProfileImage profileImage = member.getProfileImage();
+    String profileImageObjectKey = profileImage.getImage().getObjectKey();
 
     @DisplayName("회원 가입")
     @Test
@@ -59,7 +61,7 @@ class AuthServiceTest {
         final MemberSignupRequest request = new MemberSignupRequest(
                 member.getNickname().getValue(),
                 member.getJob().name(),
-                tempObjectKey,
+                profileImageObjectKey,
                 socialAccountId
         );
         final MemberSignupResponse expect = MemberSignupResponse.from(member);
@@ -69,8 +71,10 @@ class AuthServiceTest {
                 .existsById(socialAccountId);
         doReturn(false).when(memberRepository)
                 .existsBySocialAccountId(socialAccountId);
-        doReturn(member).when(entityWithImageHandler)
-                .persist(eq(tempObjectKey), any()); // Mockito는 matchers와 raw value를 혼합해서 사용하는 것을 허용하지 않으므로 eq(tempObjectKey)를 사용하여 raw value를 Matcher로 변환
+        doReturn(member).when(memberRepository)
+                .save(any());
+        doNothing().when(fileService)
+                .moveImage(profileImage.getImage());
         final MemberSignupResponse actual = authService.signup(request);
 
         // then
@@ -84,7 +88,7 @@ class AuthServiceTest {
         final MemberSignupRequest request = new MemberSignupRequest(
                 member.getNickname().getValue(),
                 member.getJob().name(),
-                tempObjectKey,
+                profileImageObjectKey,
                 socialAccountId
         );
 
@@ -106,7 +110,7 @@ class AuthServiceTest {
         final MemberSignupRequest request = new MemberSignupRequest(
                 member.getNickname().getValue(),
                 member.getJob().name(),
-                tempObjectKey,
+                profileImageObjectKey,
                 socialAccountId
         );
 
@@ -126,7 +130,7 @@ class AuthServiceTest {
         final MemberSignupRequest request = new MemberSignupRequest(
                 member.getNickname().getValue(),
                 member.getJob().name(),
-                tempObjectKey,
+                profileImageObjectKey,
                 socialAccountId
         );
 
@@ -135,8 +139,10 @@ class AuthServiceTest {
                 .existsById(socialAccountId);
         doReturn(false).when(memberRepository)
                 .existsBySocialAccountId(socialAccountId);
-        doThrow(FileClientException.class).when(entityWithImageHandler)
-                .persist(eq(tempObjectKey), any());
+        doReturn(member).when(memberRepository)
+                .save(any());
+        doThrow(FileClientException.class).when(fileService)
+                .moveImage(profileImage.getImage());
 
         // then
         assertThatThrownBy(() -> authService.signup(request))

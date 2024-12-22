@@ -1,22 +1,21 @@
 package ject.componote.fixture;
 
 import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.common.model.Image;
 
 public enum MemberFixture {
-    KIM("김민우", "DEVELOPER", "permanent/123.jpg");
+    KIM("김민우", "DEVELOPER", "profiles/123.jpg");
 
     private final String nickname;
     private final String job;
-    private final String profileImage;
+    private final String objectKey;
 
-    MemberFixture(final String nickname, final String job, final String profileImage) {
+    MemberFixture(final String nickname, final String job, final String objectKey) {
         this.nickname = nickname;
         this.job = job;
-        this.profileImage = profileImage;
+        this.objectKey = objectKey;
     }
 
     public Member 생성(final Long socialAccountId) {
-        return Member.of(nickname, job, Image.from(profileImage), socialAccountId);
+        return Member.of(nickname, job, objectKey, socialAccountId);
     }
 }
