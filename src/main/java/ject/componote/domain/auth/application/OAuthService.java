@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.application;
 
-import ject.componote.domain.auth.domain.MemberRepository;
+import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.domain.SocialAccount;
 import ject.componote.domain.auth.dto.login.response.OAuthLoginResponse;
 import ject.componote.domain.auth.dto.authorize.response.OAuthAuthorizationUrlResponse;
