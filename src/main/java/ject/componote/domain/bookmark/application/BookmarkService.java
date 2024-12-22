@@ -45,9 +45,7 @@ public class BookmarkService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<BookmarkResponse> getBookmark(AuthPrincipal authPrincipal, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-
+    public PageResponse<BookmarkResponse> getBookmark(AuthPrincipal authPrincipal, Pageable pageable) {
         Page<Bookmark> bookmarkPage = bookmarkRepository.findAllByMemberId(authPrincipal.id(), pageable);
 
         Page<BookmarkResponse> bookmarkResponsePage = bookmarkPage.map(bookmark ->

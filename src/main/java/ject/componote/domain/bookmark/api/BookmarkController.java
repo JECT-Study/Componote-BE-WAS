@@ -6,6 +6,8 @@ import ject.componote.domain.bookmark.application.BookmarkService;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +27,9 @@ public class BookmarkController {
     @GetMapping
     public ResponseEntity<PageResponse<BookmarkResponse>> getBookmark(
         @Authenticated final AuthPrincipal authPrincipal,
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "10") int size) {
+        @PageableDefault(size = 10, page = 0) Pageable pageable) {
 
-        return ResponseEntity.ok(bookmarkService.getBookmark(authPrincipal, page, size));
+        return ResponseEntity.ok(bookmarkService.getBookmark(authPrincipal, pageable));
     }
 
     @DeleteMapping("{componentId}")
