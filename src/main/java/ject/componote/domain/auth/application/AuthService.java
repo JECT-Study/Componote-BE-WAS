@@ -51,6 +51,17 @@ public class AuthService {
         return MemberLoginResponse.of(accessToken, member);
     }
 
+    public void validateEmail(final MemberEmailValidateRequest request) {
+
+    }
+
+    public void validateNickname(final MemberNicknameValidateRequest request) {
+        final Nickname nickname = Nickname.from(request.nickname());
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new DuplicatedNicknameException(nickname);
+        }
+    }
+
     private Member findMemberBySocialAccountId(final Long socialAccountId) {
         return memberRepository.findBySocialAccountId(socialAccountId)
                 .orElseThrow(() -> NotFoundMemberException.createWhenInvalidSocialAccountId(socialAccountId));
