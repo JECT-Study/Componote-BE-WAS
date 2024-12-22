@@ -32,10 +32,8 @@ public class BookmarkService {
             throw new ExistedComponentError(authPrincipal.id(), componentId);
         }
 
-        Member member = memberRepository.findById(authPrincipal.id())
-            .orElseThrow(() -> new NotFoundMemberException(authPrincipal.id()));
-        Component component = componentRepository.findById(componentId)
-            .orElseThrow(() -> new NotFoundComponentException(componentId));
+        Member member = findMemberOrThrow(authPrincipal.id());
+        Component component = findComponentOrThrow(componentId);
 
         Bookmark bookmark = Bookmark.of(member, component);
         bookmarkRepository.save(bookmark);
@@ -56,5 +54,15 @@ public class BookmarkService {
                 .orElseThrow(() -> new NotFoundBookmarkException(authPrincipal.id(), componentId));
         bookmarkRepository.delete(bookmark);
         return BookmarkResponse.from(bookmark);
+    }
+
+    private Member findMemberOrThrow(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundMemberException(memberId));
+    }
+
+    private Component findComponentOrThrow(Long componentId) {
+        return componentRepository.findById(componentId)
+                .orElseThrow(() -> new NotFoundComponentException(componentId));
     }
 }
