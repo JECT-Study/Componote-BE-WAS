@@ -29,7 +29,7 @@ public class BookmarkService {
     private final ComponentRepository componentRepository;
 
     public BookmarkResponse addBookmark(AuthPrincipal authPrincipal, Long componentId) {
-        if (bookmarkRepository.existsByUserIdAndComponentId(authPrincipal.id(), componentId)) {
+        if (bookmarkRepository.existsByMemberIdAndComponentId(authPrincipal.id(), componentId)) {
             throw new ExistedComponentError(authPrincipal.id(), componentId);
         }
 
@@ -48,7 +48,7 @@ public class BookmarkService {
     public PageResponse<BookmarkResponse> getBookmark(AuthPrincipal authPrincipal, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Bookmark> bookmarkPage = bookmarkRepository.findAllByUserId(authPrincipal.id(), pageable);
+        Page<Bookmark> bookmarkPage = bookmarkRepository.findAllByMemberId(authPrincipal.id(), pageable);
 
         Page<BookmarkResponse> bookmarkResponsePage = bookmarkPage.map(bookmark ->
             new BookmarkResponse(bookmark.getId())
@@ -58,7 +58,7 @@ public class BookmarkService {
     }
 
     public BookmarkResponse deleteBookmark(AuthPrincipal authPrincipal, Long componentId) {
-        Bookmark bookmark = bookmarkRepository.findByUserIdAndComponentId(authPrincipal.id(), componentId)
+        Bookmark bookmark = bookmarkRepository.findByMemberIdAndComponentId(authPrincipal.id(), componentId)
                 .orElseThrow(() -> new NotFoundBookmarkException(authPrincipal.id(), componentId));
         bookmarkRepository.delete(bookmark);
         return BookmarkResponse.of(bookmark);
