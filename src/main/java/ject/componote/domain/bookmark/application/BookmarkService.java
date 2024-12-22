@@ -45,7 +45,7 @@ public class BookmarkService {
 
     @Transactional(readOnly = true)
     public PageResponse<BookmarkResponse> getBookmark(AuthPrincipal authPrincipal, Pageable pageable) {
-        Page<BookmarkResponse> bookmarkResponsePage = bookmarkRepository.findAllByMemberId(authPrincipal.id(), pageable)
+        Page<BookmarkResponse> bookmarkResponsePage = bookmarkRepository.findAllByMemberIdWithPagination(authPrincipal.id(), pageable)
                 .map(BookmarkResponse::from);
 
         return PageResponse.from(bookmarkResponsePage);
