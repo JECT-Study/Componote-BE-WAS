@@ -22,7 +22,7 @@ public class MemberService {
     private final FileService fileService;
     private final MemberRepository memberRepository;
 
-    public MemberSummaryResponse getSummary(final AuthPrincipal authPrincipal) {
+    public MemberSummaryResponse getMemberSummary(final AuthPrincipal authPrincipal) {
         final Long memberId = authPrincipal.id();
         return memberRepository.findSummaryById(memberId)
                 .map(MemberSummaryResponse::from)

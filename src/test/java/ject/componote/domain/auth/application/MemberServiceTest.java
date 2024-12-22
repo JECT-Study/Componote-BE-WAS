@@ -49,7 +49,7 @@ class MemberServiceTest {
 
     @Test
     @DisplayName("회원 간단 조회")
-    public void getSummary() throws Exception {
+    public void getMemberSummary() throws Exception {
         // given
         final Long memberId = member.getId();
         final MemberSummaryDao memberSummaryDao = new MemberSummaryDao(member.getNickname(), member.getProfileImage());
@@ -58,7 +58,7 @@ class MemberServiceTest {
         // when
         doReturn(Optional.of(memberSummaryDao)).when(memberRepository)
                 .findSummaryById(memberId);
-        final MemberSummaryResponse actual = memberService.getSummary(authPrincipal);
+        final MemberSummaryResponse actual = memberService.getMemberSummary(authPrincipal);
 
         // then
         assertThat(actual).isEqualTo(expect);

@@ -24,9 +24,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/summary")
-    public ResponseEntity<MemberSummaryResponse> getSummary(@Authenticated final AuthPrincipal authPrincipal) {
+    public ResponseEntity<MemberSummaryResponse> getMemberSummary(@Authenticated final AuthPrincipal authPrincipal) {
         return ResponseEntity.ok(
-                memberService.getSummary(authPrincipal)
+                memberService.getMemberSummary(authPrincipal)
         );
     }
 
