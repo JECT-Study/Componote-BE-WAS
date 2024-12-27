@@ -26,15 +26,18 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final FileService fileService;
 
+    @Transactional
     public CommentCreateResponse create(final AuthPrincipal authPrincipal, final CommentCreateRequest request) {
         if (isReply(request)) {
             validateParentId(request.parentId());
@@ -63,6 +66,7 @@ public class CommentService {
     }
 
     @CommenterValidation
+    @Transactional
     public void update(final AuthPrincipal authPrincipal, final Long commentId, final CommentUpdateRequest commentUpdateRequest) {
         final Comment comment = findCommentByIdAndMemberId(commentId, authPrincipal.id());
 
@@ -78,6 +82,7 @@ public class CommentService {
     }
 
     @CommenterValidation
+    @Transactional
     public void delete(final AuthPrincipal authPrincipal, final Long commentId) {
         commentRepository.deleteByIdAndMemberId(commentId, authPrincipal.id());
     }
