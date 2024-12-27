@@ -2,6 +2,7 @@ package ject.componote.domain.comment.dao;
 
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
 import ject.componote.domain.comment.domain.QComment;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class QCommentDaoFactory {
                 comment.content,
                 comment.createdAt,
                 comment.likeCount,
-                null,
+                Expressions.nullExpression(Boolean.class),
                 comment.parentId.isNotNull()
         );
     }
