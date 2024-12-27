@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ject.componote.domain.auth.domain.MemberRepository;
+import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.error.ExpiredJWTException;
 import ject.componote.domain.auth.error.InvalidJWTException;
 import ject.componote.domain.auth.error.NotFoundJWTException;

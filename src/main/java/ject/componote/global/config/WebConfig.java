@@ -1,6 +1,7 @@
 package ject.componote.global.config;
 
 import ject.componote.global.interceptor.AuthenticationInterceptor;
+import ject.componote.global.interceptor.MemberAuthorityInterceptor;
 import ject.componote.global.resolver.AuthPrincipalResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +17,14 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
     private final AuthPrincipalResolver authPrincipalResolver;
     private final AuthenticationInterceptor authenticationInterceptor;
+    private final MemberAuthorityInterceptor memberAuthorityInterceptor;
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
                 .order(0);
-        registry.addInterceptor(authenticationInterceptor)
+        registry.addInterceptor(memberAuthorityInterceptor)
                 .addPathPatterns("/**")
                 .order(1);
     }

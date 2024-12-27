@@ -6,8 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import ject.componote.domain.common.model.Image;
-import ject.componote.domain.common.model.converter.ImageConverter;
+import ject.componote.domain.common.model.BaseImage;
+import ject.componote.domain.common.model.converter.BaseImageConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +25,9 @@ public class DesignPhoto {
     @Column(name = "design_id", nullable = false)
     private Long designId;
 
-    @Convert(converter = ImageConverter.class)
+    @Convert(converter = BaseImageConverter.class)
     @Column(name = "photo", nullable = false)
-    private Image photo;
+    private BaseImage photo;
 
     public void setDesignId(final Long designId) {
         if (designId != null) {

@@ -1,5 +1,8 @@
 package ject.componote.domain.auth.model;
 
+import ject.componote.domain.auth.domain.BadWordFilteringSingleton;
+import ject.componote.domain.auth.error.InvalidNicknameException;
+import ject.componote.domain.auth.error.OffensiveNicknameException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,7 +11,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Nickname {
-    private static final String NICKNAME_REGEX = "^(?![-_]{2,10}$)[가-힣ㄱ-ㅎㅏ-ㅣA-Za-z0-9_-]{2,10}$";
+    private static final String NICKNAME_REGEX = "^(?!.*[ㄱ-ㅎㅏ-ㅣ])[A-Za-z0-9가-힣]{2,10}$";
 
     private final String value;
 
@@ -23,7 +26,11 @@ public class Nickname {
 
     private void validateNickname(final String value) {
         if (!value.matches(NICKNAME_REGEX)) {
-            throw new IllegalArgumentException("Invalid nickname: " + value);
+            throw new InvalidNicknameException(value);
+        }
+
+        if (BadWordFilteringSingleton.containsBadWord(value)) {
+            throw new OffensiveNicknameException(value);
         }
     }
 }
