@@ -25,7 +25,7 @@ public class CommentLikeEventListener {
     @Transactional
     public void handleCommentLikeEvent(final CommentLikeEvent event) {
         final Long commentId = event.commentId();
-        final Comment comment = findCommentById(commentId); // 내 댓글에 좋아요를 달 수 있는지?
+        final Comment comment = findCommentById(commentId);
         comment.increaseLikeCount();
 
         final Long memberId = event.memberId();
@@ -38,7 +38,7 @@ public class CommentLikeEventListener {
     @Transactional
     public void handleCommentUnlikeEvent(final CommentUnlikeEvent event) {
         final Long commentId = event.commentId();
-        final Comment comment = findCommentById(commentId); // 내 댓글에 좋아요를 달 수 있는지?
+        final Comment comment = findCommentById(commentId);
         comment.decreaseLikeCount();
 
         final Long memberId = event.memberId();
