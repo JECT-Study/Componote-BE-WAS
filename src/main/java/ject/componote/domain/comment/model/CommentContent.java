@@ -2,7 +2,7 @@ package ject.componote.domain.comment.model;
 
 import ject.componote.domain.auth.domain.BadWordFilteringSingleton;
 import ject.componote.domain.comment.error.BlankCommentException;
-import ject.componote.domain.comment.error.ExceededCommentLengthException;
+import ject.componote.domain.comment.error.ExceedCommentLengthException;
 import ject.componote.domain.comment.error.OffensiveCommentException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class CommentContent {
         }
 
         if (value.length() > MAX_LENGTH) {
-            throw new ExceededCommentLengthException(value.length());
+            throw new ExceedCommentLengthException(value.length());
         }
 
         if (BadWordFilteringSingleton.containsBadWord(value)) {
