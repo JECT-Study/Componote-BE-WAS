@@ -49,7 +49,7 @@ public class Comment extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "parent_id", nullable = false)
+    @Column(name = "parent_id", nullable = true)
     private Long parentId;
 
     private Comment(final Long componentId, final Long memberId, final Long parentId, final String content, final Image image) {
