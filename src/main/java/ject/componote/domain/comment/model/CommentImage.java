@@ -23,7 +23,7 @@ public class CommentImage {
     }
 
     public static CommentImage from(final String objectKey) {
-        if (objectKey == null) {
+        if (objectKey == null || objectKey.isEmpty()) {
             return new CommentImage(BaseImage.getEmptyInstance());
         }
 
