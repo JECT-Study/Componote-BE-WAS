@@ -16,14 +16,23 @@ public record CommentFindByComponentResponse(
         boolean isReply) {
     public static CommentFindByComponentResponse from(final CommentFindByComponentDao dto) {
         return new CommentFindByComponentResponse(
-                new CommentProfileResponse(dto.memberId(), dto.nickname().getValue(), dto.profileImage().getObjectKey(), dto.job().name()),
+                createProfileResponse(dto),
                 dto.commentId(),
                 dto.parentId(),
-                dto.image().toUrl(),
+                dto.commentImage().getImage().toUrl(),
                 dto.content().getValue(),
                 dto.createdAt(),
                 dto.likeCount().getValue(),
                 dto.isReply()
+        );
+    }
+
+    private static CommentProfileResponse createProfileResponse(final CommentFindByComponentDao dto) {
+        return new CommentProfileResponse(
+                dto.memberId(),
+                dto.nickname().getValue(),
+                dto.profileImage().getImage().toUrl(),
+                dto.job().name()
         );
     }
 }
