@@ -77,4 +77,29 @@ public class Comment extends BaseEntity {
     public static Comment createReplyWithImage(final Long componentId, final Long memberId, final Long parentId, final String content, final CommentImage image) {
         return new Comment(componentId, memberId, parentId, content, image);
     }
+
+    public void increaseLikeCount() {
+        this.likeCount.increase();
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount.decrease();
+    }
+
+    public boolean equalsImage(final CommentImage image) {
+        return this.image.equals(image);
+    }
+
+    public void update(final CommentContent content, final CommentImage image) {
+        updateContent(content);
+        updateImage(image);
+    }
+
+    private void updateContent(final CommentContent content) {
+        this.content = content;
+    }
+
+    private void updateImage(final CommentImage image) {
+        this.image = image;
+    }
 }
