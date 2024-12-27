@@ -1,7 +1,6 @@
 package ject.componote.global.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
-import ject.componote.domain.auth.error.NotFoundJWTException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +32,7 @@ public class AuthPrincipalResolver implements HandlerMethodArgumentResolver {
                                   final WebDataBinderFactory binderFactory) throws Exception {
         final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         if (httpServletRequest.getAttribute(authAttributeKey) == null) {
-            throw new NotFoundJWTException();
+            return null;
         }
 
         return httpServletRequest.getAttribute(authAttributeKey);

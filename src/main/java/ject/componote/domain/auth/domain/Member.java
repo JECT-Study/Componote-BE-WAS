@@ -10,11 +10,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
+import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.domain.auth.model.converter.EmailConverter;
 import ject.componote.domain.auth.model.converter.NicknameConverter;
+import ject.componote.domain.auth.model.converter.ProfileImageConverter;
 import ject.componote.domain.common.domain.BaseEntity;
-import ject.componote.domain.common.model.Image;
-import ject.componote.domain.common.model.converter.ImageConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,8 +42,8 @@ public class Member extends BaseEntity {
     private Job job;
 
     @Column(name = "profile_image", nullable = false)
-    @Convert(converter = ImageConverter.class)
-    private Image profileImage;
+    @Convert(converter = ProfileImageConverter.class)
+    private ProfileImage profileImage;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -51,7 +51,7 @@ public class Member extends BaseEntity {
     @Column(name = "social_account_id", nullable = false)
     private Long socialAccountId;
 
-    private Member(final Nickname nickname, final Job job, final Image profileImage, final Long socialAccountId) {
+    private Member(final Nickname nickname, final Job job, final ProfileImage profileImage, final Long socialAccountId) {
         this.nickname = nickname;
         this.job = job;
         this.profileImage = profileImage;
@@ -59,20 +59,28 @@ public class Member extends BaseEntity {
         this.socialAccountId = socialAccountId;
     }
 
-    public static Member of(final String nickname, final String job, final Image profileImage, final Long socialAccountId) {
+    public static Member of(final String nickname, final String job, final String objectKey, final Long socialAccountId) {
         return new Member(
                 Nickname.from(nickname),
                 Job.from(job),
-                profileImage,
+                ProfileImage.from(objectKey),
                 socialAccountId
         );
     }
 
-    public void setEmail(final String email) {
-        if (email == null || email.isEmpty()) {
-            return;
-        }
+    public boolean equalsNickname(final Nickname nickname) {
+        return this.nickname.equals(nickname);
+    }
 
-        this.email = Email.from(email);
+    public boolean equalsProfileImage(final ProfileImage profileImage) {
+        return this.profileImage.equals(profileImage);
+    }
+
+    public void updateProfileImage(final ProfileImage profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void updateNickname(final Nickname nickname) {
+        this.nickname = nickname;
     }
 }

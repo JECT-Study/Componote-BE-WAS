@@ -29,12 +29,21 @@ public class MemberAuthorityInterceptor implements HandlerInterceptor {
             return true;
         }
         final HandlerMethod handlerMethod = (HandlerMethod) handler;
-        final User user = handlerMethod.getMethodAnnotation(User.class);
-        if (!Objects.isNull(user)) {
+        if (hasUserAnnotation(handlerMethod)) {
             validateMemberAuthorization(request);
         }
 
         return true;
+    }
+
+    private boolean hasUserAnnotation(final HandlerMethod handlerMethod) {
+        final User methodAnnotation = handlerMethod.getMethodAnnotation(User.class);
+        if (methodAnnotation != null) {
+            return true;
+        }
+
+        final User classAnnotation = handlerMethod.getBeanType().getAnnotation(User.class);
+        return classAnnotation != null;
     }
 
     private void validateMemberAuthorization(final HttpServletRequest request) {

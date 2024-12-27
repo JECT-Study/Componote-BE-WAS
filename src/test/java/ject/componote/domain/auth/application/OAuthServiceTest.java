@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.application;
 
-import ject.componote.domain.auth.domain.MemberRepository;
+import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.domain.SocialAccount;
 import ject.componote.domain.auth.dto.authorize.response.OAuthAuthorizationUrlResponse;
 import ject.componote.domain.auth.dto.login.response.OAuthLoginResponse;
@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static ject.componote.fixture.SocialAccountFixture.KIM;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -131,9 +132,9 @@ class OAuthServiceTest {
                 .isInstanceOf(UnsupportedProviderException.class);
     }
 
-    private OAuthProvider getOAuthProvider(final String providerName) {
+    private OAuthProvider getOAuthProvider(final String providerType) {
         return new OAuthProvider(
-                providerName,
+                providerType,
                 "clientId",
                 "clientSecret",
                 "code",
@@ -150,6 +151,12 @@ class OAuthServiceTest {
     }
 
     private OAuthProfile getOAuthProfile(final OAuthProvider oAuthProvider) {
-        return OAuthProfileFactory.of(Collections.emptyMap(), oAuthProvider);
+        return OAuthProfileFactory.of(
+                Map.of(
+                        "response", Map.of("id", "social_id"),
+                        "id", "social_id"
+                )
+                , oAuthProvider
+        );
     }
 }

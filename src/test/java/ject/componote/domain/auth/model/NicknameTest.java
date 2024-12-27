@@ -1,6 +1,7 @@
 package ject.componote.domain.auth.model;
 
 import ject.componote.domain.auth.error.InvalidNicknameException;
+import ject.componote.domain.auth.error.OffensiveNicknameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -72,6 +73,6 @@ class NicknameTest {
     @ValueSource(strings = { "씨발", "개새끼"})
     public void badWordFiltering(final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(InvalidNicknameException.class);
+                .isInstanceOf(OffensiveNicknameException.class);
     }
 }

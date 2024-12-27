@@ -37,21 +37,25 @@ public class FileClient {
         this.webClient = webClient;
     }
 
-    public Mono<Void> moveFile(final String tempKey, final String permanentKey) {
-        return timeoutDecorator.decorate(move(tempKey, permanentKey), maxRetry, timeout);
+    public Mono<Void> move(final String objectKey) {
+        return timeoutDecorator.decorate(
+                moveImage(objectKey),
+                maxRetry,
+                timeout
+        );
     }
 
-    private Mono<Void> move(final String tempKey, final String permanentKey) {
+    private Mono<Void> moveImage(final String objectKey) {
         return webClient.method(method)
                 .uri(uri)
-                .bodyValue(MoveRequest.of(tempKey, permanentKey))
+                .bodyValue(MoveRequest.from(objectKey))
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, this::handle4xxError)
                 .onStatus(HttpStatusCode::is5xxServerError, this::handle5xxError)
                 .toBodilessEntity()
                 .then()
-                .doOnSuccess(ignore -> handleSuccess(permanentKey))
-                .doOnError(error -> handleError(tempKey, permanentKey, error));
+                .doOnSuccess(ignore -> handleSuccess(objectKey))
+                .doOnError(error -> handleError(objectKey, error));
     }
 
     private Mono<? extends Throwable> handle5xxError(final ClientResponse clientResponse) {
@@ -65,12 +69,12 @@ public class FileClient {
                 .map(FileClientException::new);
     }
 
-    private void handleSuccess(final String permanentKey) {
-        log.info("File moved successfully: {}", permanentKey);
+    private void handleSuccess(final String tempKey) {
+        log.info("File moved successfully: {}", tempKey);
     }
 
 
-    private void handleError(final String tempKey, final String permanentKey, final Throwable error) {
-        log.error("Failed to move file from {} to {}: {}", tempKey, permanentKey, error.getMessage());
+    private void handleError(final String tempKey, final Throwable error) {
+        log.error("Failed to move file from {}: {}", tempKey, error.getMessage());
     }
 }

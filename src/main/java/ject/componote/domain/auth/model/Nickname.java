@@ -2,6 +2,7 @@ package ject.componote.domain.auth.model;
 
 import ject.componote.domain.auth.domain.BadWordFilteringSingleton;
 import ject.componote.domain.auth.error.InvalidNicknameException;
+import ject.componote.domain.auth.error.OffensiveNicknameException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -24,8 +25,12 @@ public class Nickname {
     }
 
     private void validateNickname(final String value) {
-        if (!value.matches(NICKNAME_REGEX) || BadWordFilteringSingleton.containsBadWord(value)) {
+        if (!value.matches(NICKNAME_REGEX)) {
             throw new InvalidNicknameException(value);
+        }
+
+        if (BadWordFilteringSingleton.containsBadWord(value)) {
+            throw new OffensiveNicknameException(value);
         }
     }
 }
