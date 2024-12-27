@@ -7,12 +7,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import ject.componote.domain.comment.model.CommentContent;
+import ject.componote.domain.comment.model.CommentImage;
 import ject.componote.domain.comment.model.converter.CommentContentConverter;
+import ject.componote.domain.comment.model.converter.CommentImageConverter;
 import ject.componote.domain.common.domain.BaseEntity;
 import ject.componote.domain.common.model.Count;
-import ject.componote.domain.common.model.Image;
 import ject.componote.domain.common.model.converter.CountConverter;
-import ject.componote.domain.common.model.converter.ImageConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,8 +32,8 @@ public class Comment extends BaseEntity {
     private CommentContent content;
 
     @Column(name = "image", nullable = true)
-    @Convert(converter = ImageConverter.class)
-    private Image image;
+    @Convert(converter = CommentImageConverter.class)
+    private CommentImage image;
 
     @Column(name = "report_count", nullable = false)
     @Convert(converter = CountConverter.class)
@@ -52,7 +52,7 @@ public class Comment extends BaseEntity {
     @Column(name = "parent_id", nullable = true)
     private Long parentId;
 
-    private Comment(final Long componentId, final Long memberId, final Long parentId, final String content, final Image image) {
+    private Comment(final Long componentId, final Long memberId, final Long parentId, final String content, final CommentImage image) {
         this.componentId = componentId;
         this.memberId = memberId;
         this.parentId = parentId;
@@ -62,19 +62,19 @@ public class Comment extends BaseEntity {
         this.reportCount = Count.create();
     }
 
-    public static Comment createWithImage(final Long componentId, final Long memberId, final String content, final Image image) {
+    public static Comment createWithImage(final Long componentId, final Long memberId, final String content, final CommentImage image) {
         return new Comment(componentId, memberId, null, content, image);
     }
 
-    public static Comment createWithoutImage(final Long componentId, final Long memberId, final String  content) {
+    public static Comment createWithoutImage(final Long componentId, final Long memberId, final String content) {
         return new Comment(componentId, memberId, null, content, null);
     }
 
-    public static Comment createReplyWithoutImage(final Long componentId, final Long memberId, final Comment parentComment, final String  content) {
-        return new Comment(componentId, memberId, parentComment.getParentId(), content, null);
+    public static Comment createReplyWithoutImage(final Long componentId, final Long memberId, final Long parentId, final String content) {
+        return new Comment(componentId, memberId, parentId, content, null);
     }
 
-    public static Comment createReplyWithImage(final Long componentId, final Long memberId, final Comment parentComment, final String  content, final Image image) {
-        return new Comment(componentId, memberId, parentComment.getParentId(), content, image);
+    public static Comment createReplyWithImage(final Long componentId, final Long memberId, final Long parentId, final String content, final CommentImage image) {
+        return new Comment(componentId, memberId, parentId, content, image);
     }
 }
