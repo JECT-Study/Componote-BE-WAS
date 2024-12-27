@@ -40,11 +40,10 @@ public class CommentService {
             validateParentId(request.parentId());
         }
 
-        final CommentImage commentImage = CommentImage.from(request.imageObjectKey());
-        final CommentCreationStrategy creationStrategy = CommentCreationStrategy.findByRequest(request);
-        final Comment comment = commentRepository.save(creationStrategy.createComment(request, authPrincipal.id(), commentImage));
-
-        fileService.moveImage(commentImage.getImage());
+        final Comment comment = commentRepository.save(
+                CommentCreationStrategy.createBy(request, authPrincipal.id())
+        );
+        fileService.moveImage(comment.getImage().getImage());
         return CommentCreateResponse.from(comment);
     }
 

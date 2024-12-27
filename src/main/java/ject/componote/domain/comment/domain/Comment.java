@@ -52,18 +52,18 @@ public class Comment extends BaseEntity {
     @Column(name = "parent_id", nullable = true)
     private Long parentId;
 
-    private Comment(final Long componentId, final Long memberId, final Long parentId, final String content, final CommentImage image) {
+    private Comment(final Long componentId, final Long memberId, final Long parentId, final String content, final String objectKey) {
         this.componentId = componentId;
         this.memberId = memberId;
         this.parentId = parentId;
         this.content = CommentContent.from(content);
-        this.image = image;
+        this.image = CommentImage.from(objectKey);
         this.likeCount = Count.create();
         this.reportCount = Count.create();
     }
 
-    public static Comment createWithImage(final Long componentId, final Long memberId, final String content, final CommentImage image) {
-        return new Comment(componentId, memberId, null, content, image);
+    public static Comment createWithImage(final Long componentId, final Long memberId, final String content, final String objectKey) {
+        return new Comment(componentId, memberId, null, content, objectKey);
     }
 
     public static Comment createWithoutImage(final Long componentId, final Long memberId, final String content) {
@@ -74,8 +74,8 @@ public class Comment extends BaseEntity {
         return new Comment(componentId, memberId, parentId, content, null);
     }
 
-    public static Comment createReplyWithImage(final Long componentId, final Long memberId, final Long parentId, final String content, final CommentImage image) {
-        return new Comment(componentId, memberId, parentId, content, image);
+    public static Comment createReplyWithImage(final Long componentId, final Long memberId, final Long parentId, final String content, final String objectKey) {
+        return new Comment(componentId, memberId, parentId, content, objectKey);
     }
 
     public void increaseLikeCount() {
