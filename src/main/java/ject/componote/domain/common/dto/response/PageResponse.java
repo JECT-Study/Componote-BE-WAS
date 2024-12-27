@@ -12,12 +12,14 @@ import java.util.List;
 @Getter
 @ToString
 public class PageResponse<T> {
-    private final int totalCount;
+    private final boolean hasNext;
+    private final long totalElements;
+    private final int totalPages;
     private final List<T> content;
     private final int pageNumber;
     private final int pageSize;
 
     public static <T> PageResponse<T> from(final Page<T> page) {
-        return new PageResponse<>(page.getTotalPages(), page.getContent(), page.getNumber(), page.getSize());
+        return new PageResponse<>(page.hasNext(), page.getTotalElements(), page.getTotalPages(), page.getContent(), page.getNumber(), page.getSize());
     }
 }
