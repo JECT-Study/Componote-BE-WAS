@@ -16,6 +16,7 @@ import ject.componote.domain.bookmark.error.NotFoundMemberException;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.component.domain.ComponentRepository;
+import ject.componote.domain.design.domain.Design;
 import ject.componote.domain.design.domain.DesignSystem;
 import ject.componote.domain.design.domain.DesignSystemRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +54,7 @@ public class BookmarkService {
             bookmarkRepository.save(bookmark);
             return BookmarkResponse.from(bookmark, component);
         } else if ("designSystem".equals(bookmarkRequest.type())) {
-            DesignSystem designSystem = findDesignSystemOrThrow(bookmarkRequest.id());
+            Design designSystem = findDesignSystemOrThrow(bookmarkRequest.id());
             bookmark = Bookmark.of(member, designSystem);
             bookmarkRepository.save(bookmark);
             return BookmarkResponse.from(bookmark, designSystem);
@@ -85,7 +86,7 @@ public class BookmarkService {
         Component component = findComponentOrThrow(bookmark.getResourceId());
         return BookmarkResponse.from(bookmark, component);
       } else {
-        DesignSystem designSystem = findDesignSystemOrThrow(bookmark.getResourceId());
+          Design designSystem = findDesignSystemOrThrow(bookmark.getResourceId());
         return BookmarkResponse.from(bookmark, designSystem);
       }
     });
@@ -106,7 +107,7 @@ public class BookmarkService {
       Component component = findComponentOrThrow(bookmarkRequest.id());
       return BookmarkResponse.from(bookmark, component);
     } else if ("designSystem".equals(bookmarkRequest.type())) {
-      DesignSystem designSystem = findDesignSystemOrThrow(bookmarkRequest.id());
+        Design designSystem = findDesignSystemOrThrow(bookmarkRequest.id());
       return BookmarkResponse.from(bookmark, designSystem);
     } else {
       throw new InvalidBookmarkTypeError(bookmarkRequest.type());
@@ -123,7 +124,7 @@ public class BookmarkService {
                 .orElseThrow(() -> new NotFoundComponentException(componentId));
     }
 
-    private DesignSystem findDesignSystemOrThrow(Long designSystemId) {
+    private Design findDesignSystemOrThrow(Long designSystemId) {
       return designSystemRepository.findById(designSystemId)
           .orElseThrow(() -> new NotFoundDesignSystemException(designSystemId));
     }

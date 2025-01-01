@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.common.domain.BaseEntity;
 import ject.componote.domain.component.domain.Component;
+import ject.componote.domain.design.domain.Design;
 import ject.componote.domain.design.domain.DesignSystem;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class Bookmark extends BaseEntity {
         return new Bookmark(member.getId(), component.getId(), "component");
     }
 
-    public static Bookmark of(final Member member, final DesignSystem designSystem) {
-        return new Bookmark(member.getId(), designSystem.getDesign().getId(), "designSystem");
+    public static Bookmark of(final Member member, final Design designSystem) {
+        return new Bookmark(member.getId(), designSystem.getId(), "designSystem");
     }
 }

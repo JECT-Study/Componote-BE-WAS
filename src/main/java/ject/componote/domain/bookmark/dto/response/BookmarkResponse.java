@@ -3,6 +3,7 @@ package ject.componote.domain.bookmark.dto.response;
 import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.common.model.BaseImage;
 import ject.componote.domain.component.domain.Component;
+import ject.componote.domain.design.domain.Design;
 import ject.componote.domain.design.domain.DesignSystem;
 
 import java.time.LocalDateTime;
@@ -34,15 +35,15 @@ public record BookmarkResponse(
   }
 
   // DesignSystem 북마크 변환
-  public static BookmarkResponse from(Bookmark bookmark, DesignSystem designSystem) {
+  public static BookmarkResponse from(Bookmark bookmark, Design designSystem) {
     return new BookmarkResponse(
         bookmark.getId(),
         "designSystem",
-        designSystem.getDesign().getId(),
-        designSystem.getDesign().getSummary().getName(),
-        designSystem.getDesign().getSummary().getOrganization(),
-        designSystem.getDesign().getSummary().getThumbnail(),
-        designSystem.getDesign().getBookmarkCount().getValue(),
+        designSystem.getId(),
+        designSystem.getSummary().getName(),
+        designSystem.getSummary().getOrganization(),
+        designSystem.getSummary().getThumbnail(),
+        designSystem.getBookmarkCount().getValue(),
         null,
         bookmark.getCreatedAt()
     );

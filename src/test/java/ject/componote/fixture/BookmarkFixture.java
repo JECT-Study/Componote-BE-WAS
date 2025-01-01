@@ -3,6 +3,7 @@ package ject.componote.fixture;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.component.domain.Component;
+import ject.componote.domain.design.domain.Design;
 import ject.componote.domain.design.domain.DesignSystem;
 
 public enum BookmarkFixture {
@@ -21,7 +22,7 @@ public enum BookmarkFixture {
     return Bookmark.of(member, component);
   }
 
-  public Bookmark 디자인시스템_북마크_생성(final Member member, final DesignSystem designSystem) {
+  public Bookmark 디자인시스템_북마크_생성(final Member member, final Design designSystem) {
     return Bookmark.of(member, designSystem);
   }
 
