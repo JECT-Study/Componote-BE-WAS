@@ -5,11 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
-    boolean existsByMemberIdAndComponentId(Long memberId, Long componentId);
+    boolean existsByMemberIdAndResourceIdAndType(Long memberId, Long resourceId, String type);
 
-    Optional<Bookmark> findByMemberIdAndComponentId(Long memberId, Long componentId);
+    Optional<Bookmark> findByMemberIdAndResourceIdAndType(Long memberId, Long resourceId, String type);
 
-    Page<Bookmark> findAllByMemberIdWithPagination(Long memberId, Pageable pageable);
+    Page<Bookmark> findAllByMemberIdAndType(Long memberId, String type, Pageable pageable);
 }
