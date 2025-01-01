@@ -1,7 +1,6 @@
 package ject.componote.domain.bookmark.api;
 
 import jakarta.validation.Valid;
-import ject.componote.domain.auth.domain.Role;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
 import ject.componote.domain.bookmark.application.BookmarkService;
@@ -23,28 +22,24 @@ public class BookmarkController {
 
     @PostMapping
     public ResponseEntity<BookmarkResponse> addBookmark(
-//        @Authenticated AuthPrincipal authPrincipal,
+        @Authenticated AuthPrincipal authPrincipal,
         @Valid @RequestBody BookmarkRequest bookmarkRequest) {
-        AuthPrincipal authPrincipal = new AuthPrincipal(1L, "testUser", Role.USER);
     return ResponseEntity.ok(bookmarkService.addBookmark(authPrincipal, bookmarkRequest));
     }
 
     @GetMapping
     public ResponseEntity<PageResponse<BookmarkResponse>> getBookmark(
-        // @Authenticated final AuthPrincipal authPrincipal,
+        @Authenticated final AuthPrincipal authPrincipal,
         @PageableDefault(size = 10, page = 0) Pageable pageable,
         @RequestParam(required = false, defaultValue = "component") String type,
         @RequestParam(required = false, defaultValue = "createdAt") String sortType) {
-        AuthPrincipal authPrincipal = new AuthPrincipal(1L, "testUser", Role.USER);
+
         return ResponseEntity.ok(
             bookmarkService.getBookmark(authPrincipal, pageable, type, sortType));
     }
 
     @DeleteMapping
-    public ResponseEntity<BookmarkResponse> deleteBookmark(
-            //@Authenticated final AuthPrincipal authPrincipal,
-            @Valid @RequestBody BookmarkRequest bookmarkRequest) {
-        AuthPrincipal authPrincipal = new AuthPrincipal(1L, "testUser", Role.USER);
+    public ResponseEntity<BookmarkResponse> deleteBookmark(@Authenticated final AuthPrincipal authPrincipal, @Valid @RequestBody BookmarkRequest bookmarkRequest) {
         return ResponseEntity.ok()
                 .body(bookmarkService.deleteBookmark(authPrincipal, bookmarkRequest));
     }
