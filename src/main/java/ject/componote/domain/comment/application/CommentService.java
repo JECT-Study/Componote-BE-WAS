@@ -2,6 +2,7 @@ package ject.componote.domain.comment.application;
 
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.comment.dao.CommentFindByComponentDao;
+import ject.componote.domain.comment.dao.CommentFindByParentDao;
 import ject.componote.domain.comment.dao.CommentLikeRepository;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;
@@ -9,6 +10,7 @@ import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
+import ject.componote.domain.comment.dto.find.response.CommentFindByParentResponse;
 import ject.componote.domain.comment.dto.like.event.CommentLikeEvent;
 import ject.componote.domain.comment.dto.like.event.CommentUnlikeEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
@@ -62,6 +64,14 @@ public class CommentService {
                                                                                  final Pageable pageable) {
         final Page<CommentFindByComponentResponse> page = findCommentsByComponentId(authPrincipal, componentId, pageable)
                 .map(CommentFindByComponentResponse::from);
+        return PageResponse.from(page);
+    }
+
+    public PageResponse<?> getRepliesByComponentId(final AuthPrincipal authPrincipal,
+                                                   final Long parentId,
+                                                   final Pageable pageable) {
+        final Page<CommentFindByParentResponse> page = findCommentsByParentId(authPrincipal, parentId, pageable)
+                .map(CommentFindByParentResponse::from);
         return PageResponse.from(page);
     }
 
