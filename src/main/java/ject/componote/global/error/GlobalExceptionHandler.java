@@ -6,6 +6,7 @@ import ject.componote.infra.error.InfraException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -99,6 +100,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleInfraException(final InfraException exception) {
         return ResponseEntity.status(exception.getStatus())
                 .body(ErrorResponse.of(exception.getStatus(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(ErrorResponse.of(BAD_REQUEST, "요청 BODY 형식이 잘못되었습니다."));
     }
 
     private List<String> getFieldErrorMessage(final MethodArgumentNotValidException exception) {
