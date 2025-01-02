@@ -22,10 +22,10 @@ public class ReportController {
 
     @PostMapping("/comments/{commentId}")
     @User
-    public ResponseEntity<Void> create(@Authenticated final AuthPrincipal authPrincipal,
-                                       @PathVariable("commentId") final Long commentId,
-                                       @RequestBody @Valid final ReportRequest request) {
-        reportService.create(authPrincipal, commentId, request);
+    public ResponseEntity<Void> reportComment(@Authenticated final AuthPrincipal authPrincipal,
+                                              @PathVariable("commentId") final Long commentId,
+                                              @RequestBody @Valid final ReportRequest request) {
+        reportService.reportComment(authPrincipal, commentId, request);
         return ResponseEntity.noContent()
                 .build();
     }

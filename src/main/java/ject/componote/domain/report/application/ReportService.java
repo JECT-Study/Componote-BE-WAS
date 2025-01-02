@@ -23,7 +23,7 @@ public class ReportService {
     private final ReportRepository reportRepository;
 
     @Transactional
-    public void create(final AuthPrincipal authPrincipal, final Long commentId, final ReportRequest request) {
+    public void reportComment(final AuthPrincipal authPrincipal, final Long commentId, final ReportRequest request) {
         final Long memberId = authPrincipal.id();
         final ReportReason reason = request.reason();
 
