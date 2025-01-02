@@ -26,7 +26,8 @@ public class QCommentDaoFactory {
                 comment.content,
                 comment.createdAt,
                 comment.likeCount,
-                Expressions.nullExpression(Boolean.class),
+                comment.replyCount,
+                Expressions.asBoolean(false),
                 comment.parentId.isNotNull()
         );
     }
@@ -39,13 +40,46 @@ public class QCommentDaoFactory {
                 member.profileImage,
                 member.job,
                 comment.id,
+                comment.image,
+                comment.content,
+                comment.createdAt,
+                comment.likeCount,
+                comment.replyCount,
+                commentLike.isNotNull(),
+                comment.parentId.isNotNull()
+        );
+    }
+
+    public ConstructorExpression<CommentFindByParentDao> createForParent() {
+        return Projections.constructor(
+                CommentFindByParentDao.class,
+                member.id,
+                member.nickname,
+                member.profileImage,
+                member.job,
+                comment.id,
+                comment.image,
+                comment.content,
+                comment.createdAt,
+                comment.likeCount,
+                Expressions.asBoolean(false)
+        );
+    }
+
+    public ConstructorExpression<CommentFindByParentDao> createForParentWithLikeStatus() {
+        return Projections.constructor(
+                CommentFindByParentDao.class,
+                member.id,
+                member.nickname,
+                member.profileImage,
+                member.job,
+                comment.id,
                 comment.parentId,
                 comment.image,
                 comment.content,
                 comment.createdAt,
                 comment.likeCount,
-                commentLike.isNotNull(),
-                comment.parentId.isNotNull()
+                commentLike.isNotNull()
         );
     }
 
