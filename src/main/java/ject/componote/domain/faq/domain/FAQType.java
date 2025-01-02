@@ -1,4 +1,4 @@
-package ject.componote.domain.announcement.domain;
+package ject.componote.domain.faq.domain;
 
 public enum FAQType {
     COMPONENT, DESIGN, SERVICE, ETC;

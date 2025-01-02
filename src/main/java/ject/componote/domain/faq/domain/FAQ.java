@@ -1,4 +1,4 @@
-package ject.componote.domain.announcement.domain;
+package ject.componote.domain.faq.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -8,10 +8,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import ject.componote.domain.announcement.model.Description;
-import ject.componote.domain.announcement.model.Title;
-import ject.componote.domain.announcement.model.converter.DescriptionConverter;
-import ject.componote.domain.announcement.model.converter.TitleConverter;
+import ject.componote.domain.faq.model.FAQContent;
+import ject.componote.domain.faq.model.FAQTitle;
+import ject.componote.domain.faq.model.converter.FAQContentConverter;
 import ject.componote.domain.common.domain.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,11 +30,11 @@ public class FAQ extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FAQType type;
 
-    @Convert(converter = TitleConverter.class)
+    @Convert(converter = FAQTitle.class)
     @Column(name = "title", nullable = false)
-    private Title title;
+    private FAQTitle title;
 
-    @Convert(converter = DescriptionConverter.class)
-    @Column(name = "description", nullable = false)
-    private Description description;
+    @Convert(converter = FAQContentConverter.class)
+    @Column(name = "content", nullable = false)
+    private FAQContent content;
 }

@@ -1,4 +1,4 @@
-package ject.componote.domain.announcement.domain;
+package ject.componote.domain.notice.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -6,11 +6,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import ject.componote.domain.announcement.model.Description;
-import ject.componote.domain.announcement.model.Title;
-import ject.componote.domain.announcement.model.converter.DescriptionConverter;
-import ject.componote.domain.announcement.model.converter.TitleConverter;
 import ject.componote.domain.common.domain.BaseEntity;
+import ject.componote.domain.notice.model.NoticeContent;
+import ject.componote.domain.notice.model.NoticeTitle;
+import ject.componote.domain.notice.model.converter.NoticeContentConverter;
+import ject.componote.domain.notice.model.converter.NoticeTitleConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +25,11 @@ public class Notice extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Convert(converter = TitleConverter.class)
+    @Convert(converter = NoticeTitleConverter.class)
     @Column(name = "title", nullable = false)
-    private Title title;
+    private NoticeTitle title;
 
-    @Convert(converter = DescriptionConverter.class)
-    @Column(name = "description", nullable = false)
-    private Description description;
+    @Convert(converter = NoticeContentConverter.class)
+    @Column(name = "content", nullable = false)
+    private NoticeContent content;
 }
