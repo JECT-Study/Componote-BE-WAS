@@ -17,7 +17,7 @@ public record ComponentSummaryResponse(
         final ComponentSummary summary = dao.summary();
         return new ComponentSummaryResponse(
                 dao.id(),
-                summary.getThumbnail().getImage().toUrl(),
+                summary.getThumbnail().toUrl(),
                 summary.getTitle(),
                 summary.getDescription(),
                 dao.type().name(),

@@ -90,7 +90,7 @@ class ComponentServiceTest {
                 component.getCommentCount().getValue(),
                 component.getBookmarkCount().getValue(),
                 component.getDesignReferenceCount().getValue(),
-                component.getSummary().getThumbnail().getImage().toUrl(),
+                component.getSummary().getThumbnail().toUrl(),
                 Collections.emptyMap(),
                 input.isBookmarked
         );

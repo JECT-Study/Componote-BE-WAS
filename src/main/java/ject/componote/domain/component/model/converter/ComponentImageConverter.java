@@ -8,7 +8,7 @@ import ject.componote.domain.component.model.ComponentImage;
 public class ComponentImageConverter implements AttributeConverter<ComponentImage, String> {
     @Override
     public String convertToDatabaseColumn(final ComponentImage attribute) {
-        return attribute.getImage().getObjectKey();
+        return attribute.getObjectKey();
     }
 
     @Override

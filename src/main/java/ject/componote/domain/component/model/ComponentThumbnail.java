@@ -1,24 +1,22 @@
 package ject.componote.domain.component.model;
 
-import ject.componote.domain.common.model.BaseImage;
+import ject.componote.domain.common.model.AbstractImage;
 import ject.componote.domain.component.error.InvalidComponentThumbnailExtensionException;
 import ject.componote.domain.component.error.NotFoundComponentThumbnailException;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-@EqualsAndHashCode
-@Getter
-public class ComponentThumbnail {
+@EqualsAndHashCode(callSuper = true)
+@ToString
+public class ComponentThumbnail extends AbstractImage {
     private static final List<String> ALLOWED_IMAGE_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
 
-    private final BaseImage image;
-
-    private ComponentThumbnail(final BaseImage image) {
-        this.image = image;
+    public ComponentThumbnail(final String objectKey) {
+        super(objectKey);
     }
 
     public static ComponentThumbnail from(final String objectKey) {
@@ -31,6 +29,6 @@ public class ComponentThumbnail {
             throw new InvalidComponentThumbnailExtensionException(extension);
         }
 
-        return new ComponentThumbnail(BaseImage.from(objectKey));
+        return new ComponentThumbnail(objectKey);
     }
 }

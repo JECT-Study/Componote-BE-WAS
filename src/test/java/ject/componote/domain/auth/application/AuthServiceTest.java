@@ -52,7 +52,7 @@ class AuthServiceTest {
     Long socialAccountId = 1L;
     Member member = KIM.생성(socialAccountId);
     ProfileImage profileImage = member.getProfileImage();
-    String profileImageObjectKey = profileImage.getImage().getObjectKey();
+    String profileImageObjectKey = profileImage.getObjectKey();
 
     @DisplayName("회원 가입")
     @Test
@@ -74,7 +74,7 @@ class AuthServiceTest {
         doReturn(member).when(memberRepository)
                 .save(any());
         doNothing().when(fileService)
-                .moveImage(profileImage.getImage());
+                .moveImage(profileImage);
         final MemberSignupResponse actual = authService.signup(request);
 
         // then
@@ -142,7 +142,7 @@ class AuthServiceTest {
         doReturn(member).when(memberRepository)
                 .save(any());
         doThrow(FileClientException.class).when(fileService)
-                .moveImage(profileImage.getImage());
+                .moveImage(profileImage);
 
         // then
         assertThatThrownBy(() -> authService.signup(request))

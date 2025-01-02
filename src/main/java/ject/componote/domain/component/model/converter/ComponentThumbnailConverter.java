@@ -8,7 +8,7 @@ import ject.componote.domain.component.model.ComponentThumbnail;
 public class ComponentThumbnailConverter implements AttributeConverter<ComponentThumbnail, String> {
     @Override
     public String convertToDatabaseColumn(final ComponentThumbnail attribute) {
-        return attribute.getImage().getObjectKey();
+        return attribute.getObjectKey();
     }
 
     @Override

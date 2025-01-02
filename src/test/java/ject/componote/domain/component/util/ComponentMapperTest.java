@@ -34,6 +34,6 @@ class ComponentMapperTest {
         assertThat(response.commentCount()).isEqualTo(component.getCommentCount().getValue());
         assertThat(response.title()).isEqualTo(component.getSummary().getTitle());
         assertThat(response.description()).isEqualTo(component.getSummary().getDescription());
-        assertThat(response.thumbnailUrl()).isEqualTo(component.getSummary().getThumbnail().getImage().toUrl());
+        assertThat(response.thumbnailUrl()).isEqualTo(component.getSummary().getThumbnail().toUrl());
     }
 }

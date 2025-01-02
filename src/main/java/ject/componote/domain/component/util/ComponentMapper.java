@@ -23,7 +23,7 @@ public class ComponentMapper {
                 component.getCommentCount().getValue(),
                 component.getBookmarkCount().getValue(),
                 component.getDesignReferenceCount().getValue(),
-                summary.getThumbnail().getImage().toUrl(),
+                summary.getThumbnail().toUrl(),
                 parseBlocks(component),
                 isBookmarked
         );

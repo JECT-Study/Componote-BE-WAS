@@ -39,7 +39,7 @@ public class AuthService {
         }
 
         final Member member = memberRepository.save(request.toMember());
-        fileService.moveImage(member.getProfileImage().getImage()); // 맘에 안듬...
+        fileService.moveImage(member.getProfileImage());
         return MemberSignupResponse.from(member);
     }
 

@@ -32,6 +32,6 @@ public class ImageBlock extends ContentBlock {
 
     @Override
     public String getValue() {
-        return image.getImage().toUrl();
+        return image.toUrl();
     }
 }

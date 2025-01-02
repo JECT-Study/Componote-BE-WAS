@@ -46,7 +46,7 @@ public class CommentService {
         final Comment comment = commentRepository.save(
                 CommentCreationStrategy.createBy(request, authPrincipal.id())
         );
-        fileService.moveImage(comment.getImage().getImage());
+        fileService.moveImage(comment.getImage());
         return CommentCreateResponse.from(comment);
     }
 
@@ -72,7 +72,7 @@ public class CommentService {
 
         final CommentImage image = CommentImage.from(commentUpdateRequest.imageObjectKey());
         if (!comment.equalsImage(image)) {
-            fileService.moveImage(image.getImage());
+            fileService.moveImage(image);
         }
 
         final CommentContent content = CommentContent.from(commentUpdateRequest.content()); // 가비지가 발생하지 않을까?

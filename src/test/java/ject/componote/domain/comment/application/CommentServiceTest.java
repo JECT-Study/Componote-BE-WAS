@@ -93,7 +93,7 @@ class CommentServiceTest {
         doReturn(comment).when(commentRepository)
                 .save(any());
         doNothing().when(fileService)
-                .moveImage(comment.getImage().getImage());
+                .moveImage(comment.getImage());
         final CommentCreateResponse actual = commentService.create(authPrincipal, createRequest);
 
         // then
@@ -205,7 +205,7 @@ class CommentServiceTest {
         assertDoesNotThrow(
                 () -> commentService.update(authPrincipal, commentId, request)
         );
-        assertThat(comment.getImage().getImage().getObjectKey()).isEqualTo(newObjectKey);
+        assertThat(comment.getImage().getObjectKey()).isEqualTo(newObjectKey);
     }
 
     @ParameterizedTest
@@ -216,7 +216,7 @@ class CommentServiceTest {
         final Long memberId = authPrincipal.id();
         final Comment comment = fixture.생성();
         final Long commentId = comment.getId();
-        final String objectKey = comment.getImage().getImage().getObjectKey();
+        final String objectKey = comment.getImage().getObjectKey();
         final String newContent = "수정된 내용";
         final CommentUpdateRequest request = new CommentUpdateRequest(objectKey, newContent);
 
@@ -251,7 +251,7 @@ class CommentServiceTest {
         assertDoesNotThrow(
                 () -> commentService.update(authPrincipal, commentId, request)
         );
-        assertThat(comment.getImage().getImage().getObjectKey()).isEqualTo(newObjectKey);
+        assertThat(comment.getImage().getObjectKey()).isEqualTo(newObjectKey);
         assertThat(comment.getContent().getValue()).isEqualTo(newContent);
     }
 

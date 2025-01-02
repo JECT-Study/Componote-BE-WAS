@@ -6,7 +6,7 @@ public record MemberSummaryResponse(String nickname, String profileImageUrl) {
     public static MemberSummaryResponse from(MemberSummaryDao memberSummaryDao) {
         return new MemberSummaryResponse(
                 memberSummaryDao.nickname().getValue(),
-                memberSummaryDao.profileImage().getImage().toUrl()
+                memberSummaryDao.profileImage().toUrl()
         );
     }
 }
