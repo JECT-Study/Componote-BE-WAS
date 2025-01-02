@@ -17,7 +17,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
 
     public PageResponse<NoticeResponse> getNotices(final Pageable pageable) {
-        final Page<NoticeResponse> page = noticeRepository.findAllWithPagination(pageable)
+        final Page<NoticeResponse> page = noticeRepository.findAll(pageable)
                 .map(NoticeResponse::from);
         return PageResponse.from(page);
     }
