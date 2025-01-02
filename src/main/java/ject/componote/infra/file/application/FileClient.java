@@ -1,8 +1,8 @@
 package ject.componote.infra.file.application;
 
-import ject.componote.global.error.ErrorResponse;
 import ject.componote.infra.file.dto.move.request.MoveRequest;
 import ject.componote.infra.file.error.FileClientException;
+import ject.componote.infra.file.error.FileServerErrorResponse;
 import ject.componote.infra.util.TimeoutDecorator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,13 +59,13 @@ public class FileClient {
     }
 
     private Mono<? extends Throwable> handle5xxError(final ClientResponse clientResponse) {
-        return clientResponse.bodyToMono(ErrorResponse.class)
-                .map(ErrorResponse::getMessage)
+        return clientResponse.bodyToMono(FileServerErrorResponse.class)
+                .map(FileServerErrorResponse::getMessage)
                 .map(IllegalStateException::new);
     }
 
     private Mono<? extends Throwable> handle4xxError(final ClientResponse clientResponse) {
-        return clientResponse.bodyToMono(ErrorResponse.class)
+        return clientResponse.bodyToMono(FileServerErrorResponse.class)
                 .map(FileClientException::new);
     }
 
