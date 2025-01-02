@@ -9,6 +9,7 @@ import ject.componote.domain.report.domain.Report;
 import ject.componote.domain.report.domain.ReportReason;
 import ject.componote.domain.report.dto.request.ReportRequest;
 import ject.componote.domain.report.error.AlreadyReportedException;
+import ject.componote.domain.report.error.SelfReportNotAllowedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -28,21 +29,28 @@ public class ReportService {
         final ReportReason reason = request.reason();
 
         validateCommentId(commentId);
+        validateOwnerCommentReport(commentId, memberId);
         validateAlreadyReported(commentId, memberId);
 
         reportRepository.save(Report.of(reason, commentId, memberId));
         eventPublisher.publishEvent(CommentReportEvent.from(commentId));
     }
 
-    private void validateAlreadyReported(final Long commentId, final Long memberId) {
-        if (reportRepository.existsByCommentIdAndMemberId(commentId, memberId)) {
-            throw new AlreadyReportedException();
-        }
-    }
-
     private void validateCommentId(final Long commentId) {
         if (!commentRepository.existsById(commentId)) {
             throw new NotFoundCommentException(commentId);
+        }
+    }
+
+    private void validateOwnerCommentReport(final Long commentId, final Long memberId) {
+        if (commentRepository.existsByIdAndMemberId(commentId, memberId)) {
+            throw new SelfReportNotAllowedException();
+        }
+    }
+
+    private void validateAlreadyReported(final Long commentId, final Long memberId) {
+        if (reportRepository.existsByCommentIdAndMemberId(commentId, memberId)) {
+            throw new AlreadyReportedException();
         }
     }
 }
