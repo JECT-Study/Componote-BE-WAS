@@ -13,6 +13,7 @@ import ject.componote.domain.comment.dto.find.response.CommentFindByMemberRespon
 import ject.componote.domain.comment.dto.find.response.CommentFindByParentResponse;
 import ject.componote.domain.comment.dto.like.event.CommentLikeEvent;
 import ject.componote.domain.comment.dto.like.event.CommentUnlikeEvent;
+import ject.componote.domain.comment.dto.reply.event.CommentReplyCountIncreaseEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
 import ject.componote.domain.comment.error.AlreadyLikedException;
 import ject.componote.domain.comment.error.NoLikedException;
@@ -41,13 +42,11 @@ public class CommentService {
 
     @Transactional
     public CommentCreateResponse create(final AuthPrincipal authPrincipal, final CommentCreateRequest request) {
-        if (isReply(request)) {
-            validateParentId(request.parentId());
-        }
-
+        validateParentId(request);
         final Comment comment = commentRepository.save(
                 CommentCreationStrategy.createBy(request, authPrincipal.id())
         );
+        increaseParentReplyCount(request);
         fileService.moveImage(comment.getImage().getImage());
         return CommentCreateResponse.from(comment);
     }
@@ -131,14 +130,37 @@ public class CommentService {
         return commentRepository.findAllByComponentIdWithLikeStatusAndPagination(componentId, memberId, pageable);
     }
 
+    private Page<CommentFindByParentDao> findCommentsByParentId(final AuthPrincipal authPrincipal, final Long parentId, final Pageable pageable) {
+        if (authPrincipal == null) {
+            return commentRepository.findAllByParentIdWithPagination(parentId, pageable);
+        }
+
+        final Long memberId = authPrincipal.id();
+        return commentRepository.findAllByParentIdWithLikeStatusAndPagination(parentId, memberId, pageable);
+    }
+
     private boolean isReply(final CommentCreateRequest request) {
         return request.parentId() != null;
     }
 
-    private void validateParentId(final Long parentId) {
+    private void validateParentId(final CommentCreateRequest request) {
+        if (!isReply(request)) {
+            return;
+        }
+
+        final Long parentId = request.parentId();
         if (!commentRepository.existsById(parentId)) {
             throw new NotFoundParentCommentException(parentId);
         }
+    }
+
+    private void increaseParentReplyCount(final CommentCreateRequest request) {
+        if (!isReply(request)) {
+            return;
+        }
+
+        final Long parentId = request.parentId();
+        eventPublisher.publishEvent(CommentReplyCountIncreaseEvent.from(parentId));
     }
 
     private boolean isAlreadyLiked(final Long commentId, final Long memberId) {
