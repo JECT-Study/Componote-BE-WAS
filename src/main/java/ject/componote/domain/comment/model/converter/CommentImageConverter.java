@@ -8,8 +8,7 @@ import ject.componote.domain.comment.model.CommentImage;
 public class CommentImageConverter implements AttributeConverter<CommentImage, String> {
     @Override
     public String convertToDatabaseColumn(final CommentImage attribute) {
-        return attribute.getImage()
-                .getObjectKey();
+        return attribute.getObjectKey();
     }
 
     @Override

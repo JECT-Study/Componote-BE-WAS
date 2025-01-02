@@ -24,7 +24,7 @@ class CommentCreationStrategyTest {
 
         // then
         assertThat(createdComment.getContent().getValue()).isEqualTo(createRequest.content());
-        assertThat(createdComment.getImage().getImage().getObjectKey()).isEqualTo(createRequest.imageObjectKey());
+        assertThat(createdComment.getImage().getObjectKey()).isEqualTo(createRequest.imageObjectKey());
         assertThat(createdComment.getMemberId()).isEqualTo(memberId);
         assertThat(createdComment.getComponentId()).isEqualTo(createRequest.componentId());
         assertThat(createdComment.getParentId()).isEqualTo(createRequest.parentId());
