@@ -3,8 +3,8 @@ package ject.componote.domain.component.domain.summary;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
-import ject.componote.domain.common.model.Image;
-import ject.componote.domain.common.model.converter.ImageConverter;
+import ject.componote.domain.component.model.ComponentThumbnail;
+import ject.componote.domain.component.model.converter.ComponentThumbnailConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,18 +18,18 @@ public class ComponentSummary {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "summary", nullable = false)
-    private String summary;
+    @Column(name = "description", nullable = false)
+    private String description;
 
-    @Convert(converter = ImageConverter.class)
+    @Convert(converter = ComponentThumbnailConverter.class)
     @Column(name = "thumbnail", nullable = false)
-    private Image thumbnail;
+    private ComponentThumbnail thumbnail;
 
-    private ComponentSummary(final String title, final String summary, final Image thumbnail) {
+    private ComponentSummary(final String title, final String description, final ComponentThumbnail thumbnail) {
         validateTitle(title);
-        validateSummary(summary);
+        validateDescription(description);
         this.title = title;
-        this.summary = summary;
+        this.description = description;
         this.thumbnail = thumbnail;
     }
 
@@ -37,11 +37,11 @@ public class ComponentSummary {
 
     }
 
-    private void validateSummary(final String summary) {
+    private void validateDescription(final String description) {
 
     }
 
-    public static ComponentSummary of(final String title, final String summary, final Image thumbnail) {
-        return new ComponentSummary(title, summary, thumbnail);
+    public static ComponentSummary of(final String title, final String description, final String thumbnailObjectKey) {
+        return new ComponentSummary(title, description, ComponentThumbnail.from(thumbnailObjectKey));
     }
 }
