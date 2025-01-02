@@ -29,4 +29,9 @@ public class TextBlock extends ContentBlock {
     public static TextBlock of(final BlockType type, final ComponentContent content, final Integer order) {
         return new TextBlock(type, content, order);
     }
+
+    @Override
+    public String getValue() {
+        return content.getValue();
+    }
 }
