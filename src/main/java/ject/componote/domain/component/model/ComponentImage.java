@@ -7,12 +7,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @EqualsAndHashCode
 @Getter
 public class ComponentImage {
-    private static final List<String> ALLOWED_IMAGE_EXTENSIONS = List.of("png");
+    // Arrays.asList 로 만든 List: contains(null) 시 NPE 발생하지 않고 false 리턴
+    private static final List<String> ALLOWED_IMAGE_EXTENSIONS = Arrays.asList("png");
 
     private final BaseImage image;
 
