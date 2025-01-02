@@ -43,6 +43,10 @@ public class Comment extends BaseEntity {
     @Convert(converter = CountConverter.class)
     private Count likeCount;
 
+    @Column(name = "reply_count", nullable = false)
+    @Convert(converter = CountConverter.class)
+    private Count replyCount;
+
     @Column(name = "component_id", nullable = false)
     private Long componentId;
 
@@ -60,6 +64,7 @@ public class Comment extends BaseEntity {
         this.image = CommentImage.from(objectKey);
         this.likeCount = Count.create();
         this.reportCount = Count.create();
+        this.replyCount = Count.create();
     }
 
     public static Comment createWithImage(final Long componentId, final Long memberId, final String content, final String objectKey) {
@@ -84,6 +89,10 @@ public class Comment extends BaseEntity {
 
     public void decreaseLikeCount() {
         this.likeCount.decrease();
+    }
+
+    public void increaseReplyCount() {
+        this.replyCount.increase();
     }
 
     public boolean equalsImage(final CommentImage image) {
