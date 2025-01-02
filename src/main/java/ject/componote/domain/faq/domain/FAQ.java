@@ -12,6 +12,7 @@ import ject.componote.domain.faq.model.FAQContent;
 import ject.componote.domain.faq.model.FAQTitle;
 import ject.componote.domain.faq.model.converter.FAQContentConverter;
 import ject.componote.domain.common.domain.BaseEntity;
+import ject.componote.domain.faq.model.converter.FAQTitleConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,7 @@ public class FAQ extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private FAQType type;
 
-    @Convert(converter = FAQTitle.class)
+    @Convert(converter = FAQTitleConverter.class)
     @Column(name = "title", nullable = false)
     private FAQTitle title;
 
