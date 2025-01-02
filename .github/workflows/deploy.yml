@@ -30,16 +30,17 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           source: "build/libs/*.jar"
           target: "~/app/"
 
-      - name: EC2 서버에서 애플리케이션 실행
-        uses: appleboy/ssh-action@master
+      - name: SSH를 통한 EC2에 배포
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            pkill -f 'java -jar' || true
-            nohup java -jar ~/app/*.jar > app.log 2>&1 &
+            cd /home/ec2-user/app
+            git pull origin main
+            ./deploy.sh
