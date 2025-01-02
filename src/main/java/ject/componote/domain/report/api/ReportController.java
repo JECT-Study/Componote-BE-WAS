@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReportController {
     private final ReportService reportService;
 
-    @PostMapping("/{commentId}")
+    @PostMapping("/comments/{commentId}")
     @User
     public ResponseEntity<Void> create(@Authenticated final AuthPrincipal authPrincipal,
                                        @PathVariable("commentId") final Long commentId,
