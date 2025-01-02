@@ -37,7 +37,7 @@ public class MemberService {
             return;
         }
 
-        fileService.moveImage(profileImage.getImage());
+        fileService.moveImage(profileImage);
         member.updateProfileImage(profileImage);
         memberRepository.save(member);
     }
