@@ -24,11 +24,12 @@ public class ReportService {
 
     @Transactional
     public void create(final AuthPrincipal authPrincipal, final Long commentId, final ReportRequest request) {
-        validateCommentId(commentId);
-        validateAlreadyReported(commentId, commentId);
-
         final Long memberId = authPrincipal.id();
         final ReportReason reason = request.reason();
+
+        validateCommentId(commentId);
+        validateAlreadyReported(commentId, memberId);
+
         reportRepository.save(Report.of(reason, commentId, memberId));
         eventPublisher.publishEvent(CommentReportEvent.from(commentId));
     }
