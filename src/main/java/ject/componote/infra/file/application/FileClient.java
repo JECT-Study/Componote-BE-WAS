@@ -23,10 +23,10 @@ public class FileClient {
     private final TimeoutDecorator timeoutDecorator;
     private final WebClient webClient;
 
-    public FileClient(@Value("${file.max-retry}") final int maxRetry,
-                      @Value("${file.timeout}") final int timeout,
-                      @Value("${file.client.move.method}") final HttpMethod method,
-                      @Value("${file.client.move.uri}") final String uri,
+    public FileClient(@Value("${storage.max-retry}") final int maxRetry,
+                      @Value("${storage.timeout}") final int timeout,
+                      @Value("${storage.client.move.method}") final HttpMethod method,
+                      @Value("${storage.client.move.uri}") final String uri,
                       final TimeoutDecorator timeoutDecorator,
                       final WebClient webClient) {
         this.maxRetry = maxRetry;
