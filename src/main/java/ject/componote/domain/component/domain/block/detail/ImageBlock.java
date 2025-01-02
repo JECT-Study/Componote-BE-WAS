@@ -5,8 +5,8 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import ject.componote.domain.common.model.BaseImage;
 import ject.componote.domain.common.model.converter.BaseImageConverter;
-import ject.componote.domain.component.domain.block.BlockType;
-import ject.componote.domain.component.domain.block.ContentBlock;
+import ject.componote.domain.component.domain.detail.DetailType;
+import ject.componote.domain.component.domain.detail.block.ContentBlock;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +21,12 @@ public class ImageBlock extends ContentBlock {
     @Column(name = "image", nullable = false)
     private BaseImage image;
 
-    private ImageBlock(final BlockType type, final BaseImage image, final Integer order) {
+    private ImageBlock(final DetailType type, final BaseImage image, final Integer order) {
         super(type, order);
         this.image = image;
     }
 
-    public static ImageBlock of(final BlockType type, final BaseImage image, final Integer order) {
+    public static ImageBlock of(final DetailType type, final BaseImage image, final Integer order) {
         return new ImageBlock(type, image, order);
     }
 }

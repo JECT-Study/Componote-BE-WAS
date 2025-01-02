@@ -3,8 +3,8 @@ package ject.componote.domain.component.domain.summary;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
-import ject.componote.domain.common.model.Image;
-import ject.componote.domain.common.model.converter.ImageConverter;
+import ject.componote.domain.common.model.BaseImage;
+import ject.componote.domain.common.model.converter.BaseImageConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,11 +21,11 @@ public class ComponentSummary {
     @Column(name = "summary", nullable = false)
     private String summary;
 
-    @Convert(converter = ImageConverter.class)
+    @Convert(converter = BaseImageConverter.class)
     @Column(name = "thumbnail", nullable = false)
-    private Image thumbnail;
+    private BaseImage thumbnail;
 
-    private ComponentSummary(final String title, final String summary, final Image thumbnail) {
+    private ComponentSummary(final String title, final String summary, final BaseImage thumbnail) {
         validateTitle(title);
         validateSummary(summary);
         this.title = title;
@@ -41,7 +41,7 @@ public class ComponentSummary {
 
     }
 
-    public static ComponentSummary of(final String title, final String summary, final Image thumbnail) {
+    public static ComponentSummary of(final String title, final String summary, final BaseImage thumbnail) {
         return new ComponentSummary(title, summary, thumbnail);
     }
 }
