@@ -6,11 +6,13 @@ import jakarta.persistence.Embeddable;
 import ject.componote.domain.component.model.ComponentThumbnail;
 import ject.componote.domain.component.model.converter.ComponentThumbnailConverter;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Embeddable
+@EqualsAndHashCode
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
