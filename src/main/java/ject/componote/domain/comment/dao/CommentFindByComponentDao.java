@@ -9,5 +9,18 @@ import ject.componote.domain.common.model.Count;
 
 import java.time.LocalDateTime;
 
-public record CommentFindByComponentDao(Long memberId, Nickname nickname, ProfileImage profileImage, Job job, Long commentId, Long parentId, CommentImage commentImage, CommentContent content, LocalDateTime createdAt, Count likeCount, boolean isLiked, boolean isReply) {
+public record CommentFindByComponentDao(
+        Long memberId,
+        Nickname nickname,
+        ProfileImage profileImage,
+        Job job,
+        Long commentId,
+        Long parentId,
+        CommentImage commentImage,
+        CommentContent content,
+        LocalDateTime createdAt,
+        Count likeCount,
+        Count replyCount,
+        boolean isLiked,
+        boolean isReply) {
 }
