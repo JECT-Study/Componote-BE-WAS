@@ -1,4 +1,4 @@
-package ject.componote.domain.component.domain.detail.block;
+package ject.componote.domain.component.domain.block;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import ject.componote.domain.component.domain.detail.DetailType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,13 +26,15 @@ public abstract class ContentBlock {
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private DetailType type;
+    private BlockType type;
 
     @Column(name = "orders", nullable = false)
     private Integer order;
 
-    public ContentBlock(final DetailType type, final Integer order) {
+    public ContentBlock(final BlockType type, final Integer order) {
         this.type = type;
         this.order = order;
     }
+
+    public abstract String getValue();
 }
