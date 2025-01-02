@@ -16,7 +16,7 @@ import jakarta.persistence.OneToMany;
 import ject.componote.domain.common.domain.BaseEntity;
 import ject.componote.domain.common.model.Count;
 import ject.componote.domain.common.model.converter.CountConverter;
-import ject.componote.domain.component.domain.detail.block.ContentBlock;
+import ject.componote.domain.component.domain.block.ContentBlock;
 import ject.componote.domain.component.domain.summary.ComponentSummary;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -56,12 +56,22 @@ public class Component extends BaseEntity {
     @Convert(converter = CountConverter.class)
     private Count commentCount;
 
-    private Component(final ComponentType type, final List<MixedName> mixedNames, final ComponentSummary summary) {
+    @Column(name = "design_reference_count", nullable = false)
+    @Convert(converter = CountConverter.class)
+    private Count designReferenceCount;
+
+    @Column(name = "view_count", nullable = false)
+    @Convert(converter = CountConverter.class)
+    private Count viewCount;
+
+    private Component(final ComponentType type, final List<String> mixedNames, final ComponentSummary summary, final List<ContentBlock> contentBlocks) {
         this.type = type;
         this.mixedNames.addAll(mixedNames);
         this.summary = summary;
         this.bookmarkCount = Count.create();
         this.commentCount = Count.create();
+        this.designReferenceCount = Count.create();
+        this.viewCount = Count.create();
     }
 
     public static Component of(final ComponentType type, final List<MixedName> mixedNames, final ComponentSummary summary) {
