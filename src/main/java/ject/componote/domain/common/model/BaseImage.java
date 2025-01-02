@@ -8,7 +8,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class BaseImage {
-    private static final String IMAGE_URL_PREFIX = "https://componote.s3.ap-northeast-2.amazonaws.com/permanent";
+    private static final String IMAGE_URL_PREFIX = "https://componote.s3.ap-northeast-2.amazonaws.com/permanent/";
     private static final BaseImage EMPTY_INSTANCE = new BaseImage(null);
 
     private final String objectKey;
