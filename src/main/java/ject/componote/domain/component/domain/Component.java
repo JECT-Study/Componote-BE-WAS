@@ -21,10 +21,12 @@ import ject.componote.domain.component.domain.summary.ComponentSummary;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@DynamicUpdate
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,7 +46,7 @@ public class Component extends BaseEntity {
     @Embedded
     private ComponentSummary summary;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "component_id")
     private List<ContentBlock> contentBlocks = new ArrayList<>();
 
@@ -66,29 +68,27 @@ public class Component extends BaseEntity {
 
     private Component(final ComponentType type, final List<String> mixedNames, final ComponentSummary summary, final List<ContentBlock> contentBlocks) {
         this.type = type;
-        this.mixedNames.addAll(mixedNames);
+        this.mixedNames.addAll(parseMixedNames(mixedNames));
         this.summary = summary;
+        this.contentBlocks.addAll(contentBlocks);
         this.bookmarkCount = Count.create();
         this.commentCount = Count.create();
         this.designReferenceCount = Count.create();
         this.viewCount = Count.create();
     }
 
-    public static Component of(final ComponentType type, final List<MixedName> mixedNames, final ComponentSummary summary) {
-        return new Component(type, mixedNames, summary);
+    public static Component of(final String title, final String description, final String thumbnailObjectKey, final ComponentType type, final List<String> mixedNames, final List<ContentBlock> contentBlocks) {
+        return new Component(type, mixedNames, ComponentSummary.of(title, description, thumbnailObjectKey), contentBlocks);
     }
 
-    public void addBlock(final ContentBlock contentBlock) {
-        this.contentBlocks.add(contentBlock);
+    public void increaseViewCount() {
+        this.viewCount.increase();
     }
 
-    // 중복 검사 필요... Set으로 둬야되나? 너무 비효율적일 것 같음...
-    public void addMixedName(final String mixedName) {
-        mixedNames.add(MixedName.from(mixedName));
-    }
-
-    public void removeMixedName(final String mixedName) {
-        mixedNames.remove(MixedName.from(mixedName));
+    private List<MixedName> parseMixedNames(final List<String> mixedNames) {
+        return mixedNames.stream()
+                .map(MixedName::from)
+                .toList();
     }
 
     @Override
@@ -99,6 +99,8 @@ public class Component extends BaseEntity {
                 ", summary=" + summary +
                 ", commentCount=" + commentCount +
                 ", bookmarkCount=" + bookmarkCount +
+                ", designReferenceCount=" + designReferenceCount +
+                ", viewCount=" + viewCount +
                 '}';
     }
 }
