@@ -65,9 +65,10 @@ class BookmarkServiceTest {
   @DisplayName("북마크 추가 성공")
   public void addComponentBookmark_Success() {
     // given
-    Long componentId = 1L;
+    Component component = ComponentFixture.INPUT_COMPONENT.생성();
+    final Long componentId = component.getId();
     BookmarkRequest request = new BookmarkRequest(componentId, "component");
-    Component component = ComponentFixture.ADVANCED_COMPONENT.컴포넌트_생성(componentId);  // ID 설정
+
 
     when(bookmarkRepository.existsByMemberIdAndResourceIdAndType(authPrincipal.id(), componentId, "component"))
             .thenReturn(false);
@@ -104,7 +105,7 @@ class BookmarkServiceTest {
   public void getBookmark_Success() {
     // given
     PageRequest pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
-    Component component = ComponentFixture.ADVANCED_COMPONENT.컴포넌트_생성(1L);
+    Component component = ComponentFixture.INPUT_COMPONENT.생성();
     Bookmark bookmark = BookmarkFixture.COMPONENT_BOOKMARK.컴포넌트_북마크_생성(member, component);
     Page<Bookmark> bookmarks = new PageImpl<>(Collections.singletonList(bookmark), pageable, 1);
 
@@ -117,7 +118,7 @@ class BookmarkServiceTest {
     PageResponse<BookmarkResponse> response = bookmarkService.getBookmark(authPrincipal, pageable, "component", "createdAt");
 
     // then
-    assertThat(response.getTotalCount()).isEqualTo(1);
+    assertThat(response.getTotalElements()).isEqualTo(1);
     verify(bookmarkRepository).findAllByMemberIdAndType(eq(authPrincipal.id()), eq("component"), any(PageRequest.class));
   }
 
@@ -126,9 +127,9 @@ class BookmarkServiceTest {
   @DisplayName("북마크 삭제 성공")
   public void deleteBookmark_Success() {
     // given
-    Long componentId = 1L;
+    Component component = ComponentFixture.INPUT_COMPONENT.생성();
+    final Long componentId = component.getId();
     BookmarkRequest request = new BookmarkRequest(componentId, "component");
-    Component component = ComponentFixture.ADVANCED_COMPONENT.컴포넌트_생성(1L);
     Bookmark bookmark = BookmarkFixture.COMPONENT_BOOKMARK.컴포넌트_북마크_생성(member, component);
 
     when(componentRepository.findById(componentId))
