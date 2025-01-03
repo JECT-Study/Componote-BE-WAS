@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.common.domain.BaseEntity;
 import ject.componote.domain.component.domain.Component;
+import ject.componote.domain.design.domain.Design;
+import ject.componote.domain.design.domain.DesignSystem;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,15 +27,23 @@ public class Bookmark extends BaseEntity {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "component_id", nullable = false)
-    private Long componentId;
+    @Column(name = "resource_id", nullable = false)
+    private Long resourceId;
 
-    private Bookmark(final Long memberId, final Long componentId) {
+    @Column(name = "type", nullable = false)
+    private String type;
+
+    private Bookmark(final Long memberId, final Long resourceId, final String type) {
         this.memberId = memberId;
-        this.componentId = componentId;
+        this.resourceId = resourceId;
+        this.type = type;
     }
 
-    public static Bookmark of(final Member Member, final Component component) {
-        return new Bookmark(Member.getId(), component.getId());
+    public static Bookmark of(final Member member, final Component component) {
+        return new Bookmark(member.getId(), component.getId(), "component");
+    }
+
+    public static Bookmark of(final Member member, final Design designSystem) {
+        return new Bookmark(member.getId(), designSystem.getId(), "designSystem");
     }
 }
