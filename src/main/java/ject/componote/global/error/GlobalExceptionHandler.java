@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.validation.ConstraintViolationException;
 import ject.componote.infra.error.InfraException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -36,6 +37,12 @@ public class GlobalExceptionHandler {
         log.error("SQL 예외 발생. ", exception);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(INTERNAL_SERVER_ERROR, "SQL 오류입니다."));
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleDataAccessException(final DataAccessException exception) {
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(ErrorResponse.of(BAD_REQUEST, exception.getLocalizedMessage()));
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

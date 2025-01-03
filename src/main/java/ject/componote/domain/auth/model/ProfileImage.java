@@ -1,26 +1,22 @@
 package ject.componote.domain.auth.model;
 
 import ject.componote.domain.auth.error.InvalidProfileImageExtensionException;
-import ject.componote.domain.common.model.BaseImage;
+import ject.componote.domain.common.model.AbstractImage;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
 
-@EqualsAndHashCode
-@Getter
+@EqualsAndHashCode(callSuper = true)
 @ToString
-public class ProfileImage {
+public class ProfileImage extends AbstractImage {
     private static final List<String> ALLOWED_IMAGE_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
     private static final ProfileImage DEFAULT_PROFILE_IMAGE = ProfileImage.from("/profiles/default-profile-image.png");
 
-    private final BaseImage image;
-
-    private ProfileImage(final BaseImage image) {
-        this.image = image;
+    public ProfileImage(final String objectKey) {
+        super(objectKey);
     }
 
     public static ProfileImage from(final String objectKey) {
@@ -33,6 +29,6 @@ public class ProfileImage {
             throw new InvalidProfileImageExtensionException(extension);
         }
 
-        return new ProfileImage(BaseImage.from(objectKey));
+        return new ProfileImage(objectKey);
     }
 }

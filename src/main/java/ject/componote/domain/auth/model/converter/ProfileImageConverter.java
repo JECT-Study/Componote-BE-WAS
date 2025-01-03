@@ -8,8 +8,7 @@ import ject.componote.domain.auth.model.ProfileImage;
 public class ProfileImageConverter implements AttributeConverter<ProfileImage, String> {
     @Override
     public String convertToDatabaseColumn(final ProfileImage attribute) {
-        return attribute.getImage()
-                .getObjectKey();
+        return attribute.getObjectKey();
     }
 
     @Override

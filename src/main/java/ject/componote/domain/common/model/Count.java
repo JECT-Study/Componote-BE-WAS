@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class Count {
+public class Count implements Comparable<Count> {
     private Long value;
 
     private Count(final Long value) {
@@ -35,5 +35,10 @@ public class Count {
         if (value < 0) {
             throw new IllegalArgumentException("Value must be greater than zero");
         }
+    }
+
+    @Override
+    public int compareTo(final Count other) {
+        return Long.compare(this.value, other.value);
     }
 }

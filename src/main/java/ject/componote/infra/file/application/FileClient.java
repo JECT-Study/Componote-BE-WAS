@@ -1,8 +1,8 @@
 package ject.componote.infra.file.application;
 
-import ject.componote.global.error.ErrorResponse;
 import ject.componote.infra.file.dto.move.request.MoveRequest;
 import ject.componote.infra.file.error.FileClientException;
+import ject.componote.infra.file.error.FileServerErrorResponse;
 import ject.componote.infra.util.TimeoutDecorator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +23,10 @@ public class FileClient {
     private final TimeoutDecorator timeoutDecorator;
     private final WebClient webClient;
 
-    public FileClient(@Value("${file.max-retry}") final int maxRetry,
-                      @Value("${file.timeout}") final int timeout,
-                      @Value("${file.client.move.method}") final HttpMethod method,
-                      @Value("${file.client.move.uri}") final String uri,
+    public FileClient(@Value("${storage.max-retry}") final int maxRetry,
+                      @Value("${storage.timeout}") final int timeout,
+                      @Value("${storage.client.move.method}") final HttpMethod method,
+                      @Value("${storage.client.move.uri}") final String uri,
                       final TimeoutDecorator timeoutDecorator,
                       final WebClient webClient) {
         this.maxRetry = maxRetry;
@@ -59,13 +59,13 @@ public class FileClient {
     }
 
     private Mono<? extends Throwable> handle5xxError(final ClientResponse clientResponse) {
-        return clientResponse.bodyToMono(ErrorResponse.class)
-                .map(ErrorResponse::getMessage)
+        return clientResponse.bodyToMono(FileServerErrorResponse.class)
+                .map(FileServerErrorResponse::getMessage)
                 .map(IllegalStateException::new);
     }
 
     private Mono<? extends Throwable> handle4xxError(final ClientResponse clientResponse) {
-        return clientResponse.bodyToMono(ErrorResponse.class)
+        return clientResponse.bodyToMono(FileServerErrorResponse.class)
                 .map(FileClientException::new);
     }
 

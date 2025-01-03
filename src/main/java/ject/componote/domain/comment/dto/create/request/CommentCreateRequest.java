@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record CommentCreateRequest(
-        @Nullable String image,
+        @Nullable String imageObjectKey,
         @NotBlank String content,
         @NotNull Long componentId,
         @Nullable Long parentId
