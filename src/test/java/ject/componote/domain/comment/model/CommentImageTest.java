@@ -1,7 +1,6 @@
 package ject.componote.domain.comment.model;
 
 import ject.componote.domain.comment.error.InvalidCommentImageExtensionException;
-import ject.componote.domain.common.model.BaseImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +16,7 @@ class CommentImageTest {
         final String objectKey = "";
         final CommentImage commentImage = CommentImage.from(objectKey);
         assertThat(commentImage).isNotNull();
-        assertThat(commentImage.getImage()).isEqualTo(BaseImage.getEmptyInstance());
+        assertThat(commentImage.getObjectKey()).isNull();
     }
 
     @ParameterizedTest

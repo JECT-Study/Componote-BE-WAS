@@ -21,7 +21,7 @@ public record CommentFindByComponentResponse(
                 createProfileResponse(dto),
                 dto.commentId(),
                 dto.parentId(),
-                dto.commentImage().getImage().toUrl(),
+                dto.commentImage().toUrl(),
                 dto.content().getValue(),
                 dto.createdAt(),
                 dto.likeCount().getValue(),
@@ -35,7 +35,7 @@ public record CommentFindByComponentResponse(
         return new CommentProfileResponse(
                 dto.memberId(),
                 dto.nickname().getValue(),
-                dto.profileImage().getImage().toUrl(),
+                dto.profileImage().toUrl(),
                 dto.job().name()
         );
     }

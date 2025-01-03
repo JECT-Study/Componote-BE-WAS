@@ -77,7 +77,7 @@ class MemberServiceTest {
         doReturn(Optional.of(member)).when(memberRepository)
                 .findById(memberId);
         doNothing().when(fileService)
-                .moveImage(newProfileImage.getImage());
+                .moveImage(newProfileImage);
         memberService.updateProfileImage(authPrincipal, request);
 
         // then
