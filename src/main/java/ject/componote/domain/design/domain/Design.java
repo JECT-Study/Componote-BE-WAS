@@ -8,8 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import ject.componote.domain.common.domain.BaseEntity;
+import ject.componote.domain.common.model.BaseImage;
 import ject.componote.domain.common.model.Count;
-import ject.componote.domain.common.model.Image;
 import ject.componote.domain.common.model.converter.CountConverter;
 import ject.componote.domain.design.domain.summary.DesignSummary;
 import lombok.AccessLevel;
@@ -38,7 +38,7 @@ public class Design extends BaseEntity {
         this.bookmarkCount = Count.create();
     }
 
-    public static Design of(final String name, final String organization, final String description, final Image thumbnail) {
+    public static Design of(final String name, final String organization, final String description, final BaseImage thumbnail) {
         return new Design(DesignSummary.of(name, organization, description, thumbnail));
     }
 }

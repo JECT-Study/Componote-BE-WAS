@@ -1,12 +1,12 @@
 package ject.componote.domain.auth.dto.find.response;
 
-import ject.componote.domain.auth.dto.find.MemberSummaryDto;
+import ject.componote.domain.auth.dao.MemberSummaryDao;
 
-public record MemberSummaryResponse(String nickname, String profilePhotoUrl) {
-    public static MemberSummaryResponse from(MemberSummaryDto memberSummaryDto) {
+public record MemberSummaryResponse(String nickname, String profileImageUrl) {
+    public static MemberSummaryResponse from(MemberSummaryDao memberSummaryDao) {
         return new MemberSummaryResponse(
-                memberSummaryDto.nickname().getValue(),
-                memberSummaryDto.profilePhoto().getFilename()
+                memberSummaryDao.nickname().getValue(),
+                memberSummaryDao.profileImage().toUrl()
         );
     }
 }

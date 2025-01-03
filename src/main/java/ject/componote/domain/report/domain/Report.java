@@ -31,4 +31,14 @@ public class Report extends BaseEntity {
 
     @Column(name = "member_id", nullable = false)
     private Long memberId;
+
+    private Report(final ReportReason reason, final Long commentId, final Long memberId) {
+        this.reason = reason;
+        this.commentId = commentId;
+        this.memberId = memberId;
+    }
+
+    public static Report of(final ReportReason reason, final Long commentId, final Long memberId) {
+        return new Report(reason, commentId, memberId);
+    }
 }
