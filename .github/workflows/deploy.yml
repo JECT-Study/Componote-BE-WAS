@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true
+          token: ${{ secrets.ACCESS_TOKEN }}
           fetch-depth: 0
 
       # 2. 서브모듈 초기화 및 업데이트
