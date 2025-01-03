@@ -14,19 +14,11 @@ jobs:
       REDIS_HOST: localhost
 
     steps:
-      # 1. 코드 체크아웃 (서브모듈 포함)
-      - name: 코드 체크아웃 (서브모듈 포함)
+      # 1. 코드 체크아웃
+      - name: 코드 체크아웃
         uses: actions/checkout@v3
-        with:
-          submodules: true
-          token: ${{ secrets.ACCESS_TOKEN }}
-          fetch-depth: 0  # 전체 커밋 히스토리 가져오기
 
-      # 2. 서브모듈 초기화 및 업데이트
-      - name: 서브모듈 초기화 및 업데이트
-        run: git submodule update --init --recursive
-
-      # 3. 디스크 공간 확보
+      # 2. 디스크 공간 확보
       - name: 디스크 공간 확보
         run: |
           echo "Before cleanup:"
@@ -41,47 +33,37 @@ jobs:
           echo "After cleanup:"
           df -h
 
-      # 4. Gradle 캐시 초기화 (빌드 실패 방지)
-      - name: Gradle 전체 캐시 초기화
-        run: rm -rf ~/.gradle
-
-      # 5. JDK 17 설정
+      # 3. JDK 17 설정
       - name: JDK 17 설정
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      # 6. Gradle 실행 권한 부여
+      # 4. Gradle 실행 권한 부여
       - name: Gradle 실행 권한 부여
         run: chmod +x gradlew
 
-      # 7. 프로젝트 클린
+      # 5. 프로젝트 클린
       - name: 프로젝트 클린
         run: ./gradlew clean --no-daemon
 
-      # 8. 프로젝트 빌드
+      # 6. 프로젝트 빌드
       - name: 프로젝트 빌드
         run: ./gradlew build --no-daemon --refresh-dependencies -Dorg.gradle.daemon=false
-        continue-on-error: true  # 테스트 실패로 인한 중단 방지
 
-      # 9. EC2 서버에 파일 전송
-      - name: EC2 서버에 파일 전송
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "build/libs/*.jar"
-          target: "~/app/"
+      # 7. SSH 키 설정 및 파일 전송 (SCP 사용)
+      - name: EC2 서버에 파일 전송 (SCP)
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app/
 
-      # 10. SSH를 통한 EC2 배포 및 실행
+      # 8. EC2 서버에서 애플리케이션 재시작 (SSH 사용)
       - name: SSH를 통한 EC2 배포 및 실행
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/app
-            java -jar app.jar
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd ~/app
+          java -jar app.jar
+          EOF
