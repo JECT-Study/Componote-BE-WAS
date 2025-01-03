@@ -1,6 +1,6 @@
 package ject.componote.domain.bookmark.dto.request;
 
-import com.google.firebase.database.annotations.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public record BookmarkRequest(
     @NotNull Long id,

@@ -1,10 +1,8 @@
 package ject.componote.domain.bookmark.dto.response;
 
 import ject.componote.domain.bookmark.domain.Bookmark;
-import ject.componote.domain.common.model.BaseImage;
 import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.design.domain.Design;
-import ject.componote.domain.design.domain.DesignSystem;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +12,7 @@ public record BookmarkResponse(
     Long resourceId,
     String resourceName,
     String organization,
-    BaseImage thumbnailUrl,
+    String thumbnailUrl,
     Long bookmarkCount,
     Long commentCount,
     LocalDateTime createdAt
@@ -27,7 +25,7 @@ public record BookmarkResponse(
         component.getId(),
         component.getSummary().getTitle(),
         null,
-        component.getSummary().getThumbnail(),
+        component.getSummary().getThumbnail().toUrl(),
         component.getBookmarkCount().getValue(),
         component.getCommentCount().getValue(),
         bookmark.getCreatedAt()
@@ -42,7 +40,7 @@ public record BookmarkResponse(
         designSystem.getId(),
         designSystem.getSummary().getName(),
         designSystem.getSummary().getOrganization(),
-        designSystem.getSummary().getThumbnail(),
+        designSystem.getSummary().getThumbnail().toUrl(),
         designSystem.getBookmarkCount().getValue(),
         null,
         bookmark.getCreatedAt()

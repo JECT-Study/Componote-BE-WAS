@@ -3,15 +3,15 @@ package ject.componote.domain.bookmark.application;
 import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.auth.model.AuthPrincipal;
+import ject.componote.domain.bookmark.dao.BookmarkRepository;
 import ject.componote.domain.bookmark.domain.Bookmark;
-import ject.componote.domain.bookmark.domain.BookmarkRepository;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.bookmark.error.ExistedBookmarkError;
 import ject.componote.domain.bookmark.error.NotFoundBookmarkException;
 import ject.componote.domain.common.dto.response.PageResponse;
+import ject.componote.domain.component.dao.ComponentRepository;
 import ject.componote.domain.component.domain.Component;
-import ject.componote.domain.component.domain.ComponentRepository;
 import ject.componote.fixture.BookmarkFixture;
 import ject.componote.fixture.ComponentFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,10 @@ import java.util.Optional;
 import static ject.componote.fixture.MemberFixture.KIM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookmarkServiceTest {
