@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
     private static final int DEFAULT_MEMBER_COMMENT_PAGE_SIZE = 8;
     private static final int DEFAULT_COMPONENT_COMMENT_PAGE_SIZE = 5;
+    private static final int DEFAULT_REPLY_PAGE_SIZE = 5;
 
     private final CommentService commentService;
 
@@ -58,6 +59,16 @@ public class CommentController {
             @PageableDefault(size = DEFAULT_COMPONENT_COMMENT_PAGE_SIZE) final Pageable pageable
     ) {
         final PageResponse<CommentFindByComponentResponse> pageResponse = commentService.getCommentsByComponentId(authPrincipal, componentId, pageable);
+        return ResponseEntity.ok(pageResponse);
+    }
+
+    @GetMapping("/comments/{parentId}/replies")
+    public ResponseEntity<?> getRepliesByCommentId(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @PathVariable("parentId") final Long parentId,
+            @PageableDefault(size = DEFAULT_REPLY_PAGE_SIZE) final Pageable pageable
+    ) {
+        final PageResponse<?> pageResponse = commentService.getRepliesByComponentId(authPrincipal, parentId, pageable);
         return ResponseEntity.ok(pageResponse);
     }
 

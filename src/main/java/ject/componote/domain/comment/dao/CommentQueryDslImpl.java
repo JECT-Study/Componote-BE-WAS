@@ -46,6 +46,29 @@ public class CommentQueryDslImpl implements CommentQueryDsl {
     }
 
     @Override
+    public Page<CommentFindByParentDao> findAllByParentIdWithPagination(final Long parentId, final Pageable pageable) {
+        final BooleanExpression predicate = eqExpression(comment.parentId, parentId);
+        final JPAQuery<Long> countQuery = createCountQuery(predicate);
+        final JPAQuery<CommentFindByParentDao> baseQuery = queryFactory.select(qCommentDaoFactory.createForParent())
+                .from(comment)
+                .innerJoin(member).on(eqExpression(member.id, comment.memberId))
+                .where(predicate);
+        return toPage(baseQuery, countQuery, comment, pageable);
+    }
+
+    @Override
+    public Page<CommentFindByParentDao> findAllByParentIdWithLikeStatusAndPagination(final Long parentId, final Long memberId, final Pageable pageable) {
+        final BooleanExpression predicate = eqExpression(comment.parentId, parentId);
+        final JPAQuery<Long> countQuery = createCountQuery(predicate);
+        final JPAQuery<CommentFindByParentDao> baseQuery = queryFactory.select(qCommentDaoFactory.createForParent())
+                .from(comment)
+                .innerJoin(member).on(eqExpression(member.id, comment.memberId))
+                .innerJoin(commentLike).on(eqExpression(commentLike.commentId, component.id).and(eqExpression(commentLike.memberId, memberId)))
+                .where(predicate);
+        return toPage(baseQuery, countQuery, comment, pageable);
+    }
+
+    @Override
     public Page<CommentFindByMemberDao> findAllByMemberIdWithPagination(final Long memberId, final Pageable pageable) {
         final BooleanExpression predicate = eqExpression(comment.memberId, memberId);
         final JPAQuery<Long> countQuery = createCountQuery(predicate);

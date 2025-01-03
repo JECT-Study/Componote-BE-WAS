@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public abstract class AbstractImage {
-    private static final String IMAGE_URL_PREFIX = "https://componote.s3.ap-northeast-2.amazonaws.com/permanent/";
+    private static final String IMAGE_URL_PREFIX = "https://componote.s3.ap-northeast-2.amazonaws.com/data/";
 
     private final String objectKey;
 
