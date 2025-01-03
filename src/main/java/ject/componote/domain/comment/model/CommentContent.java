@@ -1,5 +1,9 @@
 package ject.componote.domain.comment.model;
 
+import ject.componote.domain.auth.domain.BadWordFilteringSingleton;
+import ject.componote.domain.comment.error.BlankCommentException;
+import ject.componote.domain.comment.error.ExceedCommentLengthException;
+import ject.componote.domain.comment.error.OffensiveCommentException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,6 +12,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class CommentContent {
+    private static final int MAX_LENGTH = 1_000;
+
     private final String value;
 
     private CommentContent(final String value) {
@@ -20,9 +26,16 @@ public class CommentContent {
     }
 
     private void validateContent(final String value) {
-        // 추가 제약조건 고려 (e.g. 글자수, 비속어 등)
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Comment content cannot be null or blank");
+            throw new BlankCommentException();
+        }
+
+        if (value.length() > MAX_LENGTH) {
+            throw new ExceedCommentLengthException(value.length());
+        }
+
+        if (BadWordFilteringSingleton.containsBadWord(value)) {
+            throw new OffensiveCommentException();
         }
     }
 }
