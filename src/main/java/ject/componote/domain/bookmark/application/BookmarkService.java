@@ -17,7 +17,7 @@ import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.dao.ComponentRepository;
 import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.design.domain.Design;
-import ject.componote.domain.design.domain.DesignSystemRepository;
+import ject.componote.domain.design.dao.DesignSystemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
