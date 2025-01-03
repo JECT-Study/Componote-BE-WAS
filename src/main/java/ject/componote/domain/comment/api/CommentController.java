@@ -9,6 +9,7 @@ import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
+import ject.componote.domain.comment.dto.find.response.CommentFindByParentResponse;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
 import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -63,12 +64,12 @@ public class CommentController {
     }
 
     @GetMapping("/comments/{parentId}/replies")
-    public ResponseEntity<?> getRepliesByCommentId(
+    public ResponseEntity<PageResponse<CommentFindByParentResponse>> getRepliesByCommentId(
             @Authenticated final AuthPrincipal authPrincipal,
             @PathVariable("parentId") final Long parentId,
             @PageableDefault(size = DEFAULT_REPLY_PAGE_SIZE) final Pageable pageable
     ) {
-        final PageResponse<?> pageResponse = commentService.getRepliesByComponentId(authPrincipal, parentId, pageable);
+        final PageResponse<CommentFindByParentResponse> pageResponse = commentService.getRepliesByComponentId(authPrincipal, parentId, pageable);
         return ResponseEntity.ok(pageResponse);
     }
 

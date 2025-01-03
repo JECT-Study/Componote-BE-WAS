@@ -66,7 +66,7 @@ public class CommentService {
         return PageResponse.from(page);
     }
 
-    public PageResponse<?> getRepliesByComponentId(final AuthPrincipal authPrincipal,
+    public PageResponse<CommentFindByParentResponse> getRepliesByComponentId(final AuthPrincipal authPrincipal,
                                                    final Long parentId,
                                                    final Pageable pageable) {
         final Page<CommentFindByParentResponse> page = findCommentsByParentId(authPrincipal, parentId, pageable)
