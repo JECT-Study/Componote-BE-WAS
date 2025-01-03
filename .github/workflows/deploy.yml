@@ -8,6 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+        SPRING_PROFILES_ACTIVE: develop
     steps:
       # 1. 코드 체크아웃 (서브모듈 포함)
       - name: 코드 체크아웃 (서브모듈 포함)
