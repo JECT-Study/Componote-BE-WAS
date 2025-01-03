@@ -144,8 +144,8 @@ class CommentServiceTest {
         // given
         final Long componentId = 1L;
         final List<CommentFindByComponentDao> content = List.of(
-                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), false, false),
-                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), false, true)
+                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), Count.create(), false, false),
+                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), Count.create(), false, true)
         );
         final Page<CommentFindByComponentDao> page = new PageImpl<>(content, pageable, content.size());
         final PageResponse<CommentFindByComponentResponse> expect = PageResponse.from(
@@ -168,8 +168,8 @@ class CommentServiceTest {
         final Long componentId = 1L;
         final Long memberId = authPrincipal.id();
         final List<CommentFindByComponentDao> content = List.of(
-                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), false, false),
-                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), false, true)
+                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), Count.create(), false, false),
+                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), Count.create(), false, true)
         );
         final Page<CommentFindByComponentDao> page = new PageImpl<>(content, pageable, content.size());
         final PageResponse<CommentFindByComponentResponse> expect = PageResponse.from(
