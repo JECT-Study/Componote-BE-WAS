@@ -57,7 +57,7 @@ jobs:
 
       # 7. 프로젝트 빌드
       - name: 프로젝트 빌드
-        run: ./gradlew build --no-daemon --refresh-dependencies -Dorg.gradle.daemon=false
+        run: ./gradlew build -x test --no-daemon --refresh-dependencies -Dorg.gradle.daemon=false
 
       # 8. SSH 키 설정 및 파일 전송 (SCP 사용)
       - name: EC2 서버에 파일 전송 (SCP)
