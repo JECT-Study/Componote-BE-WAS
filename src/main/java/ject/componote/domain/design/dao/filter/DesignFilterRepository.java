@@ -1,5 +1,7 @@
-package ject.componote.domain.design.domain.filter;
+package ject.componote.domain.design.dao.filter;
 
+import ject.componote.domain.design.domain.filter.DesignFilter;
+import ject.componote.domain.design.domain.filter.FilterType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

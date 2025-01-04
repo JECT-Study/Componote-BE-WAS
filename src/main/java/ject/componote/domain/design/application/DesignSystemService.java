@@ -2,11 +2,11 @@ package ject.componote.domain.design.application;
 
 import ject.componote.domain.design.domain.Design;
 import ject.componote.domain.design.domain.filter.DesignFilter;
-import ject.componote.domain.design.domain.filter.DesignFilterRepository;
-import ject.componote.domain.design.domain.DesignRepository;
+import ject.componote.domain.design.dao.filter.DesignFilterRepository;
+import ject.componote.domain.design.dao.DesignRepository;
 import ject.componote.domain.design.domain.DesignSystem;
 import ject.componote.domain.design.domain.link.DesignLink;
-import ject.componote.domain.design.domain.link.DesignLinkRepository;
+import ject.componote.domain.design.dao.link.DesignLinkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
