@@ -39,8 +39,8 @@ public class MemberController {
     }
 
     @PutMapping("/nickname")
-    public ResponseEntity<Void> updateProfileImage(@Authenticated final AuthPrincipal authPrincipal,
-                                                   @RequestBody @Valid final MemberNicknameUpdateRequest request) {
+    public ResponseEntity<Void> updateNickname(@Authenticated final AuthPrincipal authPrincipal,
+                                               @RequestBody @Valid final MemberNicknameUpdateRequest request) {
         memberService.updateNickname(authPrincipal, request);
         return ResponseEntity.noContent()
                 .build();
