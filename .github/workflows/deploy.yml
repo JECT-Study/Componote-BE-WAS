@@ -86,6 +86,6 @@ jobs:
           chmod +x componote-0.0.1-SNAPSHOT.jar
           pkill -f 'java -jar' || true
           nohup java -jar componote-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-          tail -f app.log
+          tail -n 50 app.log
           EOF
 
