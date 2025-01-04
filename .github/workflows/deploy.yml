@@ -65,12 +65,15 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app/
+          scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa build/libs/*.jar ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:~/app/app.jar
 
       # 9. EC2 서버에서 애플리케이션 재시작 (SSH 사용)
       - name: SSH를 통한 EC2 배포 및 실행
         run: |
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           cd ~/app
-          java -jar app.jar
+          rm -f app.jar  # 기존 JAR 삭제 (옵션)
+          pkill -f 'java -jar' || true
+          nohup java -jar app.jar > app.log 2>&1 &
+          tail -f app.log
           EOF
