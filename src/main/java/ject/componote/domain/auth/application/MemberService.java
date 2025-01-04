@@ -58,7 +58,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public Member findMemberById(final Long memberId) {
+    private Member findMemberById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> NotFoundMemberException.createWhenInvalidMemberId(memberId));
     }
