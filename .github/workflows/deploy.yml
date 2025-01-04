@@ -30,6 +30,7 @@ jobs:
           mkdir -p src/main/resources
           cp -r Componote-BE-Config/was/resources/* src/main/resources/
 
+
       # 3. 디스크 공간 확보
       - name: 디스크 공간 확보
         run: |
