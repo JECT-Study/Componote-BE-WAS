@@ -14,7 +14,7 @@ public class MailTemplateProvider {
     private final TemplateEngine templateEngine;
 
     public String createVerificationCodeTemplate(final String verificationCode) {
-        final Context context = new Context();
+        final Context context = new Context();  // Thread-Safe 하지 않아 매 요청마다 객체 생성
         context.setVariable(VERIFICATION_CODE_KEY, verificationCode);
         return templateEngine.process(EMAIL_VERIFICATION_TEMPLATE, context);
     }
