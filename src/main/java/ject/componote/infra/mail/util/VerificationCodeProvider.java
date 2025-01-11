@@ -11,7 +11,7 @@ public class VerificationCodeProvider {
     private static final int VERIFICATION_CODE_LENGTH = 6;
     private static final long EXPIRATION_MINUTE = 5L;
 
-    public VerificationCode provideVerificationCode() {
+    public VerificationCode createVerificationCode() {
         return new VerificationCode(
                 createCode(),
                 LocalDateTime.now().plusMinutes(EXPIRATION_MINUTE)
