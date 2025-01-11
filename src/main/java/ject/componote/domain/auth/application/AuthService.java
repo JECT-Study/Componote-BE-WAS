@@ -7,7 +7,7 @@ import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
 import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
-import ject.componote.domain.auth.dto.validate.request.MemberEmailValidateRequest;
+import ject.componote.domain.auth.dto.verify.request.MemberSendVerificationCodeRequest;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerifyRequest;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
@@ -18,6 +18,7 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.util.TokenProvider;
 import ject.componote.infra.file.application.FileService;
+import ject.componote.infra.mail.application.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +54,8 @@ public class AuthService {
         return MemberLoginResponse.of(accessToken, member);
     }
 
-    public void validateEmail(final MemberEmailValidateRequest request) {
-
+    public void sendVerificationCode(final MemberSendVerificationCodeRequest request) {
+        mailService.sendVerificationCode(request.email());
     }
 
     public void validateNickname(final MemberNicknameValidateRequest request) {
