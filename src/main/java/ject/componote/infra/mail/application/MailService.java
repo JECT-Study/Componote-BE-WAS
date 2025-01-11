@@ -35,9 +35,10 @@ public class MailService {
         final MimeMessage message = createMimeMessage(receiverEmail, htmlContent);
 
         CompletableFuture.runAsync(() -> {
-            mailSender.send(message);
-            verificationCodeRepository.save(receiverEmail, verificationCode);
-        }, mailExecutor).exceptionally(throwable -> {
+                    mailSender.send(message);
+                    verificationCodeRepository.save(receiverEmail, verificationCode);
+                }, mailExecutor
+        ).exceptionally(throwable -> {
             verificationCodeRepository.deleteByEmail(receiverEmail);
             log.error(EMAIL_SENDING_FAIL_LOG_FORMAT, receiverEmail, throwable.getMessage());
             return null;
