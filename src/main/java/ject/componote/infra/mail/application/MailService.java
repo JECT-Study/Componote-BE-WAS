@@ -31,7 +31,7 @@ public class MailService {
 
     public void sendVerificationCode(final String receiverEmail) {
         final VerificationCode verificationCode = verificationCodeProvider.createVerificationCode();
-        final String htmlContent = mailTemplateProvider.createVerificationCodeTemplate(verificationCode.value());
+        final String htmlContent = mailTemplateProvider.createVerificationCodeTemplate(verificationCode);
         final MimeMessage message = createMimeMessage(receiverEmail, htmlContent);
 
         CompletableFuture.runAsync(() -> {
