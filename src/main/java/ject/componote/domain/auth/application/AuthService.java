@@ -9,6 +9,7 @@ import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
 import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
 import ject.componote.domain.auth.dto.validate.request.MemberEmailValidateRequest;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
+import ject.componote.domain.auth.dto.verify.request.MemberEmailVerifyRequest;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
 import ject.componote.domain.auth.error.DuplicatedSignupException;
 import ject.componote.domain.auth.error.NotFoundMemberException;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final FileService fileService;
+    private final MailService mailService;
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final TokenProvider tokenProvider;
@@ -60,6 +62,10 @@ public class AuthService {
         if (memberRepository.existsByNickname(nickname)) {
             throw new DuplicatedNicknameException(nickname);
         }
+    }
+
+    public void verifyEmailCode(final MemberEmailVerifyRequest request) {
+        mailService.verifyEmailCode(request.email(), request.verificationCode());
     }
 
     private Member findMemberBySocialAccountId(final Long socialAccountId) {
