@@ -8,6 +8,7 @@ import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
 import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
 import ject.componote.domain.auth.dto.validate.request.MemberEmailValidateRequest;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
+import ject.componote.domain.auth.dto.verify.request.MemberEmailVerifyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,13 @@ public class AuthController {
     @PostMapping("/validations/nickname")
     public ResponseEntity<Void> validateNickname(@RequestBody @Valid final MemberNicknameValidateRequest request) {
         authService.validateNickname(request);
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @PostMapping("/email/verification")
+    public ResponseEntity<Void> verifyEmailCode(@RequestBody @Valid final MemberEmailVerifyRequest request) {
+        authService.verifyEmailCode(request);
         return ResponseEntity.noContent()
                 .build();
     }
