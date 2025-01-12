@@ -5,7 +5,6 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
 import ject.componote.domain.bookmark.application.BookmarkService;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
-import ject.componote.domain.bookmark.dto.request.BookmarkSearchRequest;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
