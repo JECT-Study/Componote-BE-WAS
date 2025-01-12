@@ -5,6 +5,7 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
 import ject.componote.domain.bookmark.application.BookmarkService;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
+import ject.componote.domain.bookmark.dto.request.BookmarkSearchRequest;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,13 +30,12 @@ public class BookmarkController {
 
     @GetMapping
     public ResponseEntity<PageResponse<BookmarkResponse>> getBookmark(
-        @Authenticated final AuthPrincipal authPrincipal,
-        @PageableDefault(size = 10, page = 0) Pageable pageable,
-        @RequestParam(required = false, defaultValue = "component") String type,
-        @RequestParam(required = false, defaultValue = "createdAt") String sortType) {
+            @Authenticated final AuthPrincipal authPrincipal,
+            @PageableDefault(size = 10, page = 0) Pageable pageable,
+            @Valid @RequestBody BookmarkSearchRequest bookmarkSearchRequest) {
 
         return ResponseEntity.ok(
-            bookmarkService.getBookmark(authPrincipal, pageable, type, sortType));
+            bookmarkService.getBookmark(authPrincipal, pageable, bookmarkSearchRequest));
     }
 
     @DeleteMapping
