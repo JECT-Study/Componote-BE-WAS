@@ -1,5 +1,7 @@
 package ject.componote.infra.mail.config;
 
+import ject.componote.infra.mail.repository.VerificationCodeRepository;
+import ject.componote.infra.mail.repository.impl.InMemoryVerificationCodeRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,5 +17,10 @@ public class MailConfig {
     @Bean("mailExecutor")
     public ExecutorService mailExecutor() {
         return Executors.newFixedThreadPool(10);
+    }
+
+    @Bean
+    public VerificationCodeRepository verificationCodeRepository() {
+        return new InMemoryVerificationCodeRepository();
     }
 }

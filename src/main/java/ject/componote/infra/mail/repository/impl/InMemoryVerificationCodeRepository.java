@@ -2,13 +2,11 @@ package ject.componote.infra.mail.repository.impl;
 
 import ject.componote.infra.mail.model.VerificationCode;
 import ject.componote.infra.mail.repository.VerificationCodeRepository;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
 public class InMemoryVerificationCodeRepository implements VerificationCodeRepository {
     private final Map<String, VerificationCode> storage = new ConcurrentHashMap<>();
 
