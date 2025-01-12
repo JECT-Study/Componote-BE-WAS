@@ -10,6 +10,7 @@ import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +30,12 @@ public class BookmarkController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<BookmarkResponse>> getBookmark(
+    public ResponseEntity<PageResponse<BookmarkResponse>> getBookmarks(
             @Authenticated final AuthPrincipal authPrincipal,
-            @PageableDefault(size = 10, page = 0) Pageable pageable,
-            @Valid @RequestBody BookmarkSearchRequest bookmarkSearchRequest) {
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(defaultValue = "component") String type) {
 
-        return ResponseEntity.ok(
-            bookmarkService.getBookmark(authPrincipal, pageable, bookmarkSearchRequest));
+        return ResponseEntity.ok(bookmarkService.getBookmarks(authPrincipal, pageable, type));
     }
 
     @DeleteMapping
