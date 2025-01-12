@@ -6,6 +6,7 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.bookmark.dao.BookmarkRepository;
 import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
+import ject.componote.domain.bookmark.dto.request.BookmarkSearchRequest;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.bookmark.error.ExistedBookmarkError;
 import ject.componote.domain.bookmark.error.InvalidBookmarkTypeError;
@@ -64,9 +65,11 @@ public class BookmarkService {
 
   @Transactional(readOnly = true)
   public PageResponse<BookmarkResponse> getBookmark(
-      AuthPrincipal authPrincipal, Pageable pageable, String type, String sortType) {
+          AuthPrincipal authPrincipal, Pageable pageable, BookmarkSearchRequest bookmarkSearchRequest) {
 
     Page<Bookmark> bookmarks;
+    String type = bookmarkSearchRequest.type();
+    String sortType = bookmarkSearchRequest.sortType();
 
     Pageable sortedPageable = applySort(pageable, type, sortType);
 
