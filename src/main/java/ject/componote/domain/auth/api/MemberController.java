@@ -58,8 +58,9 @@ public class MemberController {
     }
 
     @PostMapping("/email/verification")
-    public ResponseEntity<Void> sendVerificationCode(@RequestBody @Valid final MemberEmailVerificationRequest request) {
-        memberService.sendVerificationCode(request);
+    public ResponseEntity<Void> sendVerificationCode(@Authenticated final AuthPrincipal authPrincipal,
+                                                     @RequestBody @Valid final MemberEmailVerificationRequest request) {
+        memberService.sendVerificationCode(authPrincipal, request);
         return ResponseEntity.noContent()
                 .build();
     }

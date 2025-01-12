@@ -67,17 +67,23 @@ public class MemberService {
 
     @Transactional
     public void updateEmail(final AuthPrincipal authPrincipal, final MemberEmailUpdateRequest request) {
-        validateDuplicatedEmail(request.email());
-        mailService.verifyEmailCode(request.email(), request.verificationCode());
-
         final Email email = Email.from(request.email());
+        validateDuplicatedEmail(email);
+
         final Member member = findMemberById(authPrincipal.id());
         validateSameEmail(member, email);
+
+        mailService.verifyEmailCode(request.email(), request.verificationCode());
         member.updateEmail(email);
     }
 
-    public void sendVerificationCode(final MemberEmailVerificationRequest request) {
-        validateDuplicatedEmail(request.email());
+    public void sendVerificationCode(final AuthPrincipal authPrincipal,final MemberEmailVerificationRequest request) {
+        final Email email = Email.from(request.email());
+        validateDuplicatedEmail(email);
+
+        final Member member = findMemberById(authPrincipal.id());
+        validateSameEmail(member, email);
+
         mailService.sendVerificationCode(request.email());
     }
 
@@ -86,14 +92,13 @@ public class MemberService {
                 .orElseThrow(() -> NotFoundMemberException.createWhenInvalidMemberId(memberId));
     }
 
-    private void validateSameEmail(final Member member, final Email newEmail) {
-        if (member.equalsEmail(newEmail)) {
+    private void validateSameEmail(final Member member, final Email email) {
+        if (member.equalsEmail(email)) {
             throw new SameEmailUpdateException();
         }
     }
 
-    private void validateDuplicatedEmail(final String emailValue) {
-        final Email email = Email.from(emailValue);
+    private void validateDuplicatedEmail(final Email email) {
         if (memberRepository.existsByEmail(email)) {
             throw new DuplicatedEmailException(email);
         }
