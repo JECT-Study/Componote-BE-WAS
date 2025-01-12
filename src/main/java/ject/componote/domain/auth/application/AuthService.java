@@ -7,9 +7,7 @@ import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
 import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
-import ject.componote.domain.auth.dto.verify.request.MemberSendVerificationCodeRequest;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
-import ject.componote.domain.auth.dto.verify.request.MemberEmailVerifyRequest;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
 import ject.componote.domain.auth.error.DuplicatedSignupException;
 import ject.componote.domain.auth.error.NotFoundMemberException;
@@ -18,7 +16,6 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.util.TokenProvider;
 import ject.componote.infra.file.application.FileService;
-import ject.componote.infra.mail.application.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +23,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final FileService fileService;
-    private final MailService mailService;
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final TokenProvider tokenProvider;
@@ -54,19 +50,11 @@ public class AuthService {
         return MemberLoginResponse.of(accessToken, member);
     }
 
-    public void sendVerificationCode(final MemberSendVerificationCodeRequest request) {
-        mailService.sendVerificationCode(request.email());
-    }
-
     public void validateNickname(final MemberNicknameValidateRequest request) {
         final Nickname nickname = Nickname.from(request.nickname());
         if (memberRepository.existsByNickname(nickname)) {
             throw new DuplicatedNicknameException(nickname);
         }
-    }
-
-    public void verifyEmailCode(final MemberEmailVerifyRequest request) {
-        mailService.verifyEmailCode(request.email(), request.verificationCode());
     }
 
     private Member findMemberBySocialAccountId(final Long socialAccountId) {

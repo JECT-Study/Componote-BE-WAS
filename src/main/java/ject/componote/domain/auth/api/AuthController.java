@@ -6,9 +6,7 @@ import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
 import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
-import ject.componote.domain.auth.dto.verify.request.MemberSendVerificationCodeRequest;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
-import ject.componote.domain.auth.dto.verify.request.MemberEmailVerifyRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,23 +33,9 @@ public class AuthController {
         );
     }
 
-    @PostMapping("/email")
-    public ResponseEntity<Void> sendVerificationCode(@RequestBody @Valid final MemberSendVerificationCodeRequest request) {
-        authService.sendVerificationCode(request);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
     @PostMapping("/nickname/validation")
     public ResponseEntity<Void> validateNickname(@RequestBody @Valid final MemberNicknameValidateRequest request) {
         authService.validateNickname(request);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
-    @PostMapping("/email/verification")
-    public ResponseEntity<Void> verifyEmailCode(@RequestBody @Valid final MemberEmailVerifyRequest request) {
-        authService.verifyEmailCode(request);
         return ResponseEntity.noContent()
                 .build();
     }
