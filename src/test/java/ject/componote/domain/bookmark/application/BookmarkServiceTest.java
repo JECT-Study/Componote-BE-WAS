@@ -6,6 +6,7 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.bookmark.dao.BookmarkRepository;
 import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
+import ject.componote.domain.bookmark.dto.request.BookmarkSearchRequest;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.bookmark.error.ExistedBookmarkError;
 import ject.componote.domain.bookmark.error.NotFoundBookmarkException;
@@ -108,6 +109,7 @@ class BookmarkServiceTest {
     Component component = ComponentFixture.INPUT_COMPONENT.생성();
     Bookmark bookmark = BookmarkFixture.COMPONENT_BOOKMARK.컴포넌트_북마크_생성(member, component);
     Page<Bookmark> bookmarks = new PageImpl<>(Collections.singletonList(bookmark), pageable, 1);
+    BookmarkSearchRequest bookmarkSearchRequest = new BookmarkSearchRequest("component", "createdAt");
 
     when(bookmarkRepository.findAllByMemberIdAndType(eq(authPrincipal.id()), eq("component"), any(PageRequest.class)))
             .thenReturn(bookmarks);
@@ -115,7 +117,7 @@ class BookmarkServiceTest {
             .thenReturn(Optional.of(component));
 
     // when
-    PageResponse<BookmarkResponse> response = bookmarkService.getBookmark(authPrincipal, pageable, "component", "createdAt");
+    PageResponse<BookmarkResponse> response = bookmarkService.getBookmark(authPrincipal, pageable, bookmarkSearchRequest);
 
     // then
     assertThat(response.getTotalElements()).isEqualTo(1);
