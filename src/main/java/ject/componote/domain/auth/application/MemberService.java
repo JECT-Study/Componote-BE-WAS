@@ -77,7 +77,7 @@ public class MemberService {
         member.updateEmail(email);
     }
 
-    public void sendVerificationCode(final AuthPrincipal authPrincipal,final MemberEmailVerificationRequest request) {
+    public void sendVerificationCode(final AuthPrincipal authPrincipal, final MemberEmailVerificationRequest request) {
         final Email email = Email.from(request.email());
         validateDuplicatedEmail(email);
 
