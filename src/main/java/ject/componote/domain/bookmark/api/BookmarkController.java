@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 public class BookmarkController {
+    private static final String DEFAULT_SORT_PROPERTY = "createdAt";
 
     private final BookmarkService bookmarkService;
 
@@ -31,7 +32,9 @@ public class BookmarkController {
     @GetMapping
     public ResponseEntity<PageResponse<BookmarkResponse>> getBookmarks(
             @Authenticated final AuthPrincipal authPrincipal,
-            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @PageableDefault(
+                    sort = DEFAULT_SORT_PROPERTY,
+                    direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(defaultValue = "component") String type) {
 
         return ResponseEntity.ok(bookmarkService.getBookmarks(authPrincipal, pageable, type));
