@@ -1,8 +1,7 @@
 package ject.componote.domain.bookmark.dto.response;
 
-import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.bookmark.domain.ComponentBookmark;
-import ject.componote.domain.bookmark.domain.DesignSystemBookmark;
+import ject.componote.domain.bookmark.domain.DesignBookmark;
 import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.design.domain.Design;
 
@@ -35,7 +34,7 @@ public record BookmarkResponse(
   }
 
   // DesignSystem 북마크 변환
-  public static BookmarkResponse from(DesignSystemBookmark bookmark, Design designSystem) {
+  public static BookmarkResponse from(DesignBookmark bookmark, Design designSystem) {
     return new BookmarkResponse(
         bookmark.getId(),
         "designSystem",
