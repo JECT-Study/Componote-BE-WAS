@@ -27,17 +27,28 @@ public class CommentReplyNotificationEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReplyNotificationEvent(final CommentReplyNotificationEvent event) {
         final Comment parent = findCommentById(event.parentId());
-        final Member receiver = findMemberById(parent.getMemberId());
+        final Long receiverId = parent.getMemberId();
+        final Long senderId = event.senderId();
+        if (isSelfReply(receiverId, senderId)) {
+            return;
+        }
+
+        final Member receiver = findMemberById(receiverId);
         if (!receiver.hasEmail()) {
             return;
         }
-        final Member sender = findMemberById(event.senderId());
+
+        final Member sender = findMemberById(senderId);
         if (commentRepository.isRootComment(parent.getId())) {
             notificationProducer.sendRootReplyNotification(RootReplyNotificationCreateRequest.of(sender, receiver, parent));
             return;
         }
 
         notificationProducer.sendNestedReplyNotification(NestedReplyNotificationCreateRequest.of(sender, receiver, parent));
+    }
+
+    private boolean isSelfReply(final Long receiverId, final Long senderId) {
+        return receiverId.equals(senderId);
     }
 
     private Comment findCommentById(final Long commentId) {
