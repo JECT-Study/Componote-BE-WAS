@@ -7,7 +7,6 @@ import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
 import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
-import ject.componote.domain.auth.dto.validate.request.MemberEmailValidateRequest;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
 import ject.componote.domain.auth.error.DuplicatedSignupException;
@@ -49,10 +48,6 @@ public class AuthService {
         final Member member = findMemberBySocialAccountId(socialAccountId);
         final String accessToken = tokenProvider.createToken(AuthPrincipal.from(member));
         return MemberLoginResponse.of(accessToken, member);
-    }
-
-    public void validateEmail(final MemberEmailValidateRequest request) {
-
     }
 
     public void validateNickname(final MemberNicknameValidateRequest request) {
