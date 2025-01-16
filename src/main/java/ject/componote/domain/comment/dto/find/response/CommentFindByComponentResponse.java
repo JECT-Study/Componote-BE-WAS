@@ -13,6 +13,8 @@ public record CommentFindByComponentResponse(
         String content,
         LocalDateTime createdAt,
         Long likeCount,
+        Long replyCount,
+        boolean isLiked,
         boolean isReply) {
     public static CommentFindByComponentResponse from(final CommentFindByComponentDao dto) {
         return new CommentFindByComponentResponse(
@@ -23,6 +25,8 @@ public record CommentFindByComponentResponse(
                 dto.content().getValue(),
                 dto.createdAt(),
                 dto.likeCount().getValue(),
+                dto.replyCount().getValue(),
+                dto.isLiked(),
                 dto.isReply()
         );
     }

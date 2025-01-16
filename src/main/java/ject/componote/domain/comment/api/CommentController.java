@@ -9,6 +9,7 @@ import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
+import ject.componote.domain.comment.dto.find.response.CommentFindByParentResponse;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
 import ject.componote.domain.common.dto.response.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommentController {
     private static final int DEFAULT_MEMBER_COMMENT_PAGE_SIZE = 8;
     private static final int DEFAULT_COMPONENT_COMMENT_PAGE_SIZE = 5;
+    private static final int DEFAULT_REPLY_PAGE_SIZE = 5;
 
     private final CommentService commentService;
 
@@ -61,30 +63,22 @@ public class CommentController {
         return ResponseEntity.ok(pageResponse);
     }
 
+    @GetMapping("/comments/{parentId}/replies")
+    public ResponseEntity<PageResponse<CommentFindByParentResponse>> getRepliesByCommentId(
+            @Authenticated final AuthPrincipal authPrincipal,
+            @PathVariable("parentId") final Long parentId,
+            @PageableDefault(size = DEFAULT_REPLY_PAGE_SIZE) final Pageable pageable
+    ) {
+        final PageResponse<CommentFindByParentResponse> pageResponse = commentService.getRepliesByComponentId(authPrincipal, parentId, pageable);
+        return ResponseEntity.ok(pageResponse);
+    }
+
     @PutMapping("/comments/{commentId}")
     @User
     public ResponseEntity<Void> update(@Authenticated final AuthPrincipal authPrincipal,
                                        @PathVariable("commentId") final Long commentId,
                                        @RequestBody @Valid final CommentUpdateRequest commentUpdateRequest) {
         commentService.update(authPrincipal, commentId, commentUpdateRequest);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
-    @PostMapping("/comments/{commentId}/likes")
-    @User
-    public ResponseEntity<Void> likeComment(@Authenticated final AuthPrincipal authPrincipal,
-                                            @PathVariable("commentId") final Long commentId) {
-        commentService.likeComment(authPrincipal, commentId);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
-    @DeleteMapping("/comments/{commentId}/likes")
-    @User
-    public ResponseEntity<Void> unlikeComment(@Authenticated final AuthPrincipal authPrincipal,
-                                              @PathVariable("commentId") final Long commentId) {
-        commentService.unlikeComment(authPrincipal, commentId);
         return ResponseEntity.noContent()
                 .build();
     }

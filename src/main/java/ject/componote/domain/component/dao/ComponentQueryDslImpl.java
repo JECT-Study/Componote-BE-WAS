@@ -68,7 +68,7 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
 
         if (withBookmark && memberId != null) {
             query.leftJoin(bookmark)
-                    .on(eqExpression(bookmark.componentId, component.id)
+                    .on(eqExpression(bookmark.resourceId, component.id)    // 임시 수정
                             .and(eqExpression(bookmark.memberId, memberId)));
         }
 

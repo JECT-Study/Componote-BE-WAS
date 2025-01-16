@@ -78,6 +78,12 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(BAD_REQUEST, "잘못된 요청입니다."));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(ErrorResponse.of(BAD_REQUEST, "HTTP Request Body 가 잘못되었습니다."));
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(final ConstraintViolationException exception) {
         return ResponseEntity.status(BAD_REQUEST)

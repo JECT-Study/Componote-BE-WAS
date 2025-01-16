@@ -2,18 +2,17 @@ package ject.componote.domain.comment.application;
 
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.comment.dao.CommentFindByComponentDao;
-import ject.componote.domain.comment.dao.CommentLikeRepository;
+import ject.componote.domain.comment.dao.CommentFindByParentDao;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;
 import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
-import ject.componote.domain.comment.dto.like.event.CommentLikeEvent;
-import ject.componote.domain.comment.dto.like.event.CommentUnlikeEvent;
+import ject.componote.domain.comment.dto.find.response.CommentFindByParentResponse;
+import ject.componote.domain.comment.dto.reply.event.CommentReplyCountIncreaseEvent;
+import ject.componote.domain.comment.dto.reply.event.CommentReplyNotificationEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
-import ject.componote.domain.comment.error.AlreadyLikedException;
-import ject.componote.domain.comment.error.NoLikedException;
 import ject.componote.domain.comment.error.NotFoundCommentException;
 import ject.componote.domain.comment.error.NotFoundParentCommentException;
 import ject.componote.domain.comment.model.CommentContent;
@@ -34,19 +33,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
-    private final CommentLikeRepository commentLikeRepository;
     private final FileService fileService;
 
     @Transactional
     public CommentCreateResponse create(final AuthPrincipal authPrincipal, final CommentCreateRequest request) {
-        if (isReply(request)) {
-            validateParentId(request.parentId());
-        }
-
+        validateParentId(request);
         final Comment comment = commentRepository.save(
                 CommentCreationStrategy.createBy(request, authPrincipal.id())
         );
         fileService.moveImage(comment.getImage());
+
+        if (isReply(request)) {
+            eventPublisher.publishEvent(CommentReplyCountIncreaseEvent.from(comment));
+            eventPublisher.publishEvent(CommentReplyNotificationEvent.from(comment));
+        }
         return CommentCreateResponse.from(comment);
     }
 
@@ -65,6 +65,14 @@ public class CommentService {
         return PageResponse.from(page);
     }
 
+    public PageResponse<CommentFindByParentResponse> getRepliesByComponentId(final AuthPrincipal authPrincipal,
+                                                                             final Long parentId,
+                                                                             final Pageable pageable) {
+        final Page<CommentFindByParentResponse> page = findCommentsByParentId(authPrincipal, parentId, pageable)
+                .map(CommentFindByParentResponse::from);
+        return PageResponse.from(page);
+    }
+
     @CommenterValidation
     @Transactional
     public void update(final AuthPrincipal authPrincipal, final Long commentId, final CommentUpdateRequest commentUpdateRequest) {
@@ -77,32 +85,12 @@ public class CommentService {
 
         final CommentContent content = CommentContent.from(commentUpdateRequest.content()); // 가비지가 발생하지 않을까?
         comment.update(content, image);
-
-        commentRepository.save(comment);
     }
 
     @CommenterValidation
     @Transactional
     public void delete(final AuthPrincipal authPrincipal, final Long commentId) {
         commentRepository.deleteByIdAndMemberId(commentId, authPrincipal.id());
-    }
-
-    public void likeComment(final AuthPrincipal authPrincipal, final Long commentId) {
-        final Long memberId = authPrincipal.id();
-        if (isAlreadyLiked(commentId, memberId)) {
-            throw new AlreadyLikedException(commentId, memberId);
-        }
-
-        eventPublisher.publishEvent(CommentLikeEvent.of(authPrincipal, commentId));
-    }
-
-    public void unlikeComment(final AuthPrincipal authPrincipal, final Long commentId) {
-        final Long memberId = authPrincipal.id();
-        if (!isAlreadyLiked(commentId, memberId)) {
-            throw new NoLikedException(commentId, memberId);
-        }
-
-        eventPublisher.publishEvent(CommentUnlikeEvent.of(authPrincipal, commentId));
     }
 
     private Comment findCommentByIdAndMemberId(final Long commentId, final Long memberId) {
@@ -121,17 +109,27 @@ public class CommentService {
         return commentRepository.findAllByComponentIdWithLikeStatusAndPagination(componentId, memberId, pageable);
     }
 
+    private Page<CommentFindByParentDao> findCommentsByParentId(final AuthPrincipal authPrincipal, final Long parentId, final Pageable pageable) {
+        if (authPrincipal == null) {
+            return commentRepository.findAllByParentIdWithPagination(parentId, pageable);
+        }
+
+        final Long memberId = authPrincipal.id();
+        return commentRepository.findAllByParentIdWithLikeStatusAndPagination(parentId, memberId, pageable);
+    }
+
     private boolean isReply(final CommentCreateRequest request) {
         return request.parentId() != null;
     }
 
-    private void validateParentId(final Long parentId) {
+    private void validateParentId(final CommentCreateRequest request) {
+        if (!isReply(request)) {
+            return;
+        }
+
+        final Long parentId = request.parentId();
         if (!commentRepository.existsById(parentId)) {
             throw new NotFoundParentCommentException(parentId);
         }
-    }
-
-    private boolean isAlreadyLiked(final Long commentId, final Long memberId) {
-        return commentLikeRepository.existsByCommentIdAndMemberId(commentId, memberId);
     }
 }

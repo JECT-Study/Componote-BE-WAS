@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.EntityPathBase;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.SimpleExpression;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +41,14 @@ public final class RepositoryUtils {
     }
 
     public static <T extends Number & Comparable<?>> BooleanExpression eqExpression(final NumberExpression<T> numberExpression, final T target) {
+        if (target == null) {
+            return null;
+        }
+
+        return numberExpression.eq(target);
+    }
+
+    public static BooleanExpression eqExpression(final StringExpression numberExpression, final String target) {
         if (target == null) {
             return null;
         }

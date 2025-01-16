@@ -7,18 +7,13 @@ import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.domain.comment.dao.CommentFindByComponentDao;
 import ject.componote.domain.comment.dao.CommentFindByMemberDao;
-import ject.componote.domain.comment.dao.CommentLikeRepository;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;
 import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
-import ject.componote.domain.comment.dto.like.event.CommentLikeEvent;
-import ject.componote.domain.comment.dto.like.event.CommentUnlikeEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
-import ject.componote.domain.comment.error.AlreadyLikedException;
-import ject.componote.domain.comment.error.NoLikedException;
 import ject.componote.domain.comment.error.NotFoundParentCommentException;
 import ject.componote.domain.comment.model.CommentContent;
 import ject.componote.domain.comment.model.CommentImage;
@@ -34,7 +29,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -56,13 +50,7 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
     @Mock
-    ApplicationEventPublisher eventPublisher;
-
-    @Mock
     CommentRepository commentRepository;
-
-    @Mock
-    CommentLikeRepository commentLikeRepository;
 
     @Mock
     FileService fileService;
@@ -144,8 +132,8 @@ class CommentServiceTest {
         // given
         final Long componentId = 1L;
         final List<CommentFindByComponentDao> content = List.of(
-                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), false, false),
-                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), false, true)
+                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), Count.create(), false, false),
+                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), Count.create(), false, true)
         );
         final Page<CommentFindByComponentDao> page = new PageImpl<>(content, pageable, content.size());
         final PageResponse<CommentFindByComponentResponse> expect = PageResponse.from(
@@ -168,8 +156,8 @@ class CommentServiceTest {
         final Long componentId = 1L;
         final Long memberId = authPrincipal.id();
         final List<CommentFindByComponentDao> content = List.of(
-                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), false, false),
-                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), false, true)
+                new CommentFindByComponentDao(1L, Nickname.from("닉네임1"), ProfileImage.from(null), Job.DEVELOPER, 1L, null, CommentImage.from(null), CommentContent.from("댓글 내용1"), LocalDateTime.now(), Count.create(), Count.create(), false, false),
+                new CommentFindByComponentDao(2L, Nickname.from("닉네임2"), ProfileImage.from(null), Job.DEVELOPER, 2L, 1L, CommentImage.from(null), CommentContent.from("댓글 내용2"), LocalDateTime.now(), Count.create(), Count.create(), false, true)
         );
         final Page<CommentFindByComponentDao> page = new PageImpl<>(content, pageable, content.size());
         final PageResponse<CommentFindByComponentResponse> expect = PageResponse.from(
@@ -272,85 +260,5 @@ class CommentServiceTest {
         assertDoesNotThrow(
                 () -> commentService.delete(authPrincipal, commentId)
         );
-    }
-
-    @ParameterizedTest
-    @DisplayName("댓글 좋아요")
-    @EnumSource(value = CommentFixture.class)
-    public void likeComment(final CommentFixture fixture) throws Exception {
-        // given
-        final Comment comment = fixture.생성();
-        final Long commentId = comment.getId();
-        final Long memberId = authPrincipal.id();
-        final CommentLikeEvent event = CommentLikeEvent.of(authPrincipal, commentId);
-
-        // when
-        doReturn(false).when(commentLikeRepository)
-                .existsByCommentIdAndMemberId(commentId, memberId);
-        doNothing().when(eventPublisher)
-                .publishEvent(event);
-
-        // then
-        assertDoesNotThrow(
-                () -> commentService.likeComment(authPrincipal, commentId)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("댓글 좋아요 취소")
-    @EnumSource(value = CommentFixture.class)
-    public void unlikeComment(final CommentFixture fixture) throws Exception {
-        // given
-        final Comment comment = fixture.생성();
-        final Long commentId = comment.getId();
-        final Long memberId = authPrincipal.id();
-        final CommentUnlikeEvent event = CommentUnlikeEvent.of(authPrincipal, commentId);
-
-        // when
-        doReturn(true).when(commentLikeRepository)
-                .existsByCommentIdAndMemberId(commentId, memberId);
-        doNothing().when(eventPublisher)
-                .publishEvent(event);
-
-        // then
-        assertDoesNotThrow(
-                () -> commentService.unlikeComment(authPrincipal, commentId)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("댓글 좋아요시 좋아요를 이미 좋아요를 눌렀다면 예외 발생")
-    @EnumSource(value = CommentFixture.class)
-    public void likeCommentWhenAlreadyLiked(final CommentFixture fixture) throws Exception {
-        // given
-        final Comment comment = fixture.생성();
-        final Long commentId = comment.getId();
-        final Long memberId = authPrincipal.id();
-
-        // when
-        doReturn(true).when(commentLikeRepository)
-                .existsByCommentIdAndMemberId(commentId, memberId);
-
-        // then
-        assertThatThrownBy(() -> commentService.likeComment(authPrincipal, commentId))
-                .isInstanceOf(AlreadyLikedException.class);
-    }
-
-    @ParameterizedTest
-    @DisplayName("댓글 좋아요 취소시 좋아요를 누른적이 없는 경우 예외 발생")
-    @EnumSource(value = CommentFixture.class)
-    public void unlikeCommentWhenNoLike(final CommentFixture fixture) throws Exception {
-        // given
-        final Comment comment = fixture.생성();
-        final Long commentId = comment.getId();
-        final Long memberId = authPrincipal.id();
-
-        // when
-        doReturn(false).when(commentLikeRepository)
-                .existsByCommentIdAndMemberId(commentId, memberId);
-
-        // then
-        assertThatThrownBy(() -> commentService.unlikeComment(authPrincipal, commentId))
-                .isInstanceOf(NoLikedException.class);
     }
 }
