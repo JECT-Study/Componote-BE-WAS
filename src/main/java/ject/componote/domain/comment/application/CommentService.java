@@ -37,7 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
-    private final CommentLikeRepository commentLikeRepository;
     private final FileService fileService;
 
     @Transactional
@@ -94,24 +93,6 @@ public class CommentService {
     @Transactional
     public void delete(final AuthPrincipal authPrincipal, final Long commentId) {
         commentRepository.deleteByIdAndMemberId(commentId, authPrincipal.id());
-    }
-
-    public void likeComment(final AuthPrincipal authPrincipal, final Long commentId) {
-        final Long memberId = authPrincipal.id();
-        if (isAlreadyLiked(commentId, memberId)) {
-            throw new AlreadyLikedException(commentId, memberId);
-        }
-
-        eventPublisher.publishEvent(CommentLikeEvent.of(authPrincipal, commentId));
-    }
-
-    public void unlikeComment(final AuthPrincipal authPrincipal, final Long commentId) {
-        final Long memberId = authPrincipal.id();
-        if (!isAlreadyLiked(commentId, memberId)) {
-            throw new NoLikedException(commentId, memberId);
-        }
-
-        eventPublisher.publishEvent(CommentUnlikeEvent.of(authPrincipal, commentId));
     }
 
     private Comment findCommentByIdAndMemberId(final Long commentId, final Long memberId) {
