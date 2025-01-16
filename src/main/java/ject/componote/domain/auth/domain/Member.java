@@ -95,4 +95,8 @@ public class Member extends BaseEntity {
     public void updateEmail(final Email email) {
         this.email = email;
     }
+
+    public boolean hasEmail() {
+        return this.email != null;
+    }
 }
