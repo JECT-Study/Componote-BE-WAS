@@ -6,7 +6,7 @@ import ject.componote.domain.notice.domain.Notice;
 public record NoticeNotificationCreateRequest(NotificationParticipant participant, Long noticeId) {
     public static NoticeNotificationCreateRequest of(final Member sender, final Member receiver, final Notice notice) {
         return new NoticeNotificationCreateRequest(
-                NotificationParticipant.of(receiver, sender),
+                NotificationParticipant.of(sender, receiver),
                 notice.getId()
         );
     }

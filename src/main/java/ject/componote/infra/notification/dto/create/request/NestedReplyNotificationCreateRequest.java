@@ -6,7 +6,7 @@ import ject.componote.domain.comment.domain.Comment;
 public record NestedReplyNotificationCreateRequest(NotificationParticipant participant, Long commentId) {
     public static NestedReplyNotificationCreateRequest of(final Member sender, final Member receiver, final Comment comment) {
         return new NestedReplyNotificationCreateRequest(
-                NotificationParticipant.of(receiver, sender),
+                NotificationParticipant.of(sender, receiver),
                 comment.getId()
         );
     }
