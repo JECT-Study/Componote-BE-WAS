@@ -108,12 +108,6 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.of(exception.getStatus(), exception.getMessage()));
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
-        return ResponseEntity.status(BAD_REQUEST)
-                .body(ErrorResponse.of(BAD_REQUEST, "요청 BODY 형식이 잘못되었습니다."));
-    }
-
     private List<String> getFieldErrorMessage(final MethodArgumentNotValidException exception) {
         return exception.getBindingResult()
                 .getAllErrors()
