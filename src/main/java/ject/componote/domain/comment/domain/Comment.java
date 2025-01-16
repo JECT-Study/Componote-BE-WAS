@@ -97,6 +97,10 @@ public class Comment extends BaseEntity {
         this.replyCount.increase();
     }
 
+    public void increaseReportCount() {
+        this.reportCount.increase();
+    }
+
     public boolean equalsImage(final CommentImage image) {
         return this.image.equals(image);
     }
