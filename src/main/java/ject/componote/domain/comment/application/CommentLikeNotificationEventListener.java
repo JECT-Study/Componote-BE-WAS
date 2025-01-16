@@ -23,9 +23,13 @@ public class CommentLikeNotificationEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleLikeNotificationEvent(final CommentLikeNotificationEvent event) {
-        final Member sender = findMemberById(event.senderId());
         final Member receiver = findMemberById(event.receiverId());
         final Comment comment = findCommentById(event.commentId()); // 추후, 댓글 내용을 알림에 포함할 수 있으므로 SELECT 수행
+        if (!receiver.hasEmail()) {
+            return;
+        }
+
+        final Member sender = findMemberById(event.senderId());
         notificationProducer.sendCommentLikeNotification(
                 CommentLikeNotificationCreateRequest.of(sender, receiver, comment)
         );

@@ -26,9 +26,12 @@ public class CommentReplyNotificationEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleReplyNotificationEvent(final CommentReplyNotificationEvent event) {
-        final Member sender = findMemberById(event.senderId());
         final Comment parent = findCommentById(event.parentId());
         final Member receiver = findMemberById(parent.getMemberId());
+        if (!receiver.hasEmail()) {
+            return;
+        }
+        final Member sender = findMemberById(event.senderId());
         if (commentRepository.isRootComment(parent.getId())) {
             notificationProducer.sendRootReplyNotification(RootReplyNotificationCreateRequest.of(sender, receiver, parent));
             return;
