@@ -19,7 +19,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.Objects;
+
+@DynamicUpdate
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -76,11 +80,19 @@ public class Member extends BaseEntity {
         return this.profileImage.equals(profileImage);
     }
 
+    public boolean equalsEmail(final Email email) {
+        return Objects.equals(this.email, email);
+    }
+
     public void updateProfileImage(final ProfileImage profileImage) {
         this.profileImage = profileImage;
     }
 
     public void updateNickname(final Nickname nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateEmail(final Email email) {
+        this.email = email;
     }
 }
