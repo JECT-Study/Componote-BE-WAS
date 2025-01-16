@@ -80,6 +80,17 @@ public class CommentQueryDslImpl implements CommentQueryDsl {
         return toPage(baseQuery, countQuery, comment, pageable);
     }
 
+    @Override
+    public boolean isRootComment(final Long id) {
+        final Integer fetchOne = queryFactory.selectOne()
+                .from(comment)
+                .where(
+                        eqExpression(comment.id, id).and(comment.parentId.isNull())
+                )
+                .fetchOne();
+        return fetchOne != null;
+    }
+
     private JPAQuery<Long> createCountQuery(final BooleanExpression predicate) {
         return queryFactory.select(comment.count())
                 .from(comment)

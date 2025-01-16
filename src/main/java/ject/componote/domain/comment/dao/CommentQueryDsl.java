@@ -9,4 +9,5 @@ public interface CommentQueryDsl {
     Page<CommentFindByParentDao> findAllByParentIdWithPagination(final Long parentId, final Pageable pageable);
     Page<CommentFindByParentDao> findAllByParentIdWithLikeStatusAndPagination(final Long parentId, final Long memberId, final Pageable pageable);
     Page<CommentFindByMemberDao> findAllByMemberIdWithPagination(final Long memberId, final Pageable pageable);
+    boolean isRootComment(final Long id);
 }
