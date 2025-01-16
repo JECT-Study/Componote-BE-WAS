@@ -20,6 +20,9 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
+### QClass ###
+**/src/main/generated
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
