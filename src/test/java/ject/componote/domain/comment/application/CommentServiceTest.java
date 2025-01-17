@@ -13,6 +13,8 @@ import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
+import ject.componote.domain.comment.dto.reply.event.CommentReplyCountIncreaseEvent;
+import ject.componote.domain.comment.dto.reply.event.CommentReplyNotificationEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
 import ject.componote.domain.comment.error.NotFoundParentCommentException;
 import ject.componote.domain.comment.model.CommentContent;
@@ -20,7 +22,7 @@ import ject.componote.domain.comment.model.CommentImage;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.common.model.Count;
 import ject.componote.fixture.CommentFixture;
-import ject.componote.infra.file.application.FileService;
+import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +31,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -50,10 +53,13 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
     @Mock
+    ApplicationEventPublisher eventPublisher;
+
+    @Mock
     CommentRepository commentRepository;
 
     @Mock
-    FileService fileService;
+    StorageService storageService;
 
     @InjectMocks
     CommentService commentService;
@@ -76,11 +82,15 @@ class CommentServiceTest {
         if (parentId != null) {
             doReturn(true).when(commentRepository)
                     .existsById(parentId);
+            doNothing().when(eventPublisher)
+                    .publishEvent(CommentReplyCountIncreaseEvent.from(comment));
+            doNothing().when(eventPublisher)
+                    .publishEvent(CommentReplyNotificationEvent.from(comment));
         }
 
         doReturn(comment).when(commentRepository)
                 .save(any());
-        doNothing().when(fileService)
+        doNothing().when(storageService)
                 .moveImage(comment.getImage());
         final CommentCreateResponse actual = commentService.create(authPrincipal, createRequest);
 
