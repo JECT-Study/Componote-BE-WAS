@@ -19,7 +19,7 @@ import ject.componote.domain.comment.model.CommentContent;
 import ject.componote.domain.comment.model.CommentImage;
 import ject.componote.domain.comment.validation.CommenterValidation;
 import ject.componote.domain.common.dto.response.PageResponse;
-import ject.componote.infra.file.application.FileService;
+import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
-    private final FileService fileService;
+    private final StorageService storageService;
 
     @Transactional
     public CommentCreateResponse create(final AuthPrincipal authPrincipal, final CommentCreateRequest request) {
@@ -41,7 +41,7 @@ public class CommentService {
         final Comment comment = commentRepository.save(
                 CommentCreationStrategy.createBy(request, authPrincipal.id())
         );
-        fileService.moveImage(comment.getImage());
+        storageService.moveImage(comment.getImage());
 
         if (isReply(request)) {
             eventPublisher.publishEvent(CommentReplyCountIncreaseEvent.from(comment));
@@ -80,7 +80,7 @@ public class CommentService {
 
         final CommentImage image = CommentImage.from(commentUpdateRequest.imageObjectKey());
         if (!comment.equalsImage(image)) {
-            fileService.moveImage(image);
+            storageService.moveImage(image);
         }
 
         final CommentContent content = CommentContent.from(commentUpdateRequest.content()); // 가비지가 발생하지 않을까?

@@ -15,14 +15,14 @@ import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.util.TokenProvider;
-import ject.componote.infra.file.application.FileService;
+import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class AuthService {
-    private final FileService fileService;
+    private final StorageService storageService;
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final TokenProvider tokenProvider;
@@ -38,7 +38,7 @@ public class AuthService {
         }
 
         final Member member = memberRepository.save(request.toMember());
-        fileService.moveImage(member.getProfileImage());
+        storageService.moveImage(member.getProfileImage());
         return MemberSignupResponse.from(member);
     }
 
