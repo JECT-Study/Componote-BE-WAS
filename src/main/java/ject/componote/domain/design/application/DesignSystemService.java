@@ -13,8 +13,10 @@ import ject.componote.domain.design.domain.filter.DesignFilter;
 import ject.componote.domain.design.dao.filter.DesignFilterRepository;
 import ject.componote.domain.design.dao.DesignRepository;
 import ject.componote.domain.design.domain.DesignSystem;
+import ject.componote.domain.design.domain.filter.FilterType;
 import ject.componote.domain.design.domain.link.DesignLink;
 import ject.componote.domain.design.dao.link.DesignLinkRepository;
+import ject.componote.domain.design.dto.search.request.DesignFilterSearchRequest;
 import ject.componote.domain.design.dto.search.request.DesignSystemSearchRequest;
 import ject.componote.domain.design.dto.search.response.DesignSystemSearchResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +39,17 @@ public class DesignSystemService {
     public PageResponse<DesignSystemSearchResponse> searchDesignSystem(final AuthPrincipal authPrincipal,
                                                                        final DesignSystemSearchRequest request,
                                                                        final Pageable pageable) {
-        final Page<Design> designs = DesignSystemSearchStrategy.searchBy(authPrincipal, designRepository, request, pageable);
 
-        final Page<DesignSystemSearchResponse> responsePage = designs.map(design -> {
+        Page<Design> designs = DesignSystemSearchStrategy.searchBy(
+                authPrincipal,
+                designRepository,
+                designFilterRepository,
+                designLinkRepository,
+                request,
+                pageable
+        );
+
+        Page<DesignSystemSearchResponse> responsePage = designs.map(design -> {
             List<DesignFilter> filters = designFilterRepository.findAllByDesignId(design.getId());
             List<DesignLink> links = designLinkRepository.findAllByDesignId(design.getId());
             DesignSystem designSystem = DesignSystem.of(design, links, filters);
@@ -49,3 +59,4 @@ public class DesignSystemService {
         return PageResponse.from(responsePage);
     }
 }
+
