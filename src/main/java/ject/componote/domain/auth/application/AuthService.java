@@ -41,8 +41,9 @@ public class AuthService {
         }
 
         final Member member = memberRepository.save(request.toMember());
+        final String accessToken = tokenProvider.createToken(AuthPrincipal.from(member));
         storageService.moveImage(member.getProfileImage());
-        return MemberSignupResponse.from(member);
+        return MemberSignupResponse.of(accessToken, member);
     }
 
     // socialAccountId 만 가지고 로그인을 하는건 위험하지 않을까? 별도 암호화가 있으면 좋을 것 같음
