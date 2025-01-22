@@ -35,11 +35,11 @@ public class AuthService {
     public MemberSignupResponse signup(final MemberSignupRequest request) {
         final Long socialAccountId = parseSocialAccountId(request.encryptedSocialAccountId());
         if (!socialAccountRepository.existsById(socialAccountId)) {
-            throw new NotFoundSocialAccountException(socialAccountId);
+            throw new NotFoundSocialAccountException();
         }
 
         if (memberRepository.existsBySocialAccountId(socialAccountId)) {
-            throw new DuplicatedSignupException(socialAccountId);
+            throw new DuplicatedSignupException();
         }
 
         final Member member = memberRepository.save(request.toMember(socialAccountId));
@@ -68,6 +68,6 @@ public class AuthService {
 
     private Member findMemberBySocialAccountId(final Long socialAccountId) {
         return memberRepository.findBySocialAccountId(socialAccountId)
-                .orElseThrow(() -> NotFoundMemberException.createWhenInvalidSocialAccountId(socialAccountId));
+                .orElseThrow(NotFoundMemberException::createWhenInvalidSocialAccountId);
     }
 }
