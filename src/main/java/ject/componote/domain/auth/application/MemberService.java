@@ -15,8 +15,8 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
-import ject.componote.infra.file.application.FileService;
 import ject.componote.infra.mail.application.MailService;
+import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
-    private final FileService fileService;
+    private final StorageService storageService;
     private final MailService mailService;
     private final MemberRepository memberRepository;
 
@@ -44,7 +44,7 @@ public class MemberService {
             return;
         }
 
-        fileService.moveImage(profileImage);
+        storageService.moveImage(profileImage);
         member.updateProfileImage(profileImage);
         memberRepository.save(member);
     }

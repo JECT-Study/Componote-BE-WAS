@@ -5,7 +5,9 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.comment.dao.CommentLikeRepository;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;
+import ject.componote.domain.comment.domain.CommentLike;
 import ject.componote.domain.comment.dto.like.event.CommentLikeEvent;
+import ject.componote.domain.comment.dto.like.event.CommentLikeNotificationEvent;
 import ject.componote.domain.comment.dto.like.event.CommentUnlikeEvent;
 import ject.componote.domain.comment.error.NotFoundCommentException;
 import ject.componote.domain.common.model.Count;
@@ -17,16 +19,22 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
 import static ject.componote.fixture.MemberFixture.KIM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 class CommentLikeEventListenerTest {
+    @Mock
+    ApplicationEventPublisher eventPublisher;
+
     @Mock
     CommentRepository commentRepository;
 
@@ -48,10 +56,15 @@ class CommentLikeEventListenerTest {
         final Count previousLikeCount = comment.getLikeCount();
         final Long commentId = comment.getId();
         final CommentLikeEvent event = CommentLikeEvent.of(authPrincipal, commentId);
+        final CommentLike commentLike = CommentLike.of(commentId, authPrincipal.id());
 
         // when
         doReturn(Optional.of(comment)).when(commentRepository)
                 .findById(commentId);
+        doReturn(commentLike).when(commentLikeRepository)
+                .save(any());
+        doNothing().when(eventPublisher)
+                .publishEvent(CommentLikeNotificationEvent.of(comment, any()));
         commentLikeEventListener.handleCommentLikeEvent(event);
 
         // then

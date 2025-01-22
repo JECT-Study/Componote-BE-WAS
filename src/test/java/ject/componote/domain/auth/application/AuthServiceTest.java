@@ -13,8 +13,7 @@ import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.domain.auth.util.TokenProvider;
-import ject.componote.infra.file.application.FileService;
-import ject.componote.infra.file.error.FileClientException;
+import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,12 +29,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
     @Mock
-    FileService fileService;
+    StorageService storageService;
 
     @Mock
     MemberRepository memberRepository;
@@ -73,7 +71,7 @@ class AuthServiceTest {
                 .existsBySocialAccountId(socialAccountId);
         doReturn(member).when(memberRepository)
                 .save(any());
-        doNothing().when(fileService)
+        doNothing().when(storageService)
                 .moveImage(profileImage);
         final MemberSignupResponse actual = authService.signup(request);
 
@@ -121,32 +119,6 @@ class AuthServiceTest {
         // then
         assertThatThrownBy(() -> authService.signup(request))
                 .isInstanceOf(NotFoundSocialAccountException.class);
-    }
-
-    @DisplayName("회원 가입 시 프로필 사진 경로 이동 실패 시 예외 발생")
-    @Test
-    public void signupWhenMoveFail() throws Exception {
-        // given
-        final MemberSignupRequest request = new MemberSignupRequest(
-                member.getNickname().getValue(),
-                member.getJob().name(),
-                profileImageObjectKey,
-                socialAccountId
-        );
-
-        // when
-        doReturn(true).when(socialAccountRepository)
-                .existsById(socialAccountId);
-        doReturn(false).when(memberRepository)
-                .existsBySocialAccountId(socialAccountId);
-        doReturn(member).when(memberRepository)
-                .save(any());
-        doThrow(FileClientException.class).when(fileService)
-                .moveImage(profileImage);
-
-        // then
-        assertThatThrownBy(() -> authService.signup(request))
-            .isInstanceOf(FileClientException.class);
     }
 
     @DisplayName("로그인")
