@@ -35,13 +35,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<ErrorResponse> handleSQLException(final SQLException exception) {
-        log.error("SQL 예외 발생. ", exception);
+        log.error("SQL 예외 발생: ", exception);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(INTERNAL_SERVER_ERROR, "SQL 오류입니다."));
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> handleDataAccessException(final DataAccessException exception) {
+        log.error("SQL 예외 발생: ", exception);
         return ResponseEntity.status(BAD_REQUEST)
                 .body(ErrorResponse.of(BAD_REQUEST, exception.getLocalizedMessage()));
     }

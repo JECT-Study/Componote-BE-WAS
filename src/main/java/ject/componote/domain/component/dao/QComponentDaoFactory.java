@@ -10,8 +10,8 @@ import static ject.componote.domain.component.domain.QComponent.component;
 
 @Component
 public class QComponentDaoFactory {
-    public ConstructorExpression<ComponentSummaryDao> createForSummary(final boolean withBookmark) {
-        if (withBookmark) {
+    public ConstructorExpression<ComponentSummaryDao> createForSummary(final Long memberId) {
+        if (memberId != null) {
             return Projections.constructor(
                     ComponentSummaryDao.class,
                     component.id,

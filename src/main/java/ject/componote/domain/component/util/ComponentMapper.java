@@ -19,7 +19,7 @@ public class ComponentMapper {
         return new ComponentDetailResponse(
                 summary.getTitle(),
                 parseMixedNames(component),
-                summary.getDescription(),
+                summary.getIntroduction(),
                 component.getCommentCount().getValue(),
                 component.getBookmarkCount().getValue(),
                 component.getDesignReferenceCount().getValue(),

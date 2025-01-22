@@ -3,6 +3,7 @@ package ject.componote.domain.component.domain.block.detail;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import ject.componote.domain.component.domain.block.BlockType;
 import ject.componote.domain.component.domain.block.ContentBlock;
 import ject.componote.domain.component.model.ComponentImage;
@@ -15,6 +16,7 @@ import lombok.ToString;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@PrimaryKeyJoinColumn(name = "content_block_id")
 @ToString
 public class ImageBlock extends ContentBlock {
     @Convert(converter = ComponentImageConverter.class)

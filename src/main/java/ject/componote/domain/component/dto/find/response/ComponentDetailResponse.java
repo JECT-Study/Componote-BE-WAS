@@ -8,7 +8,7 @@ import java.util.Map;
 public record ComponentDetailResponse(
         String title,
         List<String> mixedNames,
-        String description,
+        String introduction,
         Long commentCount,
         Long bookmarkCount,
         Long designReferenceCount,
