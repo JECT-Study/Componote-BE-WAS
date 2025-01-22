@@ -11,15 +11,15 @@ import java.util.function.Function;
 
 @Component
 public class AESCryptography {
-    public static final String AES_ALGORITHM = "AES";
-    public static final String AES_TRANSFORMATION = "AES/ECB/PKCS5Padding"; // 블록 암호화 모드와 패딩
-    public static final int AES_SECRET_KEY_LENGTH = 16;
+    private static final String AES_TRANSFORMATION = "AES/ECB/PKCS5Padding"; // 블록 암호화 모드와 패딩
+    private static final int AES_SECRET_KEY_LENGTH = 16;
+    private static final String CIPHER_ALGORITHM = "AES";
 
     private final SecretKeySpec keySpec;
 
     public AESCryptography(@Value("${encryption.aes.key}") String secretKey) {
         validateSecretKey(secretKey);
-        this.keySpec = new SecretKeySpec(secretKey.getBytes(), AES_ALGORITHM);
+        this.keySpec = new SecretKeySpec(secretKey.getBytes(), CIPHER_ALGORITHM);
     }
 
     public <T> String encrypt(final T rawData) {
