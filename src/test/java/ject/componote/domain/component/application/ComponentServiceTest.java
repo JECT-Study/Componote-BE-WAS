@@ -86,7 +86,7 @@ class ComponentServiceTest {
         final ComponentDetailResponse expect = new ComponentDetailResponse(
                 component.getSummary().getTitle(),
                 Collections.emptyList(),
-                component.getSummary().getDescription(),
+                component.getSummary().getIntroduction(),
                 component.getCommentCount().getValue(),
                 component.getBookmarkCount().getValue(),
                 component.getDesignReferenceCount().getValue(),
