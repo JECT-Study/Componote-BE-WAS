@@ -48,6 +48,7 @@ public class AESCryptography {
     }
 
     private String decrypt(final String encryptedData) {
+        validateData(encryptedData);
         try {
             final Cipher cipher = Cipher.getInstance(AES_TRANSFORMATION);
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
@@ -67,7 +68,7 @@ public class AESCryptography {
 
     private void validateData(final String data) {
         if (data == null || data.isBlank()) {
-            throw new IllegalArgumentException("data is null or empty");
+            throw new IllegalArgumentException("암/복호화할 데이터가 비어있거나 null 입니다.");
         }
     }
 }
