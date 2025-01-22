@@ -69,10 +69,8 @@ class ComponentServiceTest {
     static Stream<SearchInput> provideSearchInputs() {
         final AuthPrincipal authPrincipal = AuthPrincipal.from(KIM.생성(1L));
         return Stream.of(
-                new SearchInput("비회원, 필터 X", null, "검색어", null),
-                new SearchInput("비회원, 필터 O", null, "검색어", List.of(ComponentType.INPUT)),
-                new SearchInput("회원, 필터 X", authPrincipal, "검색어", null),
-                new SearchInput("회원, 필터 O", authPrincipal, "검색어", List.of(ComponentType.INPUT))
+                new SearchInput("비회원", null, "검색어", List.of(ComponentType.INPUT)),
+                new SearchInput("회원", authPrincipal, "검색어", List.of(ComponentType.INPUT))
         );
     }
 
@@ -143,14 +141,10 @@ class ComponentServiceTest {
 
         // when
         switch (input.displayName) {
-            case "비회원, 필터 X" -> doReturn(page).when(componentRepository)
-                    .searchByKeyword(keyword, pageable);
-            case "비회원, 필터 O" -> doReturn(page).when(componentRepository)
-                    .searchByKeywordWithTypes(keyword, types, pageable);
-            case "회원, 필터 X" -> doReturn(page).when(componentRepository)
-                    .searchWithBookmark(authPrincipal.id(), keyword, pageable);
-            case "회원, 필터 O" -> doReturn(page).when(componentRepository)
-                    .searchWithBookmarkAndTypes(authPrincipal.id(), keyword, types, pageable);
+            case "비회원" -> doReturn(page).when(componentRepository)
+                    .findAllByKeywordAndTypes(keyword, types, pageable);
+            case "회원" -> doReturn(page).when(componentRepository)
+                    .findAllByKeywordAndTypesWithBookmark(authPrincipal.id(), keyword, types, pageable);
             default -> throw new IllegalStateException("Unexpected value: " + input.displayName);
         }
 
@@ -159,14 +153,10 @@ class ComponentServiceTest {
         // then
         assertThat(actual).isNotNull();
         switch (input.displayName) {
-            case "비회원, 필터 X" -> verify(componentRepository)
-                    .searchByKeyword(keyword, pageable);
-            case "비회원, 필터 O" -> verify(componentRepository)
-                    .searchByKeywordWithTypes(keyword, types, pageable);
-            case "회원, 필터 X" -> verify(componentRepository)
-                    .searchWithBookmark(authPrincipal.id(), keyword, pageable);
-            case "회원, 필터 O" -> verify(componentRepository)
-                    .searchWithBookmarkAndTypes(authPrincipal.id(), keyword, types, pageable);
+            case "비회원" -> verify(componentRepository)
+                    .findAllByKeywordAndTypes(keyword, types, pageable);
+            case "회원" -> verify(componentRepository)
+                    .findAllByKeywordAndTypesWithBookmark(authPrincipal.id(), keyword, types, pageable);
             default -> throw new IllegalStateException("Unexpected value: " + input.displayName);
         }
     }
