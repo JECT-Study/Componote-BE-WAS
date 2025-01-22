@@ -18,15 +18,18 @@ import ject.componote.domain.auth.util.TokenProvider;
 import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class AuthService {
     private final StorageService storageService;
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final TokenProvider tokenProvider;
 
+    @Transactional
     public MemberSignupResponse signup(final MemberSignupRequest request) {
         final Long socialAccountId = request.socialAccountId();
         if (!socialAccountRepository.existsById(socialAccountId)) {
@@ -38,8 +41,9 @@ public class AuthService {
         }
 
         final Member member = memberRepository.save(request.toMember());
+        final String accessToken = tokenProvider.createToken(AuthPrincipal.from(member));
         storageService.moveImage(member.getProfileImage());
-        return MemberSignupResponse.from(member);
+        return MemberSignupResponse.of(accessToken, member);
     }
 
     // socialAccountId 만 가지고 로그인을 하는건 위험하지 않을까? 별도 암호화가 있으면 좋을 것 같음

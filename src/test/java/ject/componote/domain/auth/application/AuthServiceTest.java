@@ -62,7 +62,8 @@ class AuthServiceTest {
                 profileImageObjectKey,
                 socialAccountId
         );
-        final MemberSignupResponse expect = MemberSignupResponse.from(member);
+        final String accessToken = "accessToken";
+        final MemberSignupResponse expect = MemberSignupResponse.of(accessToken, member);
 
         // when
         doReturn(true).when(socialAccountRepository)
@@ -73,6 +74,8 @@ class AuthServiceTest {
                 .save(any());
         doNothing().when(storageService)
                 .moveImage(profileImage);
+        doReturn(accessToken).when(tokenProvider)
+                .createToken(AuthPrincipal.from(member));
         final MemberSignupResponse actual = authService.signup(request);
 
         // then
