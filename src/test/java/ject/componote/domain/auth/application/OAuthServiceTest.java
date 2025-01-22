@@ -4,6 +4,7 @@ import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.domain.SocialAccount;
 import ject.componote.domain.auth.dto.authorize.response.OAuthAuthorizationUrlResponse;
 import ject.componote.domain.auth.dto.login.response.OAuthLoginResponse;
+import ject.componote.domain.auth.util.AESCryptography;
 import ject.componote.infra.oauth.application.OAuthClient;
 import ject.componote.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import ject.componote.infra.oauth.error.InvalidAuthorizationCodeException;
@@ -22,7 +23,6 @@ import org.springframework.http.HttpMethod;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +34,9 @@ import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class OAuthServiceTest {
+    @Mock
+    AESCryptography aesCryptography;
+
     @Mock
     MemberRepository memberRepository;
 
@@ -85,11 +88,14 @@ class OAuthServiceTest {
         final OAuthProvider oAuthProvider = getOAuthProvider(providerType);
         final OAuthProfile oAuthProfile = getOAuthProfile(oAuthProvider);
         final SocialAccount socialAccount = KIM.생성(providerType);
-        final OAuthLoginResponse expect = OAuthLoginResponse.of(true, socialAccount);
+        final String encryptedSocialAccountId = "hello";
+        final OAuthLoginResponse expect = OAuthLoginResponse.of(true, encryptedSocialAccountId);
 
         // when
+        doReturn(encryptedSocialAccountId).when(aesCryptography)
+                .encrypt(socialAccount.getId());
         doReturn(Mono.just(oAuthProfile)).when(oAuthClient)
-                        .getProfile(providerType, code);
+                .getProfile(providerType, code);
         doReturn(socialAccount).when(oAuthResultHandler)
                 .saveOrGet(oAuthProfile);
         doReturn(true).when(memberRepository)

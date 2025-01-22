@@ -1,9 +1,7 @@
 package ject.componote.domain.auth.dto.login.response;
 
-import ject.componote.domain.auth.domain.SocialAccount;
-
-public record OAuthLoginResponse(boolean isRegister, Long socialAccountId) {
-    public static OAuthLoginResponse of(final boolean isRegister, final SocialAccount socialAccount) {
-        return new OAuthLoginResponse(isRegister, socialAccount.getId());
+public record OAuthLoginResponse(boolean isRegister, String encryptedSocialAccountId) {
+    public static OAuthLoginResponse of(final boolean isRegister, final String encryptedSocialAccountId) {
+        return new OAuthLoginResponse(isRegister, encryptedSocialAccountId);
     }
 }
