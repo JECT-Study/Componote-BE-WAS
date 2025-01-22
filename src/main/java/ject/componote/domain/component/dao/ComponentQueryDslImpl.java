@@ -78,13 +78,17 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
     private BooleanExpression createSearchCondition(final String keyword, final List<ComponentType> types) {
         final BooleanExpression keywordCondition = createKeywordCondition(keyword);
         if (types != null && !types.isEmpty()) {
-            return keywordCondition.and(component.type.in(types));
+            return component.type.in(types).and(keywordCondition);
         }
 
         return keywordCondition;
     }
 
     private static BooleanExpression createKeywordCondition(final String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return null;
+        }
+
         return mixedName.name.contains(keyword)
                 .or(component.summary.title.contains(keyword));
     }
