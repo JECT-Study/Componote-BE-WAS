@@ -2,6 +2,7 @@ package ject.componote.domain.design.application;
 
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.design.dao.DesignRepository;
+import ject.componote.domain.design.dao.DesignSystemRepository;
 import ject.componote.domain.design.dao.filter.DesignFilterRepository;
 import ject.componote.domain.design.dao.link.DesignLinkRepository;
 import ject.componote.domain.design.domain.Design;
@@ -21,33 +22,33 @@ import java.util.stream.Collectors;
 public enum DesignSystemSearchStrategy {
   WITH_BOOKMARK_AND_FILTER(
       (authPrincipal, request) -> isLoggedIn(authPrincipal) && hasFilter(request),
-      (authPrincipal, designRepository, filterRepository, linkRepository, request, pageable) ->
-          findDesignsWithFilters(authPrincipal.id(), true, request, designRepository, filterRepository, pageable)
+      (authPrincipal, designSystemRepository, filterRepository, linkRepository, request, pageable) ->
+          findDesignsWithFilters(authPrincipal.id(), true, request, designSystemRepository, filterRepository, pageable)
   ),
 
   WITH_BOOKMARK(
       (authPrincipal, request) -> isLoggedIn(authPrincipal) && !hasFilter(request),
-      (authPrincipal, designRepository, filterRepository, linkRepository, request, pageable) ->
-          designRepository.findByKeywordAndBookmarkStatus(authPrincipal.id(), request.keyword(), pageable)
+      (authPrincipal, designSystemRepository, filterRepository, linkRepository, request, pageable) ->
+          designSystemRepository.findByKeywordAndBookmarkStatus(authPrincipal.id(), request.keyword(), pageable)
   ),
 
   WITHOUT_BOOKMARK_AND_FILTER(
       (authPrincipal, request) -> !isLoggedIn(authPrincipal) && hasFilter(request),
-      (authPrincipal, designRepository, filterRepository, linkRepository, request, pageable) ->
-          findDesignsWithFilters(null, false, request, designRepository, filterRepository, pageable)
+      (authPrincipal, designSystemRepository, filterRepository, linkRepository, request, pageable) ->
+          findDesignsWithFilters(null, false, request, designSystemRepository, filterRepository, pageable)
   ),
 
   WITHOUT_BOOKMARK(
       (authPrincipal, request) -> !isLoggedIn(authPrincipal) && !hasFilter(request),
-      (authPrincipal, designRepository, filterRepository, linkRepository, request, pageable) ->
-          designRepository.findByKeyword(request.keyword(), pageable)
+      (authPrincipal, designSystemRepository, filterRepository, linkRepository, request, pageable) ->
+          designSystemRepository.findByKeyword(request.keyword(), pageable)
   );
 
   private final BiPredicate<AuthPrincipal, DesignSystemSearchRequest> condition;
   private final DesignSystemSearchFunction searchFunction;
 
   public static Page<Design> searchBy(final AuthPrincipal authPrincipal,
-      final DesignRepository designRepository,
+      final DesignSystemRepository designSystemRepository,
       final DesignFilterRepository filterRepository,
       final DesignLinkRepository linkRepository,
       final DesignSystemSearchRequest request,
@@ -56,7 +57,7 @@ public enum DesignSystemSearchStrategy {
         .filter(strategy -> strategy.condition.test(authPrincipal, request))
         .findFirst()
         .orElseThrow(NotFoundDesignException::new)
-        .searchFunction.search(authPrincipal, designRepository, filterRepository, linkRepository, request, pageable);
+        .searchFunction.search(authPrincipal, designSystemRepository, filterRepository, linkRepository, request, pageable);
   }
 
   private static boolean isLoggedIn(final AuthPrincipal authPrincipal) {
@@ -69,7 +70,7 @@ public enum DesignSystemSearchStrategy {
 
   private static Page<Design> findDesignsWithFilters(Long memberId, boolean includeBookmark,
       DesignSystemSearchRequest request,
-      DesignRepository designRepository,
+      DesignSystemRepository designSystemRepository,
       DesignFilterRepository filterRepository,
       Pageable pageable) {
     List<Long> designIds = request.filters().stream()
@@ -85,16 +86,16 @@ public enum DesignSystemSearchStrategy {
     }
 
     if (includeBookmark && memberId != null) {
-      return designRepository.findAllByIdInAndBookmarkStatus(memberId, designIds, pageable);
+      return designSystemRepository.findAllByIdInAndBookmarkStatus(memberId, designIds, pageable);
     }
 
-    return designRepository.findAllByIdIn(designIds, pageable);
+    return designSystemRepository.findAllByIdIn(designIds, pageable);
   }
 
   @FunctionalInterface
   private interface DesignSystemSearchFunction {
     Page<Design> search(final AuthPrincipal authPrincipal,
-        final DesignRepository designRepository,
+        final DesignSystemRepository designSystemRepository,
         final DesignFilterRepository filterRepository,
         final DesignLinkRepository linkRepository,
         final DesignSystemSearchRequest request,

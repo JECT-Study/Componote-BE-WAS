@@ -8,6 +8,7 @@ import ject.componote.domain.component.dto.find.event.ComponentViewCountIncrease
 import ject.componote.domain.component.dto.find.request.ComponentSearchRequest;
 import ject.componote.domain.component.dto.find.response.ComponentDetailResponse;
 import ject.componote.domain.component.dto.find.response.ComponentSummaryResponse;
+import ject.componote.domain.design.dao.DesignSystemRepository;
 import ject.componote.domain.design.domain.Design;
 import ject.componote.domain.design.domain.filter.DesignFilter;
 import ject.componote.domain.design.dao.filter.DesignFilterRepository;
@@ -32,7 +33,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DesignSystemService {
 
-    private final DesignRepository designRepository;
+    private final DesignSystemRepository designSystemRepository;
     private final DesignFilterRepository designFilterRepository;
     private final DesignLinkRepository designLinkRepository;
 
@@ -42,7 +43,7 @@ public class DesignSystemService {
 
         Page<Design> designs = DesignSystemSearchStrategy.searchBy(
                 authPrincipal,
-                designRepository,
+                designSystemRepository,
                 designFilterRepository,
                 designLinkRepository,
                 request,
