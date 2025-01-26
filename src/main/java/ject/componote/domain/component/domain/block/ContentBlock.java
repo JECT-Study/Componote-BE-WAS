@@ -31,7 +31,7 @@ public abstract class ContentBlock {
     @Column(name = "orders", nullable = false)
     private Integer order;
 
-    public ContentBlock(final BlockType type, final Integer order) {
+    protected ContentBlock(final BlockType type, final Integer order) {
         this.type = type;
         this.order = order;
     }

@@ -17,7 +17,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 
+@DynamicUpdate
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -93,6 +95,10 @@ public class Comment extends BaseEntity {
 
     public void increaseReplyCount() {
         this.replyCount.increase();
+    }
+
+    public void increaseReportCount() {
+        this.reportCount.increase();
     }
 
     public boolean equalsImage(final CommentImage image) {

@@ -77,8 +77,8 @@ public class Component extends BaseEntity {
         this.viewCount = Count.create();
     }
 
-    public static Component of(final String title, final String description, final String thumbnailObjectKey, final ComponentType type, final List<String> mixedNames, final List<ContentBlock> contentBlocks) {
-        return new Component(type, mixedNames, ComponentSummary.of(title, description, thumbnailObjectKey), contentBlocks);
+    public static Component of(final String title, final String introduction, final String thumbnailObjectKey, final ComponentType type, final List<String> mixedNames, final List<ContentBlock> contentBlocks) {
+        return new Component(type, mixedNames, ComponentSummary.of(title, introduction, thumbnailObjectKey), contentBlocks);
     }
 
     public void increaseViewCount() {

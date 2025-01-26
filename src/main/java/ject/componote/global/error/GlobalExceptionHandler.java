@@ -6,6 +6,7 @@ import ject.componote.infra.error.InfraException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,13 +35,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<ErrorResponse> handleSQLException(final SQLException exception) {
-        log.error("SQL 예외 발생. ", exception);
+        log.error("SQL 예외 발생: ", exception);
         return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.of(INTERNAL_SERVER_ERROR, "SQL 오류입니다."));
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ErrorResponse> handleDataAccessException(final DataAccessException exception) {
+        log.error("SQL 예외 발생: ", exception);
         return ResponseEntity.status(BAD_REQUEST)
                 .body(ErrorResponse.of(BAD_REQUEST, exception.getLocalizedMessage()));
     }
@@ -75,6 +77,12 @@ public class GlobalExceptionHandler {
         log.warn("잘못된 요청입니다. ", exception);
         return ResponseEntity.status(BAD_REQUEST)
                 .body(ErrorResponse.of(BAD_REQUEST, "잘못된 요청입니다."));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+        return ResponseEntity.status(BAD_REQUEST)
+                .body(ErrorResponse.of(BAD_REQUEST, "HTTP Request Body 가 잘못되었습니다."));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
