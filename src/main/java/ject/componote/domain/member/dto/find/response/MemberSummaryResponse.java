@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.dto.find.response;
+package ject.componote.domain.member.dto.find.response;
 
 import ject.componote.domain.member.dao.MemberSummaryDao;
 
