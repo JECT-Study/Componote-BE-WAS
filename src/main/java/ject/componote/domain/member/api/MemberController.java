@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.api;
+package ject.componote.domain.member.api;
 
 import jakarta.validation.Valid;
 import ject.componote.domain.auth.application.MemberService;
