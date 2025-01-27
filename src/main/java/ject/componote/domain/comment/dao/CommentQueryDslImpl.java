@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import static ject.componote.domain.auth.domain.QMember.member;
 import static ject.componote.domain.comment.domain.QComment.comment;
 import static ject.componote.domain.comment.domain.QCommentLike.commentLike;
 import static ject.componote.domain.component.domain.QComponent.component;
+import static ject.componote.domain.member.domain.QMember.member;
 import static ject.componote.global.util.RepositoryUtils.eqExpression;
 import static ject.componote.global.util.RepositoryUtils.toPage;
 
