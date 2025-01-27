@@ -14,7 +14,6 @@ import ject.componote.domain.member.error.NotFoundMemberException;
 import ject.componote.domain.member.error.NotFoundSocialAccountException;
 import ject.componote.domain.member.model.AuthPrincipal;
 import ject.componote.domain.member.model.Nickname;
-import ject.componote.domain.auth.token.application.TokenService;
 import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

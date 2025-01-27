@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.token.model;
+package ject.componote.domain.auth.model;
 
 import lombok.Getter;
 

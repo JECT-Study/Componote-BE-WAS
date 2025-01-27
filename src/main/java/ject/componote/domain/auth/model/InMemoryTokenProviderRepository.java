@@ -1,7 +1,5 @@
-package ject.componote.domain.auth.token.repository;
+package ject.componote.domain.auth.model;
 
-import ject.componote.domain.auth.token.model.TokenProvider;
-import ject.componote.domain.auth.token.model.TokenType;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;

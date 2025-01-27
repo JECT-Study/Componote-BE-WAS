@@ -1,8 +1,8 @@
-package ject.componote.domain.auth.token.config;
+package ject.componote.domain.auth.config;
 
-import ject.componote.domain.auth.token.model.TokenAdapter;
-import ject.componote.domain.auth.token.model.TokenProperties;
-import ject.componote.domain.auth.token.repository.InMemoryTokenProviderRepository;
+import ject.componote.domain.auth.model.TokenAdapter;
+import ject.componote.domain.auth.model.TokenProperties;
+import ject.componote.domain.auth.model.InMemoryTokenProviderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;

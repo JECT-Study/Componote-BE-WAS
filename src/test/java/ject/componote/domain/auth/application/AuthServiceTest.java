@@ -12,7 +12,6 @@ import ject.componote.domain.member.error.NotFoundMemberException;
 import ject.componote.domain.member.error.NotFoundSocialAccountException;
 import ject.componote.domain.member.model.AuthPrincipal;
 import ject.componote.domain.member.model.ProfileImage;
-import ject.componote.domain.auth.token.application.TokenService;
 import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

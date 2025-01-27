@@ -8,7 +8,7 @@ import ject.componote.domain.auth.error.ExpiredJWTException;
 import ject.componote.domain.auth.error.InvalidJWTException;
 import ject.componote.domain.auth.error.NotFoundJWTException;
 import ject.componote.domain.member.model.AuthPrincipal;
-import ject.componote.domain.auth.token.application.TokenService;
+import ject.componote.domain.auth.application.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,6 @@ import ject.componote.domain.member.dao.MemberRepository;
 import ject.componote.domain.member.domain.SocialAccount;
 import ject.componote.domain.auth.dto.authorize.response.OAuthAuthorizationUrlResponse;
 import ject.componote.domain.auth.dto.login.response.OAuthLoginResponse;
-import ject.componote.domain.auth.token.application.TokenService;
 import ject.componote.infra.oauth.application.OAuthClient;
 import ject.componote.infra.oauth.dto.authorize.response.OAuthAuthorizePayload;
 import lombok.RequiredArgsConstructor;

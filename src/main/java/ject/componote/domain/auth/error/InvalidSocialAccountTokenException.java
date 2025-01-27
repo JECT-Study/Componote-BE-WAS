@@ -1,6 +1,5 @@
-package ject.componote.domain.auth.token.error;
+package ject.componote.domain.auth.error;
 
-import ject.componote.domain.auth.error.AuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 

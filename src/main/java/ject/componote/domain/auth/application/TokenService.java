@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.token.application;
+package ject.componote.domain.auth.application;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,11 +8,11 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import ject.componote.domain.member.domain.SocialAccount;
 import ject.componote.domain.auth.error.InvalidJWTException;
-import ject.componote.domain.auth.token.error.InvalidSocialAccountTokenException;
+import ject.componote.domain.auth.error.InvalidSocialAccountTokenException;
 import ject.componote.domain.member.model.AuthPrincipal;
-import ject.componote.domain.auth.token.model.TokenProvider;
-import ject.componote.domain.auth.token.model.TokenType;
-import ject.componote.domain.auth.token.repository.InMemoryTokenProviderRepository;
+import ject.componote.domain.auth.model.TokenProvider;
+import ject.componote.domain.auth.model.TokenType;
+import ject.componote.domain.auth.model.InMemoryTokenProviderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
