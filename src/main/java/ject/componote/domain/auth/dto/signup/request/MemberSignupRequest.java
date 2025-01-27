@@ -9,7 +9,7 @@ public record MemberSignupRequest(
         @NotBlank String nickname,
         @NotBlank String job,
         @Nullable String profileImageObjectKey,
-        @NotNull String encryptedSocialAccountId) {
+        @NotNull String socialAccountToken) {
     public Member toMember(final Long socialAccountId) {
         return Member.of(
                 nickname,
