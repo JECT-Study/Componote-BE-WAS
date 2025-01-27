@@ -1,7 +1,7 @@
 package ject.componote.domain.auth.application;
 
 import ject.componote.domain.auth.domain.SocialAccount;
-import ject.componote.domain.auth.dao.SocialAccountRepository;
+import ject.componote.domain.member.dao.SocialAccountRepository;
 import ject.componote.domain.auth.util.SocialAccountMapper;
 import ject.componote.infra.oauth.model.profile.OAuthProfile;
 import lombok.RequiredArgsConstructor;

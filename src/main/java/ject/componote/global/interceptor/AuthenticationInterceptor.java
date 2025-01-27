@@ -3,7 +3,7 @@ package ject.componote.global.interceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ject.componote.domain.auth.dao.MemberRepository;
+import ject.componote.domain.member.dao.MemberRepository;
 import ject.componote.domain.auth.error.ExpiredJWTException;
 import ject.componote.domain.auth.error.InvalidJWTException;
 import ject.componote.domain.auth.error.NotFoundJWTException;

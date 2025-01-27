@@ -1,7 +1,7 @@
 package ject.componote.domain.auth.application;
 
-import ject.componote.domain.auth.dao.MemberRepository;
-import ject.componote.domain.auth.dao.MemberSummaryDao;
+import ject.componote.domain.member.dao.MemberRepository;
+import ject.componote.domain.member.dao.MemberSummaryDao;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
 import ject.componote.domain.auth.dto.update.request.MemberEmailUpdateRequest;

@@ -1,6 +1,6 @@
 package ject.componote.domain.comment.application;
 
-import ject.componote.domain.auth.dao.MemberRepository;
+import ject.componote.domain.member.dao.MemberRepository;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;

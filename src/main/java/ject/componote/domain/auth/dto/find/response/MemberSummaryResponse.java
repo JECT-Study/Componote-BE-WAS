@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.dto.find.response;
 
-import ject.componote.domain.auth.dao.MemberSummaryDao;
+import ject.componote.domain.member.dao.MemberSummaryDao;
 
 public record MemberSummaryResponse(boolean isEmailRegistered, String nickname, String profileImageUrl) {
     public static MemberSummaryResponse from(final MemberSummaryDao memberSummaryDao) {

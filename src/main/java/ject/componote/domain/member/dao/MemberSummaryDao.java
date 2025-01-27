@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.dao;
+package ject.componote.domain.member.dao;
 
 import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
