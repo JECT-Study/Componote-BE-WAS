@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.error;
 
-import ject.componote.domain.auth.model.Nickname;
+import ject.componote.domain.member.model.Nickname;
 import org.springframework.http.HttpStatus;
 
 public class DuplicatedNicknameException extends AuthException {

@@ -1,8 +1,8 @@
 package ject.componote.domain.component.api;
 
 import jakarta.validation.Valid;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.application.ComponentService;
 import ject.componote.domain.component.dto.find.request.ComponentSearchRequest;

@@ -1,8 +1,8 @@
 package ject.componote.domain.bookmark.api;
 
 import jakarta.validation.Valid;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
 import ject.componote.domain.bookmark.application.BookmarkService;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
 import ject.componote.domain.bookmark.dto.response.BookmarkResponse;

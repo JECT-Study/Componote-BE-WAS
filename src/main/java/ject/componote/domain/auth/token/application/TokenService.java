@@ -9,7 +9,7 @@ import io.jsonwebtoken.Jwts;
 import ject.componote.domain.auth.domain.SocialAccount;
 import ject.componote.domain.auth.error.InvalidJWTException;
 import ject.componote.domain.auth.token.error.InvalidSocialAccountTokenException;
-import ject.componote.domain.auth.model.AuthPrincipal;
+import ject.componote.domain.member.model.AuthPrincipal;
 import ject.componote.domain.auth.token.model.TokenProvider;
 import ject.componote.domain.auth.token.model.TokenType;
 import ject.componote.domain.auth.token.repository.InMemoryTokenProviderRepository;

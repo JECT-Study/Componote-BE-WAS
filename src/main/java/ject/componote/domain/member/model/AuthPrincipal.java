@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.model;
+package ject.componote.domain.member.model;
 
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.auth.domain.Role;

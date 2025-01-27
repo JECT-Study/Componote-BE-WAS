@@ -1,8 +1,8 @@
 package ject.componote.domain.member.dao;
 
 import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.auth.model.Email;
-import ject.componote.domain.auth.model.Nickname;
+import ject.componote.domain.member.model.Email;
+import ject.componote.domain.member.model.Nickname;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -2,6 +2,7 @@ package ject.componote.domain.auth.model;
 
 import ject.componote.domain.auth.error.InvalidNicknameException;
 import ject.componote.domain.auth.error.OffensiveNicknameException;
+import ject.componote.domain.member.model.Nickname;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

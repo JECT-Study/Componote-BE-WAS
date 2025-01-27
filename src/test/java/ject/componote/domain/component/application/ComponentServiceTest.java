@@ -1,6 +1,6 @@
 package ject.componote.domain.component.application;
 
-import ject.componote.domain.auth.model.AuthPrincipal;
+import ject.componote.domain.member.model.AuthPrincipal;
 import ject.componote.domain.bookmark.dao.BookmarkRepository;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.dao.ComponentRepository;

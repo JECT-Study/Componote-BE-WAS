@@ -7,9 +7,9 @@ import ject.componote.domain.member.dto.update.request.MemberNicknameUpdateReque
 import ject.componote.domain.member.dto.update.request.MemberProfileImageUpdateRequest;
 import ject.componote.domain.member.dto.update.request.MemberEmailUpdateRequest;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerificationRequest;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
-import ject.componote.domain.auth.model.User;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
+import ject.componote.domain.member.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

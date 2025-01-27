@@ -9,10 +9,10 @@ import ject.componote.domain.member.dto.update.request.MemberNicknameUpdateReque
 import ject.componote.domain.member.dto.update.request.MemberProfileImageUpdateRequest;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerificationRequest;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Email;
-import ject.componote.domain.auth.model.Nickname;
-import ject.componote.domain.auth.model.ProfileImage;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Email;
+import ject.componote.domain.member.model.Nickname;
+import ject.componote.domain.member.model.ProfileImage;
 import ject.componote.domain.member.application.MemberService;
 import ject.componote.infra.mail.application.MailService;
 import ject.componote.infra.storage.application.StorageService;

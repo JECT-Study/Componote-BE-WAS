@@ -1,6 +1,7 @@
 package ject.componote.domain.auth.model;
 
 import ject.componote.domain.auth.error.InvalidProfileImageExtensionException;
+import ject.componote.domain.member.model.ProfileImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

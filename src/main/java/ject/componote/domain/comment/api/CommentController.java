@@ -1,9 +1,9 @@
 package ject.componote.domain.comment.api;
 
 import jakarta.validation.Valid;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
-import ject.componote.domain.auth.model.User;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
+import ject.componote.domain.member.model.User;
 import ject.componote.domain.comment.application.CommentService;
 import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;

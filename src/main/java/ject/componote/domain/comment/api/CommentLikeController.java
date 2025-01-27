@@ -1,8 +1,8 @@
 package ject.componote.domain.comment.api;
 
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
-import ject.componote.domain.auth.model.User;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
+import ject.componote.domain.member.model.User;
 import ject.componote.domain.comment.application.CommentLikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

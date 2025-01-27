@@ -1,7 +1,7 @@
 package ject.componote.fixture;
 
 import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.auth.model.Email;
+import ject.componote.domain.member.model.Email;
 
 public enum MemberFixture {
     KIM("김민우", null, "DEVELOPER", "profiles/123.jpg"),

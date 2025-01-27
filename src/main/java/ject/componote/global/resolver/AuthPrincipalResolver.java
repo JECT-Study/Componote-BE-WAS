@@ -1,8 +1,8 @@
 package ject.componote.global.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

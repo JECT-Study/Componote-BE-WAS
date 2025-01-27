@@ -2,9 +2,9 @@ package ject.componote.domain.comment.application;
 
 import ject.componote.domain.auth.domain.Job;
 import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Nickname;
-import ject.componote.domain.auth.model.ProfileImage;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Nickname;
+import ject.componote.domain.member.model.ProfileImage;
 import ject.componote.domain.comment.dao.CommentFindByComponentDao;
 import ject.componote.domain.comment.dao.CommentFindByMemberDao;
 import ject.componote.domain.comment.dao.CommentRepository;

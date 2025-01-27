@@ -1,9 +1,9 @@
 package ject.componote.domain.report.api;
 
 import jakarta.validation.Valid;
-import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.model.Authenticated;
-import ject.componote.domain.auth.model.User;
+import ject.componote.domain.member.model.AuthPrincipal;
+import ject.componote.domain.member.model.Authenticated;
+import ject.componote.domain.member.model.User;
 import ject.componote.domain.report.application.ReportService;
 import ject.componote.domain.report.dto.request.ReportRequest;
 import lombok.RequiredArgsConstructor;
