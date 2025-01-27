@@ -1,8 +1,8 @@
 package ject.componote.domain.member.model;
 
 import ject.componote.domain.auth.domain.BadWordFilteringSingleton;
-import ject.componote.domain.auth.error.InvalidNicknameException;
-import ject.componote.domain.auth.error.OffensiveNicknameException;
+import ject.componote.domain.member.error.InvalidNicknameException;
+import ject.componote.domain.member.error.OffensiveNicknameException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

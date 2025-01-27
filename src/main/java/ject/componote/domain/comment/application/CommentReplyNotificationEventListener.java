@@ -2,7 +2,7 @@ package ject.componote.domain.comment.application;
 
 import ject.componote.domain.member.dao.MemberRepository;
 import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.auth.error.NotFoundMemberException;
+import ject.componote.domain.member.error.NotFoundMemberException;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;
 import ject.componote.domain.comment.dto.reply.event.CommentReplyNotificationEvent;

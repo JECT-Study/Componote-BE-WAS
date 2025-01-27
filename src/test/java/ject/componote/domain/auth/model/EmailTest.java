@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.model;
 
-import ject.componote.domain.auth.error.InvalidEmailException;
+import ject.componote.domain.member.error.InvalidEmailException;
 import ject.componote.domain.member.model.Email;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

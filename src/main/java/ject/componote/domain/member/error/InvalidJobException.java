@@ -1,5 +1,6 @@
-package ject.componote.domain.auth.error;
+package ject.componote.domain.member.error;
 
+import ject.componote.domain.auth.error.AuthException;
 import org.springframework.http.HttpStatus;
 
 public class InvalidJobException extends AuthException {

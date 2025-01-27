@@ -1,6 +1,6 @@
 package ject.componote.domain.member.model;
 
-import ject.componote.domain.auth.error.InvalidProfileImageExtensionException;
+import ject.componote.domain.member.error.InvalidProfileImageExtensionException;
 import ject.componote.domain.common.model.AbstractImage;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.domain;
 
-import ject.componote.domain.auth.error.InvalidJobException;
+import ject.componote.domain.member.error.InvalidJobException;
 
 import java.util.Arrays;
 

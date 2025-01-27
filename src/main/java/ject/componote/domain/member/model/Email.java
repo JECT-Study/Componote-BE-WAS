@@ -1,6 +1,6 @@
 package ject.componote.domain.member.model;
 
-import ject.componote.domain.auth.error.InvalidEmailException;
+import ject.componote.domain.member.error.InvalidEmailException;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
