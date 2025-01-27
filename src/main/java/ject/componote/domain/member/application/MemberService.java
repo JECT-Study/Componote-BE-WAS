@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.application;
+package ject.componote.domain.member.application;
 
 import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.domain.Member;

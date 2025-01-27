@@ -13,6 +13,7 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
+import ject.componote.domain.member.application.MemberService;
 import ject.componote.infra.mail.application.MailService;
 import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.BeforeEach;

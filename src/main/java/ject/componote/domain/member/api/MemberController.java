@@ -1,7 +1,7 @@
 package ject.componote.domain.member.api;
 
 import jakarta.validation.Valid;
-import ject.componote.domain.auth.application.MemberService;
+import ject.componote.domain.member.application.MemberService;
 import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
 import ject.componote.domain.auth.dto.update.request.MemberNicknameUpdateRequest;
 import ject.componote.domain.auth.dto.update.request.MemberProfileImageUpdateRequest;
