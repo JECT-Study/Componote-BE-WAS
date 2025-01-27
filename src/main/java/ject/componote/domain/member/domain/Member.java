@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.domain;
+package ject.componote.domain.member.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

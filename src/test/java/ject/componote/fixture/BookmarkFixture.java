@@ -1,10 +1,9 @@
 package ject.componote.fixture;
 
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 import ject.componote.domain.bookmark.domain.Bookmark;
 import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.design.domain.Design;
-import ject.componote.domain.design.domain.DesignSystem;
 
 public enum BookmarkFixture {
   COMPONENT_BOOKMARK(1L, "component"),

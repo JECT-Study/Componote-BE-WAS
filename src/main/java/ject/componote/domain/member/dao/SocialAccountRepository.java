@@ -1,6 +1,6 @@
 package ject.componote.domain.member.dao;
 
-import ject.componote.domain.auth.domain.SocialAccount;
+import ject.componote.domain.member.domain.SocialAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

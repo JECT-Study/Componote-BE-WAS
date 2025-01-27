@@ -1,4 +1,4 @@
-package ject.componote.domain.auth.domain;
+package ject.componote.domain.member.domain;
 
 import ject.componote.domain.member.error.InvalidJobException;
 

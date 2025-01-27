@@ -6,7 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import ject.componote.domain.auth.domain.SocialAccount;
+import ject.componote.domain.member.domain.SocialAccount;
 import ject.componote.domain.auth.error.InvalidJWTException;
 import ject.componote.domain.auth.token.error.InvalidSocialAccountTokenException;
 import ject.componote.domain.member.model.AuthPrincipal;

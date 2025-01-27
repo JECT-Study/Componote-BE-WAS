@@ -3,7 +3,7 @@ package ject.componote.domain.auth.dto.signup.request;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 
 public record MemberSignupRequest(
         @NotBlank String nickname,

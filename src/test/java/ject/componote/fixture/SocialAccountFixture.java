@@ -1,6 +1,6 @@
 package ject.componote.fixture;
 
-import ject.componote.domain.auth.domain.SocialAccount;
+import ject.componote.domain.member.domain.SocialAccount;
 
 public enum SocialAccountFixture {
     KIM("123", "google");

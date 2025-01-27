@@ -1,7 +1,7 @@
 package ject.componote.domain.bookmark.application;
 
 import ject.componote.domain.member.dao.MemberRepository;
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 import ject.componote.domain.member.model.AuthPrincipal;
 import ject.componote.domain.bookmark.dao.BookmarkRepository;
 import ject.componote.domain.bookmark.domain.Bookmark;

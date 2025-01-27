@@ -1,6 +1,6 @@
 package ject.componote.domain.comment.validation;
 
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 import ject.componote.domain.member.model.AuthPrincipal;
 import ject.componote.domain.comment.dao.CommentRepository;
 import ject.componote.domain.comment.domain.Comment;

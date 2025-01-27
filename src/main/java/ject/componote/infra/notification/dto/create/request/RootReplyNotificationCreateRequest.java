@@ -1,6 +1,6 @@
 package ject.componote.infra.notification.dto.create.request;
 
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 import ject.componote.domain.comment.domain.Comment;
 
 public record RootReplyNotificationCreateRequest(NotificationParticipant participant, Long commentId) {

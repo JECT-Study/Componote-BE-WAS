@@ -1,7 +1,7 @@
 package ject.componote.domain.member.model;
 
-import ject.componote.domain.auth.domain.Member;
-import ject.componote.domain.auth.domain.Role;
+import ject.componote.domain.member.domain.Member;
+import ject.componote.domain.member.domain.Role;
 
 public record AuthPrincipal(Long id, String nickname, Role role) {
     public static AuthPrincipal from(final Member Member) {

@@ -1,6 +1,6 @@
 package ject.componote.domain.auth.dto.login.response;
 
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 
 public record MemberLoginResponse(String accessToken, Long memberId) {
     public static MemberLoginResponse of(final String accessToken, final Member member) {

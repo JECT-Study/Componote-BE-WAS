@@ -1,6 +1,6 @@
 package ject.componote.domain.comment.model;
 
-import ject.componote.domain.auth.domain.BadWordFilteringSingleton;
+import ject.componote.domain.member.domain.BadWordFilteringSingleton;
 import ject.componote.domain.comment.error.BlankCommentException;
 import ject.componote.domain.comment.error.ExceedCommentLengthException;
 import ject.componote.domain.comment.error.OffensiveCommentException;

@@ -1,6 +1,6 @@
 package ject.componote.fixture;
 
-import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.member.domain.Member;
 import ject.componote.domain.member.model.Email;
 
 public enum MemberFixture {
