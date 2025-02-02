@@ -38,19 +38,20 @@ public class BookmarkService {
     public BookmarkResponse addBookmark(AuthPrincipal authPrincipal, BookmarkRequest request) {
         Member member = findMemberOrThrow(authPrincipal.id());
         BookmarkType bookmarkType = BookmarkType.from(request.type());
-        return bookmarkType.create(this, member, request.id());
+        return bookmarkType.getStrategy().create(this, member, request.id());
     }
+
 
     @Transactional(readOnly = true)
     public PageResponse<BookmarkResponse> getBookmarks(AuthPrincipal authPrincipal, Pageable pageable, String type) {
         BookmarkType bookmarkType = BookmarkType.from(type);
-        return bookmarkType.get(this, authPrincipal, pageable);
+        return bookmarkType.getStrategy().get(this, authPrincipal, pageable);
     }
 
     @Transactional
     public BookmarkResponse deleteBookmark(AuthPrincipal authPrincipal, BookmarkRequest request) {
         BookmarkType bookmarkType = BookmarkType.from(request.type());
-        return bookmarkType.delete(this, authPrincipal, request.id());
+        return bookmarkType.getStrategy().delete(this, authPrincipal, request.id());
     }
 
     public BookmarkResponse createComponentBookmark(Member member, Long componentId) {
