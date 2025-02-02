@@ -58,14 +58,14 @@ public class BookmarkService {
         Component component = componentRepository.findById(componentId)
                 .orElseThrow(() -> new NotFoundComponentException(componentId));
         ComponentBookmark bookmark = componentBookmarkRepository.save(ComponentBookmark.of(member, component));
-        return BookmarkResponse.from(bookmark, component);
+        return BookmarkResponse.of(bookmark, component);
     }
 
     public BookmarkResponse createDesignSystemBookmark(Member member, Long designId) {
         Design design = designSystemRepository.findById(designId)
                 .orElseThrow(() -> new NotFoundDesignSystemException(designId));
         DesignBookmark bookmark = designBookmarkRepository.save(DesignBookmark.of(member, design));
-        return BookmarkResponse.from(bookmark, design);
+        return BookmarkResponse.of(bookmark, design);
     }
 
     public PageResponse<BookmarkResponse> getComponentBookmarks(AuthPrincipal authPrincipal, Pageable pageable) {
@@ -73,7 +73,7 @@ public class BookmarkService {
         return PageResponse.from(bookmarks.map(bookmark -> {
             Component component = componentRepository.findById(bookmark.getComponentId())
                     .orElseThrow(() -> new NotFoundComponentException(bookmark.getComponentId()));
-            return BookmarkResponse.from(bookmark, component);
+            return BookmarkResponse.of(bookmark, component);
         }));
     }
 
@@ -82,7 +82,7 @@ public class BookmarkService {
         return PageResponse.from(bookmarks.map(bookmark -> {
             Design design = designSystemRepository.findById(bookmark.getDesignId())
                     .orElseThrow(() -> new NotFoundDesignSystemException(bookmark.getDesignId()));
-            return BookmarkResponse.from(bookmark, design);
+            return BookmarkResponse.of(bookmark, design);
         }));
     }
 
@@ -92,7 +92,7 @@ public class BookmarkService {
         componentBookmarkRepository.delete(bookmark);
         Component component = componentRepository.findById(bookmark.getComponentId())
                 .orElseThrow(() -> new NotFoundComponentException(bookmark.getComponentId()));
-        return BookmarkResponse.from(bookmark, component);
+        return BookmarkResponse.of(bookmark, component);
     }
 
     public BookmarkResponse deleteDesignSystemBookmark(AuthPrincipal authPrincipal, Long designId) {
@@ -101,7 +101,7 @@ public class BookmarkService {
         designBookmarkRepository.delete(bookmark);
         Design design = designSystemRepository.findById(bookmark.getDesignId())
                 .orElseThrow(() -> new NotFoundDesignSystemException(bookmark.getDesignId()));
-        return BookmarkResponse.from(bookmark, design);
+        return BookmarkResponse.of(bookmark, design);
     }
 
     private Member findMemberOrThrow(Long memberId) {

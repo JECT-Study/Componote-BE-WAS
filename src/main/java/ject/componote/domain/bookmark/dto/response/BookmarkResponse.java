@@ -19,7 +19,7 @@ public record BookmarkResponse(
     LocalDateTime createdAt
 ) {
   // Component 북마크 변환
-  public static BookmarkResponse from(ComponentBookmark bookmark, Component component) {
+  public static BookmarkResponse of(ComponentBookmark bookmark, Component component) {
     return new BookmarkResponse(
             bookmark.getId(),
             "component",
@@ -34,7 +34,7 @@ public record BookmarkResponse(
   }
 
   // DesignSystem 북마크 변환
-  public static BookmarkResponse from(DesignBookmark bookmark, Design designSystem) {
+  public static BookmarkResponse of(DesignBookmark bookmark, Design designSystem) {
     return new BookmarkResponse(
         bookmark.getId(),
         "design",
