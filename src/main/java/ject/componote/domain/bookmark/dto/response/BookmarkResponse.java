@@ -37,7 +37,7 @@ public record BookmarkResponse(
   public static BookmarkResponse from(DesignBookmark bookmark, Design designSystem) {
     return new BookmarkResponse(
         bookmark.getId(),
-        "designSystem",
+        "design",
         designSystem.getId(),
         designSystem.getSummary().getName(),
         designSystem.getSummary().getOrganization(),
