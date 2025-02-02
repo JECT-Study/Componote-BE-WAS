@@ -7,7 +7,6 @@ import ject.componote.domain.bookmark.dao.BookmarkRepository;
 import ject.componote.domain.bookmark.dao.ComponentBookmarkRepository;
 import ject.componote.domain.bookmark.domain.ComponentBookmark;
 import ject.componote.domain.bookmark.dto.request.BookmarkRequest;
-import ject.componote.domain.bookmark.dto.response.BookmarkResponse;
 import ject.componote.domain.bookmark.error.NotFoundBookmarkException;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.dao.ComponentRepository;
