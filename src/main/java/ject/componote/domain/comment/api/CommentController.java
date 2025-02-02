@@ -83,24 +83,6 @@ public class CommentController {
                 .build();
     }
 
-    @PostMapping("/comments/{commentId}/likes")
-    @User
-    public ResponseEntity<Void> likeComment(@Authenticated final AuthPrincipal authPrincipal,
-                                            @PathVariable("commentId") final Long commentId) {
-        commentService.likeComment(authPrincipal, commentId);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
-    @DeleteMapping("/comments/{commentId}/likes")
-    @User
-    public ResponseEntity<Void> unlikeComment(@Authenticated final AuthPrincipal authPrincipal,
-                                              @PathVariable("commentId") final Long commentId) {
-        commentService.unlikeComment(authPrincipal, commentId);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
     @DeleteMapping("/comments/{commentId}")
     @User
     public ResponseEntity<Void> delete(@Authenticated final AuthPrincipal authPrincipal,

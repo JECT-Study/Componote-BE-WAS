@@ -22,51 +22,42 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<ComponentSummaryDao> searchByKeyword(final String keyword, final Pageable pageable) {
-        return search(null, keyword, null, pageable, false);
+    public Page<ComponentSummaryDao> findAllByKeywordAndTypes(final String keyword, final List<ComponentType> types, final Pageable pageable) {
+        return findAllWithConditions(null, keyword, types, pageable);
     }
 
     @Override
-    public Page<ComponentSummaryDao> searchByKeywordWithTypes(final String keyword, final List<ComponentType> types, final Pageable pageable) {
-        return search(null, keyword, types, pageable, false);
+    public Page<ComponentSummaryDao> findAllByKeywordAndTypesWithBookmark(final Long memberId, final String keyword, final List<ComponentType> types, final Pageable pageable) {
+        return findAllWithConditions(memberId, keyword, types, pageable);
     }
 
-    @Override
-    public Page<ComponentSummaryDao> searchWithBookmark(final Long memberId, final String keyword, final Pageable pageable) {
-        return search(memberId, keyword, null, pageable, true);
+    private Page<ComponentSummaryDao> findAllWithConditions(final Long memberId,
+                                                            final String keyword,
+                                                            final List<ComponentType> types,
+                                                            final Pageable pageable) {
+        final JPAQuery<Long> countQuery = createCountQuery(memberId, keyword, types);
+        final JPAQuery<ComponentSummaryDao> contentQuery = createContentQuery(memberId, keyword, types);
+        return toPage(contentQuery, countQuery, component, pageable);
     }
 
-    @Override
-    public Page<ComponentSummaryDao> searchWithBookmarkAndTypes(final Long memberId, final String keyword, final List<ComponentType> types, final Pageable pageable) {
-        return search(memberId, keyword, types, pageable, true);
+    private JPAQuery<Long> createCountQuery(final Long memberId, final String keyword, final List<ComponentType> types) {
+        return createBaseQuery(memberId, keyword, types)
+                .select(component.countDistinct());
     }
 
-    public Page<ComponentSummaryDao> search(final Long memberId,
-                                            final String keyword,
-                                            final List<ComponentType> types,
-                                            final Pageable pageable,
-                                            final boolean withBookmark) {
-        final JPAQuery<Long> countQuery = createCountQuery(keyword, types);
-        final JPAQuery<ComponentSummaryDao> baseQuery = createBaseQuery(memberId, keyword, types, withBookmark);
-        return toPage(baseQuery, countQuery, component, pageable);
+    private JPAQuery<ComponentSummaryDao> createContentQuery(final Long memberId, final String keyword, final List<ComponentType> types) {
+        return createBaseQuery(memberId, keyword, types)
+                .select(componentDaoFactory.createForSummary(memberId))
+                .distinct();    // 중복 데이터 임시 해결
     }
 
-    private JPAQuery<Long> createCountQuery(final String keyword, final List<ComponentType> types) {
-        return queryFactory.select(component.countDistinct())
-                .from(component)
-                .leftJoin(component.mixedNames, mixedName)
-                .where(createSearchCondition(keyword, types));
-    }
-
-    private JPAQuery<ComponentSummaryDao> createBaseQuery(final Long memberId,
-                                                          final String keyword,
-                                                          final List<ComponentType> types,
-                                                          final boolean withBookmark) {
-        final JPAQuery<ComponentSummaryDao> query = queryFactory.selectDistinct(componentDaoFactory.createForSummary(withBookmark))
+    private JPAQuery<?> createBaseQuery(final Long memberId, final String keyword, final List<ComponentType> types) {
+        final JPAQuery<?> query = queryFactory
+                .select(component)
                 .from(component)
                 .leftJoin(component.mixedNames, mixedName);
 
-        if (withBookmark && memberId != null) {
+        if (memberId != null) {
             query.leftJoin(bookmark)
                     .on(eqExpression(bookmark.resourceId, component.id)    // 임시 수정
                             .and(eqExpression(bookmark.memberId, memberId)));
@@ -78,13 +69,17 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
     private BooleanExpression createSearchCondition(final String keyword, final List<ComponentType> types) {
         final BooleanExpression keywordCondition = createKeywordCondition(keyword);
         if (types != null && !types.isEmpty()) {
-            return keywordCondition.and(component.type.in(types));
+            return component.type.in(types).and(keywordCondition);
         }
 
         return keywordCondition;
     }
 
     private static BooleanExpression createKeywordCondition(final String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return null;
+        }
+
         return mixedName.name.contains(keyword)
                 .or(component.summary.title.contains(keyword));
     }

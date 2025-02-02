@@ -33,7 +33,7 @@ class ComponentMapperTest {
         assertThat(response.bookmarkCount()).isEqualTo(component.getBookmarkCount().getValue());
         assertThat(response.commentCount()).isEqualTo(component.getCommentCount().getValue());
         assertThat(response.title()).isEqualTo(component.getSummary().getTitle());
-        assertThat(response.description()).isEqualTo(component.getSummary().getDescription());
+        assertThat(response.introduction()).isEqualTo(component.getSummary().getIntroduction());
         assertThat(response.thumbnailUrl()).isEqualTo(component.getSummary().getThumbnail().toUrl());
     }
 }

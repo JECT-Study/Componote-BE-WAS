@@ -20,30 +20,20 @@ public class ComponentSummary {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    @Column(name = "introduction", nullable = false)
+    private String introduction;
 
     @Convert(converter = ComponentThumbnailConverter.class)
     @Column(name = "thumbnail", nullable = false)
     private ComponentThumbnail thumbnail;
 
-    private ComponentSummary(final String title, final String description, final ComponentThumbnail thumbnail) {
-        validateTitle(title);
-        validateDescription(description);
+    private ComponentSummary(final String title, final String introduction, final ComponentThumbnail thumbnail) {
         this.title = title;
-        this.description = description;
+        this.introduction = introduction;
         this.thumbnail = thumbnail;
     }
 
-    private void validateTitle(final String title) {
-
-    }
-
-    private void validateDescription(final String description) {
-
-    }
-
-    public static ComponentSummary of(final String title, final String description, final String thumbnailObjectKey) {
-        return new ComponentSummary(title, description, ComponentThumbnail.from(thumbnailObjectKey));
+    public static ComponentSummary of(final String title, final String introduction, final String thumbnailObjectKey) {
+        return new ComponentSummary(title, introduction, ComponentThumbnail.from(thumbnailObjectKey));
     }
 }
