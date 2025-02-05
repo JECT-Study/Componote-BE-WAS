@@ -1,6 +1,8 @@
 package ject.componote.domain.design.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.design.dao.DesignSystemRepository;
@@ -31,14 +33,7 @@ public class DesignSystemService {
                                                                        final DesignSystemSearchRequest request,
                                                                        final Pageable pageable) {
 
-        Page<Design> designs = DesignSystemSearchStrategy.searchBy(
-                authPrincipal,
-                designSystemRepository,
-                designFilterRepository,
-                designLinkRepository,
-                request,
-                pageable
-        );
+        Page<Design> designs = searchByConditions(authPrincipal, request, pageable);
 
         Page<DesignSystemSearchResponse> responsePage = designs.map(design -> {
             List<DesignFilter> filters = designFilterRepository.findAllByDesignId(design.getId());
@@ -49,5 +44,34 @@ public class DesignSystemService {
 
         return PageResponse.from(responsePage);
     }
-}
 
+    private Page<Design> searchByConditions(AuthPrincipal authPrincipal, DesignSystemSearchRequest request, Pageable pageable) {
+        String keyword = request.keyword();
+        List<Long> filteredDesignIds = getFilteredDesignIds(request);
+
+        if (isLoggedIn(authPrincipal)) {
+            return !filteredDesignIds.isEmpty()
+                    ? designSystemRepository.findAllByIdInAndBookmarkStatus(authPrincipal.id(), filteredDesignIds, pageable)
+                    : designSystemRepository.findByKeywordAndBookmarkStatus(authPrincipal.id(), keyword, pageable);
+        }
+
+        return !filteredDesignIds.isEmpty()
+                ? designSystemRepository.findAllByIdIn(filteredDesignIds, pageable)
+                : designSystemRepository.findByKeyword(keyword, pageable);
+    }
+
+    private List<Long> getFilteredDesignIds(DesignSystemSearchRequest request) {
+        if (request.filters() == null || request.filters().isEmpty()) {
+            return List.of();
+        }
+
+        return request.filters().stream()
+                .flatMap(filter -> designFilterRepository.findAllDesignIdByCondition(filter.parseType(), filter.values()).stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private boolean isLoggedIn(AuthPrincipal authPrincipal) {
+        return authPrincipal != null;
+    }
+}
