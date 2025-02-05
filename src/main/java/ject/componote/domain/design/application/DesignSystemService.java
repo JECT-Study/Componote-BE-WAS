@@ -1,6 +1,7 @@
 package ject.componote.domain.design.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import ject.componote.domain.auth.model.AuthPrincipal;
@@ -26,18 +27,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class DesignSystemService {
 
     private final DesignSystemRepository designSystemRepository;
-    private final DesignFilterRepository designFilterRepository;
-    private final DesignLinkRepository designLinkRepository;
 
     public PageResponse<DesignSystemSearchResponse> searchDesignSystem(final AuthPrincipal authPrincipal,
                                                                        final DesignSystemSearchRequest request,
                                                                        final Pageable pageable) {
+        List<Long> filteredDesignIds = getFilteredDesignIds(request);
 
-        Page<Design> designs = searchByConditions(authPrincipal, request, pageable);
+        Page<Design> designs = searchByConditions(authPrincipal, request.keyword(), filteredDesignIds, pageable);
+
+        List<Long> designIds = designs.getContent().stream().map(Design::getId).collect(Collectors.toList());
+
+        Map<Long, List<DesignFilter>> filtersMap = designSystemRepository.findFiltersByDesignIds(designIds)
+                .stream().collect(Collectors.groupingBy(DesignFilter::getDesignId));
+
+        Map<Long, List<DesignLink>> linksMap = designSystemRepository.findLinksByDesignIds(designIds)
+                .stream().collect(Collectors.groupingBy(DesignLink::getDesignId));
 
         Page<DesignSystemSearchResponse> responsePage = designs.map(design -> {
-            List<DesignFilter> filters = designFilterRepository.findAllByDesignId(design.getId());
-            List<DesignLink> links = designLinkRepository.findAllByDesignId(design.getId());
+            List<DesignFilter> filters = filtersMap.getOrDefault(design.getId(), List.of());
+            List<DesignLink> links = linksMap.getOrDefault(design.getId(), List.of());
+
             DesignSystem designSystem = DesignSystem.of(design, links, filters);
             return DesignSystemSearchResponse.from(designSystem);
         });
@@ -45,16 +54,12 @@ public class DesignSystemService {
         return PageResponse.from(responsePage);
     }
 
-    private Page<Design> searchByConditions(AuthPrincipal authPrincipal, DesignSystemSearchRequest request, Pageable pageable) {
-        String keyword = request.keyword();
-        List<Long> filteredDesignIds = getFilteredDesignIds(request);
-
-        if (isLoggedIn(authPrincipal)) {
+    private Page<Design> searchByConditions(AuthPrincipal authPrincipal, String keyword, List<Long> filteredDesignIds, Pageable pageable) {
+        if (authPrincipal != null) {
             return !filteredDesignIds.isEmpty()
                     ? designSystemRepository.findAllByIdInAndBookmarkStatus(authPrincipal.id(), filteredDesignIds, pageable)
                     : designSystemRepository.findByKeywordAndBookmarkStatus(authPrincipal.id(), keyword, pageable);
         }
-
         return !filteredDesignIds.isEmpty()
                 ? designSystemRepository.findAllByIdIn(filteredDesignIds, pageable)
                 : designSystemRepository.findByKeyword(keyword, pageable);
@@ -66,12 +71,15 @@ public class DesignSystemService {
         }
 
         return request.filters().stream()
-                .flatMap(filter -> designFilterRepository.findAllDesignIdByCondition(filter.parseType(), filter.values()).stream())
+                .flatMap(filter -> {
+                    List<Long> designIds = designSystemRepository.findAllDesignIdByCondition(
+                            filter.parseType(),
+                            filter.values() != null ? filter.values() : List.of()
+                    );
+                    return designIds.stream();
+                })
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-    private boolean isLoggedIn(AuthPrincipal authPrincipal) {
-        return authPrincipal != null;
-    }
 }
