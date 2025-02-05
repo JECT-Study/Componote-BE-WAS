@@ -42,7 +42,7 @@ public class AuthService {
 
         final Member member = memberRepository.save(request.toMember());
         final String accessToken = tokenProvider.createToken(AuthPrincipal.from(member));
-        storageService.moveImage(member.getProfileImage());
+//        storageService.moveImage(member.getProfileImage());
         return MemberSignupResponse.of(accessToken, member);
     }
 
