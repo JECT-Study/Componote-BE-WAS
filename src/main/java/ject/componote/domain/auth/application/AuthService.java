@@ -65,4 +65,13 @@ public class AuthService {
         return memberRepository.findBySocialAccountId(socialAccountId)
                 .orElseThrow(() -> NotFoundMemberException.createWhenInvalidSocialAccountId(socialAccountId));
     }
+
+    @Transactional
+    public void delete(final Long memberId) {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> NotFoundMemberException.createWhenInvalidMemberId(memberId));
+        final Long socialAccountId = member.getSocialAccountId();
+        memberRepository.delete(member);
+        socialAccountRepository.deleteById(socialAccountId);
+    }
 }
