@@ -2,7 +2,7 @@ package ject.componote.domain.component.application;
 
 import ject.componote.domain.component.dao.ComponentRepository;
 import ject.componote.domain.component.domain.Component;
-import ject.componote.domain.component.dto.find.event.ComponentViewCountIncreaseEvent;
+import ject.componote.domain.component.dto.event.ComponentViewCountIncreaseEvent;
 import ject.componote.domain.component.error.NotFoundComponentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
