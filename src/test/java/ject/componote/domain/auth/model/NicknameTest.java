@@ -1,6 +1,7 @@
 package ject.componote.domain.auth.model;
 
-import ject.componote.domain.auth.error.InvalidNicknameException;
+import ject.componote.domain.auth.error.InvalidNicknameCharacterException;
+import ject.componote.domain.auth.error.InvalidNicknameLengthException;
 import ject.componote.domain.auth.error.OffensiveNicknameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -33,7 +34,7 @@ class NicknameTest {
     })
     public void invalidLength(final String displayName, final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(InvalidNicknameException.class);
+                .isInstanceOf(InvalidNicknameLengthException.class);
     }
 
     @ParameterizedTest(name = "경우: {0}, 값: {1}")
@@ -54,7 +55,7 @@ class NicknameTest {
     })
     public void invalidCharacters(final String displayName, final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(InvalidNicknameException.class);
+                .isInstanceOf(InvalidNicknameCharacterException.class);
     }
 
     @ParameterizedTest(name = "경우: {0}, 값: {1}")
@@ -65,7 +66,7 @@ class NicknameTest {
     })
     public void invalidHyphenOrUnderscore(final String displayName, final String value) throws Exception {
         assertThatThrownBy(() -> Nickname.from(value))
-                .isInstanceOf(InvalidNicknameException.class);
+                .isInstanceOf(InvalidNicknameCharacterException.class);
     }
 
     @ParameterizedTest
