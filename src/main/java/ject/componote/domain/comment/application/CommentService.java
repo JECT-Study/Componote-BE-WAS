@@ -24,7 +24,6 @@ import ject.componote.domain.component.dao.ComponentRepository;
 import ject.componote.domain.component.dto.event.ComponentCommentCountDecreaseEvent;
 import ject.componote.domain.component.dto.event.ComponentCommentCountIncreaseEvent;
 import ject.componote.domain.component.error.NotFoundComponentException;
-import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -39,7 +38,6 @@ public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
     private final ComponentRepository componentRepository;
-    private final StorageService storageService;
 
     @Transactional
     public CommentCreateResponse create(final AuthPrincipal authPrincipal, final CommentCreateRequest request) {
@@ -87,7 +85,7 @@ public class CommentService {
 
         final CommentImage image = CommentImage.from(commentUpdateRequest.imageObjectKey());
         if (!comment.equalsImage(image)) {
-            storageService.moveImage(image);
+            eventPublisher.publishEvent(CommentImageMoveEvent.from(comment));
         }
 
         final CommentContent content = CommentContent.from(commentUpdateRequest.content()); // 가비지가 발생하지 않을까?
