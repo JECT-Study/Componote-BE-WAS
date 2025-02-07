@@ -60,19 +60,19 @@ public final class RepositoryUtils {
         return simpleExpression.eq(target);
     }
 
-    public static <E> OrderSpecifier<?>[] createOrderSpecifiers(final EntityPathBase<E> qClass, final Pageable pageable) {
-        return pageable.getSort()
-                .stream()
-                .map(sort -> toOrderSpecifier(qClass, sort))
-                .toArray(OrderSpecifier[]::new);
-    }
-
     private static <T, E> JPAQuery<T> createContentQuery(final JPAQuery<T> query,
                                                          final EntityPathBase<E> qClass,
                                                          final Pageable pageable) {
         return query.limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(createOrderSpecifiers(qClass, pageable));
+    }
+
+    public static <E> OrderSpecifier<?>[] createOrderSpecifiers(final EntityPathBase<E> qClass, final Pageable pageable) {
+        return pageable.getSort()
+                .stream()
+                .map(sort -> toOrderSpecifier(qClass, sort))
+                .toArray(OrderSpecifier[]::new);
     }
 
     private static <E> OrderSpecifier<?> toOrderSpecifier(final EntityPathBase<E> qClass, final Sort.Order sortOrder) {
