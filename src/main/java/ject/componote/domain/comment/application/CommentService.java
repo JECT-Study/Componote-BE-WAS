@@ -143,8 +143,9 @@ public class CommentService {
         }
 
         final Long parentId = request.parentId();
-        if (!commentRepository.existsById(parentId)) {
-            throw new NotFoundParentCommentException(parentId);
+        final Long componentId = request.componentId();
+        if (!commentRepository.existsByIdAndComponentId(parentId, componentId)) {
+            throw new NotFoundParentCommentException();
         }
     }
 }
