@@ -1,6 +1,7 @@
 package ject.componote.domain.comment.application;
 
 import ject.componote.domain.comment.dto.image.event.CommentImageMoveEvent;
+import ject.componote.domain.comment.model.CommentImage;
 import ject.componote.infra.storage.application.StorageProducer;
 import ject.componote.infra.storage.dto.move.request.ImageMoveRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,10 @@ public class CommentImageEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleImageMove(final CommentImageMoveEvent event) {
-        storageProducer.sendImageMoveMessage(ImageMoveRequest.from(event.image()));
+        final CommentImage image = event.image();
+        if (image == null || image.isEmpty()) {
+            return;
+        }
+        storageProducer.sendImageMoveMessage(ImageMoveRequest.from(image));
     }
 }
