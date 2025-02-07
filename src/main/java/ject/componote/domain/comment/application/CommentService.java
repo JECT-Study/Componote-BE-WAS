@@ -10,6 +10,7 @@ import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByParentResponse;
+import ject.componote.domain.comment.dto.image.event.CommentImageMoveEvent;
 import ject.componote.domain.comment.dto.reply.event.CommentReplyCountIncreaseEvent;
 import ject.componote.domain.comment.dto.reply.event.CommentReplyNotificationEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
@@ -19,6 +20,10 @@ import ject.componote.domain.comment.model.CommentContent;
 import ject.componote.domain.comment.model.CommentImage;
 import ject.componote.domain.comment.validation.CommenterValidation;
 import ject.componote.domain.common.dto.response.PageResponse;
+import ject.componote.domain.component.dao.ComponentRepository;
+import ject.componote.domain.component.dto.event.ComponentCommentCountDecreaseEvent;
+import ject.componote.domain.component.dto.event.ComponentCommentCountIncreaseEvent;
+import ject.componote.domain.component.error.NotFoundComponentException;
 import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,16 +38,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final ApplicationEventPublisher eventPublisher;
     private final CommentRepository commentRepository;
+    private final ComponentRepository componentRepository;
     private final StorageService storageService;
 
     @Transactional
     public CommentCreateResponse create(final AuthPrincipal authPrincipal, final CommentCreateRequest request) {
+        validateComponentId(request);
         validateParentId(request);
-        final Comment comment = commentRepository.save(
-                CommentCreationStrategy.createBy(request, authPrincipal.id())
-        );
-        storageService.moveImage(comment.getImage());
+        final Comment comment = commentRepository.save(CommentCreationStrategy.createBy(request, authPrincipal.id()));
 
+        // 아래 코드 이벤트 계층을 분리하여 리펙토링 예정
+        eventPublisher.publishEvent(CommentImageMoveEvent.from(comment));
+        eventPublisher.publishEvent(ComponentCommentCountIncreaseEvent.from(comment));
         if (isReply(request)) {
             eventPublisher.publishEvent(CommentReplyCountIncreaseEvent.from(comment));
             eventPublisher.publishEvent(CommentReplyNotificationEvent.from(comment));
@@ -90,7 +97,17 @@ public class CommentService {
     @CommenterValidation
     @Transactional
     public void delete(final AuthPrincipal authPrincipal, final Long commentId) {
-        commentRepository.deleteByIdAndMemberId(commentId, authPrincipal.id());
+        final Long memberId = authPrincipal.id();
+        final Comment comment = findCommentByIdAndMemberId(commentId, memberId);    // 로직 수정 예정
+        commentRepository.deleteByIdAndMemberId(commentId, memberId);
+        eventPublisher.publishEvent(ComponentCommentCountDecreaseEvent.from(comment));
+    }
+
+    private void validateComponentId(final CommentCreateRequest request) {
+        final Long componentId = request.componentId();
+        if (!componentRepository.existsById(componentId)) {
+            throw new NotFoundComponentException(componentId);
+        }
     }
 
     private Comment findCommentByIdAndMemberId(final Long commentId, final Long memberId) {
