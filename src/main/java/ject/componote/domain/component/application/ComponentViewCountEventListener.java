@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.stereotype.Component
 @RequiredArgsConstructor
-public class ComponentViewCountEventHandler {
+public class ComponentViewCountEventListener {
     private final ComponentRepository componentRepository;
 
     @Async

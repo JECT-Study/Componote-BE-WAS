@@ -20,12 +20,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-class ComponentViewCountEventHandlerTest {
+class ComponentViewCountEventListenerTest {
     @Mock
     ComponentRepository componentRepository;
 
     @InjectMocks
-    ComponentViewCountEventHandler componentViewCountEventHandler;
+    ComponentViewCountEventListener componentViewCountEventListener;
 
     Component component = INPUT_COMPONENT.생성();
 
@@ -40,7 +40,7 @@ class ComponentViewCountEventHandlerTest {
         // when
         doReturn(Optional.of(component)).when(componentRepository)
                 .findById(componentId);
-        componentViewCountEventHandler.handleViewCountIncrease(event);
+        componentViewCountEventListener.handleViewCountIncrease(event);
 
         // then
         final Count newViewCount = component.getViewCount();
@@ -60,7 +60,7 @@ class ComponentViewCountEventHandlerTest {
                 .findById(componentId);
 
         // then
-        assertThatThrownBy(() -> componentViewCountEventHandler.handleViewCountIncrease(event))
+        assertThatThrownBy(() -> componentViewCountEventListener.handleViewCountIncrease(event))
                 .isInstanceOf(NotFoundComponentException.class);
 
     }
