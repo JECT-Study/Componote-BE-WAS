@@ -13,6 +13,7 @@ import ject.componote.domain.comment.dto.create.request.CommentCreateRequest;
 import ject.componote.domain.comment.dto.create.response.CommentCreateResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByComponentResponse;
 import ject.componote.domain.comment.dto.find.response.CommentFindByMemberResponse;
+import ject.componote.domain.comment.dto.image.event.CommentImageMoveEvent;
 import ject.componote.domain.comment.dto.reply.event.CommentReplyCountIncreaseEvent;
 import ject.componote.domain.comment.dto.reply.event.CommentReplyNotificationEvent;
 import ject.componote.domain.comment.dto.update.request.CommentUpdateRequest;
@@ -21,8 +22,11 @@ import ject.componote.domain.comment.model.CommentContent;
 import ject.componote.domain.comment.model.CommentImage;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.common.model.Count;
+import ject.componote.domain.component.dao.ComponentRepository;
+import ject.componote.domain.component.dto.event.ComponentCommentCountDecreaseEvent;
+import ject.componote.domain.component.dto.event.ComponentCommentCountIncreaseEvent;
+import ject.componote.domain.component.error.NotFoundComponentException;
 import ject.componote.fixture.CommentFixture;
-import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,7 +63,7 @@ class CommentServiceTest {
     CommentRepository commentRepository;
 
     @Mock
-    StorageService storageService;
+    ComponentRepository componentRepository;
 
     @InjectMocks
     CommentService commentService;
@@ -74,6 +78,7 @@ class CommentServiceTest {
     public void create(final CommentFixture fixture) throws Exception {
         // given
         final CommentCreateRequest createRequest = fixture.toCreateRequest();
+        final Long componentId = createRequest.componentId();
         final Comment comment = fixture.생성(authPrincipal.id());
         final CommentCreateResponse expect = CommentCreateResponse.from(comment);
 
@@ -88,10 +93,14 @@ class CommentServiceTest {
                     .publishEvent(CommentReplyNotificationEvent.from(comment));
         }
 
+        doReturn(true).when(componentRepository)
+                .existsById(componentId);
         doReturn(comment).when(commentRepository)
                 .save(any());
-        doNothing().when(storageService)
-                .moveImage(comment.getImage());
+        doNothing().when(eventPublisher)
+                .publishEvent(ComponentCommentCountIncreaseEvent.from(comment));
+        doNothing().when(eventPublisher)
+                .publishEvent(CommentImageMoveEvent.from(comment));
         final CommentCreateResponse actual = commentService.create(authPrincipal, createRequest);
 
         // then
@@ -103,14 +112,33 @@ class CommentServiceTest {
     public void createWhenInvalidParentId() {
         // given
         final CommentCreateRequest createRequest = 답글_이미지X.toCreateRequest();
+        final Long componentId = createRequest.componentId();
         final Long parentId = createRequest.parentId();
 
         // when
         doReturn(false).when(commentRepository)
                 .existsById(parentId);
+        doReturn(true).when(componentRepository)
+                .existsById(componentId);
+
         // then
         assertThatThrownBy(() -> commentService.create(authPrincipal, createRequest))
                 .isInstanceOf(NotFoundParentCommentException.class);
+    }
+
+    @Test
+    @DisplayName("댓글 생성시 잘못된 componentId가 입력된 경우 예외 발생")
+    public void createWhenInvalidComponentId() {
+        // given
+        final CommentCreateRequest createRequest = 답글_이미지X.toCreateRequest();
+        final Long componentId = createRequest.componentId();
+
+        // when
+        doReturn(false).when(componentRepository)
+                .existsById(componentId);
+        // then
+        assertThatThrownBy(() -> commentService.create(authPrincipal, createRequest))
+                .isInstanceOf(NotFoundComponentException.class);
     }
 
     @Test
@@ -198,6 +226,8 @@ class CommentServiceTest {
         // when
         doReturn(Optional.of(comment)).when(commentRepository)
                 .findByIdAndMemberId(commentId, memberId);
+        doNothing().when(eventPublisher)
+                .publishEvent(CommentImageMoveEvent.from(comment));
 
         // then
         assertDoesNotThrow(
@@ -244,6 +274,8 @@ class CommentServiceTest {
         // when
         doReturn(Optional.of(comment)).when(commentRepository)
                 .findByIdAndMemberId(commentId, memberId);
+        doNothing().when(eventPublisher)
+                .publishEvent(CommentImageMoveEvent.from(comment));
 
         // then
         assertDoesNotThrow(
@@ -263,8 +295,12 @@ class CommentServiceTest {
         final Long memberId = authPrincipal.id();
 
         // when
+        doReturn(Optional.of(comment)).when(commentRepository)
+                        .findByIdAndMemberId(commentId, memberId);
         doNothing().when(commentRepository)
                 .deleteByIdAndMemberId(commentId, memberId);
+        doNothing().when(eventPublisher)
+                .publishEvent(ComponentCommentCountDecreaseEvent.from(comment));
 
         // then
         assertDoesNotThrow(
