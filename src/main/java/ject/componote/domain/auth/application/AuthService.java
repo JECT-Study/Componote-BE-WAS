@@ -14,7 +14,7 @@ import ject.componote.domain.auth.error.NotFoundMemberException;
 import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Nickname;
-import ject.componote.domain.auth.util.TokenProvider;
+import ject.componote.domain.auth.token.application.TokenService;
 import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,30 +27,29 @@ public class AuthService {
     private final StorageService storageService;
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
-    private final TokenProvider tokenProvider;
+    private final TokenService tokenService;
 
     @Transactional
     public MemberSignupResponse signup(final MemberSignupRequest request) {
-        final Long socialAccountId = request.socialAccountId();
+        final Long socialAccountId = getSocialAccountId(request.socialAccountToken());
         if (!socialAccountRepository.existsById(socialAccountId)) {
-            throw new NotFoundSocialAccountException(socialAccountId);
+            throw new NotFoundSocialAccountException();
         }
 
         if (memberRepository.existsBySocialAccountId(socialAccountId)) {
-            throw new DuplicatedSignupException(socialAccountId);
+            throw new DuplicatedSignupException();
         }
 
-        final Member member = memberRepository.save(request.toMember());
-        final String accessToken = tokenProvider.createToken(AuthPrincipal.from(member));
+        final Member member = memberRepository.save(request.toMember(socialAccountId));
         storageService.moveImage(member.getProfileImage());
+        final String accessToken = createAccessToken(member);
         return MemberSignupResponse.of(accessToken, member);
     }
 
-    // socialAccountId 만 가지고 로그인을 하는건 위험하지 않을까? 별도 암호화가 있으면 좋을 것 같음
-    public MemberLoginResponse login(final MemberLoginRequest memberLoginRequest) {
-        final Long socialAccountId = memberLoginRequest.socialAccountId();
+    public MemberLoginResponse login(final MemberLoginRequest request) {
+        final Long socialAccountId = getSocialAccountId(request.socialAccountToken());
         final Member member = findMemberBySocialAccountId(socialAccountId);
-        final String accessToken = tokenProvider.createToken(AuthPrincipal.from(member));
+        final String accessToken = createAccessToken(member);
         return MemberLoginResponse.of(accessToken, member);
     }
 
@@ -63,6 +62,14 @@ public class AuthService {
 
     private Member findMemberBySocialAccountId(final Long socialAccountId) {
         return memberRepository.findBySocialAccountId(socialAccountId)
-                .orElseThrow(() -> NotFoundMemberException.createWhenInvalidSocialAccountId(socialAccountId));
+                .orElseThrow(NotFoundMemberException::createWhenInvalidSocialAccountId);
+    }
+
+    private String createAccessToken(final Member member) {
+        return tokenService.createAccessToken(AuthPrincipal.from(member));
+    }
+
+    private Long getSocialAccountId(final String socialAccountToken) {
+        return tokenService.extractSocialAccountTokenPayload(socialAccountToken);
     }
 }

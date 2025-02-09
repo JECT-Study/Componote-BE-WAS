@@ -1,7 +1,5 @@
 package ject.componote.global.interceptor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ject.componote.domain.auth.dao.MemberRepository;
@@ -9,7 +7,7 @@ import ject.componote.domain.auth.error.ExpiredJWTException;
 import ject.componote.domain.auth.error.InvalidJWTException;
 import ject.componote.domain.auth.error.NotFoundJWTException;
 import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.auth.util.TokenProvider;
+import ject.componote.domain.auth.token.application.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,17 +22,14 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final String authAttributeKey;
     private final MemberRepository memberRepository;
-    private final ObjectMapper objectMapper;
-    private final TokenProvider tokenProvider;
+    private final TokenService tokenService;
 
-    public AuthenticationInterceptor(@Value("${auth.attribute-key}") final String authAttributeKey,
+    public AuthenticationInterceptor(@Value("${auth.token.access.attribute-key}") final String authAttributeKey,
                                      final MemberRepository memberRepository,
-                                     final ObjectMapper objectMapper,
-                                     final TokenProvider tokenProvider) {
+                                     final TokenService tokenService) {
         this.authAttributeKey = authAttributeKey;
         this.memberRepository = memberRepository;
-        this.objectMapper = objectMapper;
-        this.tokenProvider = tokenProvider;
+        this.tokenService = tokenService;
     }
 
     @Override
@@ -76,7 +71,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private void validateToken(final String accessToken) {
-        if (!tokenProvider.validateToken(accessToken)) {
+        if (!tokenService.validateAccessToken(accessToken)) {
             throw new ExpiredJWTException();
         }
     }
@@ -89,11 +84,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     }
 
     private AuthPrincipal getAuthPrincipal(final String accessToken) {
-        try {
-            return objectMapper.readValue(tokenProvider.getPayload(accessToken), AuthPrincipal.class);
-        } catch (JsonProcessingException e) {
-            log.info("AuthPrincipal 변환 중 에러가 발생했습니다. accessToken : {}", accessToken);
-            throw new InvalidJWTException();
-        }
+        return tokenService.extractAccessTokenPayload(accessToken);
     }
 }

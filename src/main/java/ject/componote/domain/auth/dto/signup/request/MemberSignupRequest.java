@@ -9,8 +9,8 @@ public record MemberSignupRequest(
         @NotBlank String nickname,
         @NotBlank String job,
         @Nullable String profileImageObjectKey,
-        @NotNull Long socialAccountId) {
-    public Member toMember() {
+        @NotNull String socialAccountToken) {
+    public Member toMember(final Long socialAccountId) {
         return Member.of(
                 nickname,
                 job,

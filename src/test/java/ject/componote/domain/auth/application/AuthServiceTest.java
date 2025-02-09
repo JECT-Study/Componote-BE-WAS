@@ -12,7 +12,7 @@ import ject.componote.domain.auth.error.NotFoundMemberException;
 import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.ProfileImage;
-import ject.componote.domain.auth.util.TokenProvider;
+import ject.componote.domain.auth.token.application.TokenService;
 import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,11 +42,12 @@ class AuthServiceTest {
     SocialAccountRepository socialAccountRepository;
 
     @Mock
-    TokenProvider tokenProvider;
+    TokenService tokenService;
 
     @InjectMocks
     AuthService authService;
 
+    String socialAccountToken = "hello";
     Long socialAccountId = 1L;
     Member member = KIM.생성(socialAccountId);
     ProfileImage profileImage = member.getProfileImage();
@@ -60,12 +61,14 @@ class AuthServiceTest {
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 profileImageObjectKey,
-                socialAccountId
+                socialAccountToken
         );
         final String accessToken = "accessToken";
         final MemberSignupResponse expect = MemberSignupResponse.of(accessToken, member);
 
         // when
+        doReturn(socialAccountId).when(tokenService)
+                .extractSocialAccountTokenPayload(socialAccountToken);
         doReturn(true).when(socialAccountRepository)
                 .existsById(socialAccountId);
         doReturn(false).when(memberRepository)
@@ -74,8 +77,8 @@ class AuthServiceTest {
                 .save(any());
         doNothing().when(storageService)
                 .moveImage(profileImage);
-        doReturn(accessToken).when(tokenProvider)
-                .createToken(AuthPrincipal.from(member));
+        doReturn(accessToken).when(tokenService)
+                .createAccessToken(AuthPrincipal.from(member));
         final MemberSignupResponse actual = authService.signup(request);
 
         // then
@@ -90,10 +93,12 @@ class AuthServiceTest {
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 profileImageObjectKey,
-                socialAccountId
+                socialAccountToken
         );
 
         // when
+        doReturn(socialAccountId).when(tokenService)
+                .extractSocialAccountTokenPayload(socialAccountToken);
         doReturn(true).when(socialAccountRepository)
                 .existsById(socialAccountId);
         doReturn(true).when(memberRepository)
@@ -112,10 +117,12 @@ class AuthServiceTest {
                 member.getNickname().getValue(),
                 member.getJob().name(),
                 profileImageObjectKey,
-                socialAccountId
+                socialAccountToken
         );
 
         // when
+        doReturn(socialAccountId).when(tokenService)
+                .extractSocialAccountTokenPayload(socialAccountToken);
         doReturn(false).when(socialAccountRepository)
                 .existsById(socialAccountId);
 
@@ -129,14 +136,16 @@ class AuthServiceTest {
     public void login() throws Exception {
         // given
         final String accessToken = "accessToken";
-        final MemberLoginRequest request = new MemberLoginRequest(socialAccountId);
+        final MemberLoginRequest request = new MemberLoginRequest(socialAccountToken);
         final MemberLoginResponse expect = MemberLoginResponse.of(accessToken, member);
 
         // when
+        doReturn(socialAccountId).when(tokenService)
+                .extractSocialAccountTokenPayload(socialAccountToken);
         doReturn(Optional.of(member)).when(memberRepository)
                 .findBySocialAccountId(socialAccountId);
-        doReturn(accessToken).when(tokenProvider)
-                .createToken(AuthPrincipal.from(member));
+        doReturn(accessToken).when(tokenService)
+                .createAccessToken(AuthPrincipal.from(member));
         final MemberLoginResponse actual = authService.login(request);
 
         // then
@@ -147,9 +156,11 @@ class AuthServiceTest {
     @Test
     public void loginWhenInvalidSocialAccountId() throws Exception {
         // given
-        final MemberLoginRequest request = new MemberLoginRequest(socialAccountId);
+        final MemberLoginRequest request = new MemberLoginRequest(socialAccountToken);
 
         // when
+        doReturn(socialAccountId).when(tokenService)
+                .extractSocialAccountTokenPayload(socialAccountToken);
         doReturn(Optional.empty()).when(memberRepository)
                 .findBySocialAccountId(socialAccountId);
 
