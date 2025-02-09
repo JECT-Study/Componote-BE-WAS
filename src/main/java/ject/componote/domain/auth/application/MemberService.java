@@ -3,6 +3,7 @@ package ject.componote.domain.auth.application;
 import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
+import ject.componote.domain.auth.dto.image.event.ProfileImageMoveEvent;
 import ject.componote.domain.auth.dto.update.request.MemberEmailUpdateRequest;
 import ject.componote.domain.auth.dto.update.request.MemberNicknameUpdateRequest;
 import ject.componote.domain.auth.dto.update.request.MemberProfileImageUpdateRequest;
@@ -16,8 +17,8 @@ import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.infra.mail.application.MailService;
-import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
-    private final StorageService storageService;
+    private final ApplicationEventPublisher eventPublisher;
     private final MailService mailService;
     private final MemberRepository memberRepository;
 
@@ -44,9 +45,8 @@ public class MemberService {
             return;
         }
 
-        storageService.moveImage(profileImage);
         member.updateProfileImage(profileImage);
-        memberRepository.save(member);
+        eventPublisher.publishEvent(ProfileImageMoveEvent.from(member));
     }
 
     @Transactional
@@ -62,7 +62,6 @@ public class MemberService {
         }
 
         member.updateNickname(nickname);
-        memberRepository.save(member);
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package ject.componote.domain.auth.application;
 import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.dao.SocialAccountRepository;
 import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.auth.dto.image.event.ProfileImageMoveEvent;
 import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
@@ -15,8 +16,8 @@ import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.token.application.TokenService;
-import ject.componote.infra.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
-    private final StorageService storageService;
+    private final ApplicationEventPublisher eventPublisher;
     private final MemberRepository memberRepository;
     private final SocialAccountRepository socialAccountRepository;
     private final TokenService tokenService;
@@ -41,7 +42,7 @@ public class AuthService {
         }
 
         final Member member = memberRepository.save(request.toMember(socialAccountId));
-        storageService.moveImage(member.getProfileImage());
+        eventPublisher.publishEvent(ProfileImageMoveEvent.from(member));
         final String accessToken = createAccessToken(member);
         return MemberSignupResponse.of(accessToken, member);
     }
