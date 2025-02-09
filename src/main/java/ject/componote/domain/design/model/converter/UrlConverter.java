@@ -8,11 +8,11 @@ import ject.componote.domain.design.model.Url;
 public class UrlConverter implements AttributeConverter<Url, String> {
     @Override
     public String convertToDatabaseColumn(final Url url) {
-        return "";
+        return url.getValue();
     }
 
     @Override
     public Url convertToEntityAttribute(final String s) {
-        return null;
+        return Url.from(s);
     }
 }

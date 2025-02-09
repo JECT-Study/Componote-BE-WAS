@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.regex.Pattern;
 
 @Getter
@@ -35,7 +37,9 @@ public class Url {
             throw new IllegalArgumentException("URL cannot be null or empty");
         }
 
-        if (!URL_PATTERN.matcher(value).matches()) {
+        try {
+            new URL(value);
+        } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Invalid URL format: " + value);
         }
     }
