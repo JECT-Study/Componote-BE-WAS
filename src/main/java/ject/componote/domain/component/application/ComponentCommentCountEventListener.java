@@ -6,9 +6,6 @@ import ject.componote.domain.component.dto.event.ComponentCommentCountDecreaseEv
 import ject.componote.domain.component.dto.event.ComponentCommentCountIncreaseEvent;
 import ject.componote.domain.component.error.NotFoundComponentException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -17,18 +14,14 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class ComponentCommentCountEventListener {
     private final ComponentRepository componentRepository;
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT) // cf) Spirng은 내부적으로 트랜잭션 정보를 ThreadLocal 변수에 저장하기 때문에 다른 쓰레드로 트랜잭션이 전파되지 않는다.
     public void handleCommentCountIncreaseEvent(final ComponentCommentCountIncreaseEvent event) {
         final Long componentId = event.componentId();
         final Component component = findComponentById(componentId);
         component.increaseCommentCount();
     }
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleCommentCountDecreaseEvent(final ComponentCommentCountDecreaseEvent event) {
         final Long componentId = event.componentId();
         final Component component = findComponentById(componentId);
