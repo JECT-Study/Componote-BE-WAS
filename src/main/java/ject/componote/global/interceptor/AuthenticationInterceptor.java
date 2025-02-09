@@ -1,6 +1,5 @@
 package ject.componote.global.interceptor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ject.componote.domain.auth.dao.MemberRepository;
@@ -25,9 +24,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     private final MemberRepository memberRepository;
     private final TokenService tokenService;
 
-    public AuthenticationInterceptor(@Value("${auth.attribute-key}") final String authAttributeKey,
+    public AuthenticationInterceptor(@Value("${auth.token.access.attribute-key}") final String authAttributeKey,
                                      final MemberRepository memberRepository,
-                                     final ObjectMapper objectMapper,
                                      final TokenService tokenService) {
         this.authAttributeKey = authAttributeKey;
         this.memberRepository = memberRepository;

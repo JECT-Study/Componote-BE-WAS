@@ -17,7 +17,7 @@ import java.util.Objects;
 public class MemberAuthorityInterceptor implements HandlerInterceptor {
     private final String authAttributeKey;
 
-    public MemberAuthorityInterceptor(@Value("${auth.attribute-key}") final String authAttributeKey) {
+    public MemberAuthorityInterceptor(@Value("${auth.token.access.attribute-key}") final String authAttributeKey) {
         this.authAttributeKey = authAttributeKey;
     }
 
