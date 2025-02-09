@@ -47,14 +47,15 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
     }
 
     private Set<Long> findComponentIdsWithCondition(final Long memberId, final String keyword, final List<ComponentType> types, final Pageable pageable) {
-        final List<Long> fetch = createBaseQuery(memberId, keyword, types)
+        final List<Long> componentIds = createBaseQuery(memberId, keyword, types)
                 .select(component.id)
                 .groupBy(component.id)  // SELECT 절에 없는 컬럼을 가지고 ORDER BY를 수행하므로 GROUP BY 사용
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(createOrderSpecifiers(component, pageable))
+                .orderBy(component.id.asc())    // fileSort 가 unstable 하여 Unique 정렬 조건 추가
                 .fetch();
-        return new HashSet<>(fetch);
+        return new HashSet<>(componentIds);
     }
 
     private JPAQuery<Long> createCountQuery(final Long memberId, final String keyword, final List<ComponentType> types) {
@@ -66,7 +67,8 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
         final JPAQuery<ComponentSummaryDao> contentQuery = queryFactory.select(componentDaoFactory.createForSummary(memberId))
                 .from(component)
                 .where(component.id.in(componentIds))
-                .orderBy(createOrderSpecifiers(component, pageable));
+                .orderBy(createOrderSpecifiers(component, pageable))
+                .orderBy(component.id.asc());   // fileSort 가 stable 하지 않아 Unique 정렬 조건 추가
         return applyBookmarkJoin(contentQuery, memberId);
     }
 
@@ -93,7 +95,7 @@ public class ComponentQueryDslImpl implements ComponentQueryDsl {
         return keywordCondition;
     }
 
-    private static BooleanExpression createKeywordCondition(final String keyword) {
+    private BooleanExpression createKeywordCondition(final String keyword) {
         if (keyword == null || keyword.isEmpty()) {
             return null;
         }
