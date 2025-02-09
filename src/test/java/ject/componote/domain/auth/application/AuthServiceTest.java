@@ -3,6 +3,7 @@ package ject.componote.domain.auth.application;
 import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.dao.SocialAccountRepository;
 import ject.componote.domain.auth.domain.Member;
+import ject.componote.domain.auth.dto.image.event.ProfileImageMoveEvent;
 import ject.componote.domain.auth.dto.login.request.MemberLoginRequest;
 import ject.componote.domain.auth.dto.login.response.MemberLoginResponse;
 import ject.componote.domain.auth.dto.signup.request.MemberSignupRequest;
@@ -13,13 +14,13 @@ import ject.componote.domain.auth.error.NotFoundSocialAccountException;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.domain.auth.token.application.TokenService;
-import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.doReturn;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
     @Mock
-    StorageService storageService;
+    ApplicationEventPublisher eventPublisher;
 
     @Mock
     MemberRepository memberRepository;
@@ -75,8 +76,8 @@ class AuthServiceTest {
                 .existsBySocialAccountId(socialAccountId);
         doReturn(member).when(memberRepository)
                 .save(any());
-        doNothing().when(storageService)
-                .moveImage(profileImage);
+        doNothing().when(eventPublisher)
+                .publishEvent(ProfileImageMoveEvent.from(member));
         doReturn(accessToken).when(tokenService)
                 .createAccessToken(AuthPrincipal.from(member));
         final MemberSignupResponse actual = authService.signup(request);
