@@ -15,7 +15,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
-public class CommentReplyCountEventHandler {
+public class CommentReplyCountEventListener {
     private final CommentRepository commentRepository;
 
     @Async

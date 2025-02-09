@@ -85,6 +85,14 @@ public class Component extends BaseEntity {
         this.viewCount.increase();
     }
 
+    public void increaseCommentCount() {
+        this.commentCount.increase();
+    }
+
+    public void decreaseCommentCount() {
+        this.commentCount.decrease();
+    }
+
     private List<MixedName> parseMixedNames(final List<String> mixedNames) {
         return mixedNames.stream()
                 .map(MixedName::from)
