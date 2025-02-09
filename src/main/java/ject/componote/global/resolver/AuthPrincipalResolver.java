@@ -15,7 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class AuthPrincipalResolver implements HandlerMethodArgumentResolver {
     private final String authAttributeKey;
 
-    public AuthPrincipalResolver(@Value("${auth.attribute-key}") final String authAttributeKey) {
+    public AuthPrincipalResolver(@Value("${auth.token.access.attribute-key}") final String authAttributeKey) {
         this.authAttributeKey = authAttributeKey;
     }
 
