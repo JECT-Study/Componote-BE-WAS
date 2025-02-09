@@ -1,6 +1,6 @@
-package ject.componote.infra.mail.repository;
+package ject.componote.domain.auth.dao;
 
-import ject.componote.infra.mail.model.VerificationCode;
+import ject.componote.domain.auth.domain.VerificationCode;
 
 import java.util.Optional;
 

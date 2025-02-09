@@ -1,7 +1,8 @@
 package ject.componote.infra.mail.repository.impl;
 
-import ject.componote.infra.mail.model.VerificationCode;
-import ject.componote.infra.mail.repository.VerificationCodeRepository;
+import ject.componote.domain.auth.dao.impl.InMemoryVerificationCodeRepository;
+import ject.componote.domain.auth.domain.VerificationCode;
+import ject.componote.domain.auth.dao.VerificationCodeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
