@@ -29,10 +29,6 @@ public interface DesignSystemRepository extends JpaRepository<Design, Long> {
   @Query("SELECT dl FROM DesignLink dl WHERE dl.designId IN :designIds")
   List<DesignLink> findLinksByDesignIds(@Param("designIds") List<Long> designIds);
 
-  @Query("SELECT DISTINCT df.designId FROM DesignFilter df " +
-          "WHERE df.type = :type AND df.value IN :values")
-  List<Long> findAllDesignIdByCondition(@Param("type") FilterType type, @Param("values") List<String> values);
-
   @Query(value = "SELECT DISTINCT d FROM Design d",
           countQuery = "SELECT COUNT(d) FROM Design d")
   Page<Design> findAll(Pageable pageable);
@@ -54,6 +50,8 @@ public interface DesignSystemRepository extends JpaRepository<Design, Long> {
   Page<Design> findAllByBookmarkStatus(@Param("userId") Long userId, Pageable pageable);
 
 
-
+  @Query("SELECT DISTINCT df.designId FROM DesignFilter df " +
+          "WHERE df.type = :type AND df.value IN :values")
+  List<Long> findAllDesignIdByCondition(@Param("type") FilterType type, @Param("values") List<String> values);
 
 }
