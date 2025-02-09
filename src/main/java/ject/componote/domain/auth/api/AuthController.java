@@ -9,6 +9,8 @@ import ject.componote.domain.auth.dto.signup.response.MemberSignupResponse;
 import ject.componote.domain.auth.dto.validate.request.MemberNicknameValidateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,13 @@ public class AuthController {
     @PostMapping("/nickname/validation")
     public ResponseEntity<Void> validateNickname(@RequestBody @Valid final MemberNicknameValidateRequest request) {
         authService.validateNickname(request);
+        return ResponseEntity.noContent()
+                .build();
+    }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<Void> delete(@PathVariable final Long memberId) {
+        authService.delete(memberId);
         return ResponseEntity.noContent()
                 .build();
     }

@@ -72,4 +72,13 @@ public class AuthService {
     private Long getSocialAccountId(final String socialAccountToken) {
         return tokenService.extractSocialAccountTokenPayload(socialAccountToken);
     }
+
+    @Transactional
+    public void delete(final Long memberId) {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> NotFoundMemberException.createWhenInvalidMemberId(memberId));
+        final Long socialAccountId = member.getSocialAccountId();
+        memberRepository.delete(member);
+        socialAccountRepository.deleteById(socialAccountId);
+    }
 }
