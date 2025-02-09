@@ -47,6 +47,7 @@ public class TokenService {
 
     public Long extractSocialAccountTokenPayload(final String socialAccountToken) {
         try {
+            validateToken(socialAccountToken, TokenType.SOCIAL_ACCOUNT);
             final String subject = extractPayload(socialAccountToken, TokenType.SOCIAL_ACCOUNT);
             return Long.valueOf(subject);
         } catch (NumberFormatException e) {
