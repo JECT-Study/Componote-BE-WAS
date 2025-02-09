@@ -68,7 +68,7 @@ public final class RepositoryUtils {
                 .orderBy(createOrderSpecifiers(qClass, pageable));
     }
 
-    private static <E> OrderSpecifier<?>[] createOrderSpecifiers(final EntityPathBase<E> qClass, final Pageable pageable) {
+    public static <E> OrderSpecifier<?>[] createOrderSpecifiers(final EntityPathBase<E> qClass, final Pageable pageable) {
         return pageable.getSort()
                 .stream()
                 .map(sort -> toOrderSpecifier(qClass, sort))
