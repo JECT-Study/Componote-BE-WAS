@@ -1,4 +1,4 @@
-package ject.componote.domain.component.dto.find.event;
+package ject.componote.domain.component.dto.event;
 
 import ject.componote.domain.component.domain.Component;
 

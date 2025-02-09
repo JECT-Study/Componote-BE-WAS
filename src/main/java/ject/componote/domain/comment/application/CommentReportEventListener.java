@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CommentReportEventHandler {
+public class CommentReportEventListener {
     private final CommentRepository commentRepository;
 
     @Async
