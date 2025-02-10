@@ -38,9 +38,6 @@ class MemberServiceTest {
     ApplicationEventPublisher eventPublisher;
 
     @Mock
-    ApplicationEventPublisher eventPublisher;
-
-    @Mock
     MemberRepository memberRepository;
 
     @Mock
