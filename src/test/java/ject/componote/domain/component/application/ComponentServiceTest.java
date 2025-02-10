@@ -1,14 +1,13 @@
 package ject.componote.domain.component.application;
 
 import ject.componote.domain.auth.model.AuthPrincipal;
-import ject.componote.domain.bookmark.dao.BookmarkRepository;
+import ject.componote.domain.bookmark.dao.ComponentBookmarkRepository;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.dao.ComponentRepository;
-import ject.componote.domain.component.dao.ComponentSummaryDao;
 import ject.componote.domain.component.domain.Component;
 import ject.componote.domain.component.domain.ComponentType;
 import ject.componote.domain.component.dto.event.ComponentViewCountIncreaseEvent;
-import ject.componote.domain.component.dto.find.request.ComponentSearchRequest;
+import ject.componote.domain.component.dto.find.request.ComponentSummaryRequest;
 import ject.componote.domain.component.dto.find.response.ComponentDetailResponse;
 import ject.componote.domain.component.dto.find.response.ComponentSummaryResponse;
 import ject.componote.domain.component.error.NotFoundComponentException;
@@ -28,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static ject.componote.fixture.ComponentFixture.INPUT_COMPONENT;
@@ -44,7 +44,7 @@ class ComponentServiceTest {
     ApplicationEventPublisher eventPublisher;
 
     @Mock
-    BookmarkRepository bookmarkRepository;
+    ComponentBookmarkRepository componentBookmarkRepository;
 
     @Mock
     ComponentMapper componentMapper;
@@ -66,7 +66,7 @@ class ComponentServiceTest {
         );
     }
 
-    static Stream<SearchInput> provideSearchInputs() {
+    static Stream<SearchInput> provideGetAllComponentSummariesInputs() {
         final AuthPrincipal authPrincipal = AuthPrincipal.from(KIM.생성(1L));
         return Stream.of(
                 new SearchInput("비회원", null, "검색어", List.of(ComponentType.INPUT)),
@@ -99,10 +99,10 @@ class ComponentServiceTest {
         doNothing().when(eventPublisher)
                 .publishEvent(event);
         doReturn(expect).when(componentMapper)
-                .mapFrom(component, input.isBookmarked);
+                .mapToDetailResponse(component, input.isBookmarked);
         if (input.isBookmarked) {
-            doReturn(true).when(bookmarkRepository)
-                    .existsByComponentIdAndMemberId(componentId, input.authPrincipal.id());
+            doReturn(true).when(componentBookmarkRepository)
+                    .existsByMemberIdAndComponentId(input.authPrincipal.id(), componentId);
         }
 
         final ComponentDetailResponse actual = componentService.getComponentDetail(input.authPrincipal, componentId);
@@ -128,37 +128,33 @@ class ComponentServiceTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideSearchInputs")
+    @MethodSource("provideGetAllComponentSummariesInputs")
     @DisplayName("컴포넌트 검색")
-    public void search(final SearchInput input) throws Exception {
+    public void getAllComponentSummaries(final SearchInput input) throws Exception {
         // given
         final AuthPrincipal authPrincipal = input.authPrincipal;
         final String keyword = input.keyword;
         final List<ComponentType> types = input.types;
-        final ComponentSearchRequest request = input.toRequest();
+        final ComponentSummaryRequest request = input.toRequest();
         final Pageable pageable = input.pageable;
-        final Page<ComponentSummaryDao> page = new PageImpl<>(Collections.emptyList(), pageable, 0L);
+        final Set<Long> componentIds = Collections.emptySet();
+        final Set<Long> bookmarkedComponentIds = Collections.emptySet();
+        final Page<Component> page = new PageImpl<>(Collections.emptyList(), pageable, 0L);
 
         // when
-        switch (input.displayName) {
-            case "비회원" -> doReturn(page).when(componentRepository)
-                    .findAllByKeywordAndTypes(keyword, types, pageable);
-            case "회원" -> doReturn(page).when(componentRepository)
-                    .findAllByKeywordAndTypesWithBookmark(authPrincipal.id(), keyword, types, pageable);
-            default -> throw new IllegalStateException("Unexpected value: " + input.displayName);
+        doReturn(componentIds).when(componentRepository)
+                .findAllComponentIdsByTypes(types, pageable);
+        doReturn(page).when(componentRepository)
+                .findAllByComponentIdsAndTypes(componentIds, types, pageable);
+        if (input.displayName.equals("회원")) {
+            doReturn(bookmarkedComponentIds).when(componentBookmarkRepository)
+                    .findAllComponentIdsByMemberIdAndComponentIds(input.authPrincipal.id(), componentIds);
         }
 
-        final PageResponse<ComponentSummaryResponse> actual = componentService.search(authPrincipal, request, pageable);
+        final PageResponse<ComponentSummaryResponse> actual = componentService.getAllComponentSummaries(authPrincipal, request, pageable);
 
         // then
         assertThat(actual).isNotNull();
-        switch (input.displayName) {
-            case "비회원" -> verify(componentRepository)
-                    .findAllByKeywordAndTypes(keyword, types, pageable);
-            case "회원" -> verify(componentRepository)
-                    .findAllByKeywordAndTypesWithBookmark(authPrincipal.id(), keyword, types, pageable);
-            default -> throw new IllegalStateException("Unexpected value: " + input.displayName);
-        }
     }
 
     static class DetailInput {
@@ -193,8 +189,8 @@ class ComponentServiceTest {
             this.pageable = Pageable.unpaged();
         }
 
-        public ComponentSearchRequest toRequest() {
-            return new ComponentSearchRequest(keyword, types);
+        public ComponentSummaryRequest toRequest() {
+            return new ComponentSummaryRequest(types);
         }
     }
 }

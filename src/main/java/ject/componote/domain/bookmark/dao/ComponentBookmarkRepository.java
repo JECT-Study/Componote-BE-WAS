@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ComponentBookmarkRepository extends JpaRepository<ComponentBookmark, Long> {
+public interface ComponentBookmarkRepository extends JpaRepository<ComponentBookmark, Long>, ComponentBookmarkQueryDsl {
     Page<ComponentBookmark> findAllByMemberId(Long memberId, Pageable pageable);
     boolean existsByMemberIdAndComponentId(Long memberId, Long componentId);
     Optional<ComponentBookmark> findByMemberIdAndComponentId(Long memberId, Long componentId);

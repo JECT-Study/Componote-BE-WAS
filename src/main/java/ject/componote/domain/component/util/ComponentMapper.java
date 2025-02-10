@@ -7,6 +7,7 @@ import ject.componote.domain.component.domain.block.ContentBlock;
 import ject.componote.domain.component.domain.summary.ComponentSummary;
 import ject.componote.domain.component.dto.find.response.ComponentBlockResponse;
 import ject.componote.domain.component.dto.find.response.ComponentDetailResponse;
+import ject.componote.domain.component.dto.find.response.ComponentSearchResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Component
 public class ComponentMapper {
-    public ComponentDetailResponse mapFrom(final Component component, final Boolean isBookmarked) {
+    public ComponentDetailResponse mapToDetailResponse(final Component component, final Boolean isBookmarked) {
         final ComponentSummary summary = component.getSummary();
         return new ComponentDetailResponse(
                 summary.getTitle(),
@@ -26,6 +27,14 @@ public class ComponentMapper {
                 summary.getThumbnail().toUrl(),
                 parseBlocks(component),
                 isBookmarked
+        );
+    }
+
+    public ComponentSearchResponse mapToSearchResponse(final Component component) {
+        return new ComponentSearchResponse(
+                component.getId(),
+                component.getSummary().getTitle(),
+                parseMixedNames(component)
         );
     }
 

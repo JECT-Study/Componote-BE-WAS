@@ -6,6 +6,8 @@ import ject.componote.domain.auth.model.Authenticated;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.component.application.ComponentService;
 import ject.componote.domain.component.dto.find.request.ComponentSearchRequest;
+import ject.componote.domain.component.dto.find.request.ComponentSummaryRequest;
+import ject.componote.domain.component.dto.find.response.ComponentSearchResponse;
 import ject.componote.domain.component.dto.find.response.ComponentSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,14 +25,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class ComponentController {
     private final ComponentService componentService;
 
-    @GetMapping("/search")
-    public ResponseEntity<PageResponse<ComponentSummaryResponse>> search(
+    @GetMapping
+    public ResponseEntity<PageResponse<ComponentSummaryResponse>> getAllComponentSummaries(
             @Authenticated final AuthPrincipal authPrincipal,
+            @ModelAttribute @Valid final ComponentSummaryRequest request,
+            @PageableDefault final Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                componentService.getAllComponentSummaries(authPrincipal, request, pageable)
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PageResponse<ComponentSearchResponse>> search(
             @ModelAttribute @Valid final ComponentSearchRequest request,
             @PageableDefault final Pageable pageable
-            ) {
+    ) {
         return ResponseEntity.ok(
-                componentService.search(authPrincipal, request, pageable)
+                componentService.search(request, pageable)
         );
     }
 

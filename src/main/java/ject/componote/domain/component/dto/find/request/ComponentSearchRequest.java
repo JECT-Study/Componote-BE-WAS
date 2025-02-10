@@ -1,11 +1,6 @@
 package ject.componote.domain.component.dto.find.request;
 
-import jakarta.annotation.Nullable;
-import ject.componote.domain.component.domain.ComponentType;
+import jakarta.validation.constraints.NotBlank;
 
-import java.util.List;
-
-public record ComponentSearchRequest(
-        String keyword,
-        @Nullable List<ComponentType> types) {
+public record ComponentSearchRequest(@NotBlank String keyword) {
 }
