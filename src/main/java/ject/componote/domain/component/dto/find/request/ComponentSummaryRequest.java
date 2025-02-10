@@ -5,7 +5,5 @@ import ject.componote.domain.component.domain.ComponentType;
 
 import java.util.List;
 
-public record ComponentSearchRequest(
-        String keyword,
-        @Nullable List<ComponentType> types) {
+public record ComponentSummaryRequest(@Nullable List<ComponentType> types) {
 }
