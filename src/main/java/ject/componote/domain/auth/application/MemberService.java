@@ -7,6 +7,7 @@ import ject.componote.domain.auth.dto.image.event.ProfileImageMoveEvent;
 import ject.componote.domain.auth.dto.update.request.MemberEmailUpdateRequest;
 import ject.componote.domain.auth.dto.update.request.MemberNicknameUpdateRequest;
 import ject.componote.domain.auth.dto.update.request.MemberProfileImageUpdateRequest;
+import ject.componote.domain.auth.dto.verify.event.EmailVerificationCodeSendEvent;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerificationRequest;
 import ject.componote.domain.auth.error.DuplicatedEmailException;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
@@ -16,7 +17,6 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
-import ject.componote.infra.mail.application.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberService {
     private final ApplicationEventPublisher eventPublisher;
-    private final MailService mailService;
     private final MemberRepository memberRepository;
+    private final VerificationCodeService verificationCodeService;
 
     public MemberSummaryResponse getMemberSummary(final AuthPrincipal authPrincipal) {
         final Long memberId = authPrincipal.id();
@@ -66,13 +66,11 @@ public class MemberService {
 
     @Transactional
     public void updateEmail(final AuthPrincipal authPrincipal, final MemberEmailUpdateRequest request) {
-        final Email email = Email.from(request.email());
-        validateDuplicatedEmail(email);
-
         final Member member = findMemberById(authPrincipal.id());
+        final Email email = Email.from(request.email());
         validateSameEmail(member, email);
-
-        mailService.verifyEmailCode(request.email(), request.verificationCode());
+        validateDuplicatedEmail(email);
+        verificationCodeService.verifyEmailCode(request.email(), request.verificationCode());
         member.updateEmail(email);
     }
 
@@ -83,7 +81,7 @@ public class MemberService {
         final Member member = findMemberById(authPrincipal.id());
         validateSameEmail(member, email);
 
-        mailService.sendVerificationCode(request.email());
+        eventPublisher.publishEvent(EmailVerificationCodeSendEvent.from(email));
     }
 
     private Member findMemberById(final Long memberId) {
