@@ -14,7 +14,6 @@ import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
-import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ class MemberServiceTest {
     ApplicationEventPublisher eventPublisher;
 
     @Mock
-    StorageService storageService;
+    ApplicationEventPublisher eventPublisher;
 
     @Mock
     MemberRepository memberRepository;
@@ -88,8 +87,6 @@ class MemberServiceTest {
         // when
         doReturn(Optional.of(member)).when(memberRepository)
                 .findById(memberId);
-        doNothing().when(storageService)
-                .moveImage(newProfileImage);
         memberService.updateProfileImage(authPrincipal, request);
 
         // then

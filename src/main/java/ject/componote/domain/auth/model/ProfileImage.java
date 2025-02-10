@@ -31,4 +31,8 @@ public class ProfileImage extends AbstractImage {
 
         return new ProfileImage(objectKey);
     }
+
+    public boolean isDefaultImage() {
+        return this == DEFAULT_PROFILE_IMAGE;
+    }
 }
