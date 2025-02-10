@@ -14,7 +14,6 @@ import ject.componote.domain.auth.model.Email;
 import ject.componote.domain.auth.model.Nickname;
 import ject.componote.domain.auth.model.ProfileImage;
 import ject.componote.infra.mail.application.MailService;
-import ject.componote.infra.storage.application.StorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Optional;
 
@@ -38,7 +38,7 @@ class MemberServiceTest {
     MailService mailService;
 
     @Mock
-    StorageService storageService;
+    ApplicationEventPublisher eventPublisher;
 
     @Mock
     MemberRepository memberRepository;
@@ -84,8 +84,6 @@ class MemberServiceTest {
         // when
         doReturn(Optional.of(member)).when(memberRepository)
                 .findById(memberId);
-        doNothing().when(storageService)
-                .moveImage(newProfileImage);
         memberService.updateProfileImage(authPrincipal, request);
 
         // then
