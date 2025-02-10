@@ -21,12 +21,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // Thymeleaf
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
-    // Mail
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
     // Bean Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 

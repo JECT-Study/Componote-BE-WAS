@@ -1,6 +1,6 @@
-package ject.componote.infra.mail.util;
+package ject.componote.domain.auth.util;
 
-import ject.componote.infra.mail.model.VerificationCode;
+import ject.componote.domain.auth.domain.VerificationCode;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

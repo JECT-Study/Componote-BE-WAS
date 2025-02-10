@@ -64,6 +64,24 @@ public class RabbitMqConfig {
     }
 
     @Bean
+    public Queue emailVerifyCreateQueue() {
+        return new Queue("emailVerifyCreateQueue");
+    }
+
+    @Bean
+    public Exchange emailExchange() {
+        return new TopicExchange("was-mail");
+    }
+
+    @Bean
+    public Binding emailVerifyCreateBinding(final Queue emailVerifyCreateQueue, final Exchange emailExchange) {
+        return BindingBuilder.bind(emailVerifyCreateQueue)
+                .to(emailExchange)
+                .with("mail.verify")
+                .noargs();
+    }
+
+    @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }

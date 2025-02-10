@@ -1,4 +1,4 @@
-package ject.componote.infra.mail.model;
+package ject.componote.domain.auth.domain;
 
 import java.time.LocalDateTime;
 
