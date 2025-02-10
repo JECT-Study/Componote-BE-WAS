@@ -11,7 +11,7 @@ public record DesignSystemSearchResponse(
     String description,
     List<DesignFilterSearchResponse> filters,
     List<DesignLinkResponse> links,
-    Long recommendation
+    Long recommendCount
 ) {
   public static DesignSystemSearchResponse from(DesignSystem designSystem) {
     return new DesignSystemSearchResponse(
@@ -28,7 +28,7 @@ public record DesignSystemSearchResponse(
                             link.getUrl().getValue()
                     ))
                     .collect(Collectors.toList()),
-            designSystem.getDesign().getSummary().getRecommendation()
+            designSystem.getDesign().getSummary().getRecommendCount()
     );
   }
 
