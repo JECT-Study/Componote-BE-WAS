@@ -28,14 +28,18 @@ public class DesignSummary {
     @Column(name = "thumbnail", nullable = false)
     private BaseImage thumbnail;
 
-    private DesignSummary(final String name, final String organization, final String description, final BaseImage thumbnail) {
+    @Column(name = "recommendation", nullable = false)
+    private Long recommendation;
+
+    private DesignSummary(final String name, final String organization, final String description, final BaseImage thumbnail, final Long recommendation) {
         this.name = name;
         this.organization = organization;
         this.description = description;
         this.thumbnail = thumbnail;
+        this.recommendation = recommendation;
     }
 
-    public static DesignSummary of(final String name, final String organization, final String description, final BaseImage thumbnail) {
-        return new DesignSummary(name, organization, description, thumbnail);
+    public static DesignSummary of(final String name, final String organization, final String description, final BaseImage thumbnail, final Long recommendation) {
+        return new DesignSummary(name, organization, description, thumbnail, recommendation);
     }
 }
