@@ -1,5 +1,6 @@
 package ject.componote.domain.design.dto.search.response;
 
+import ject.componote.domain.common.model.Count;
 import ject.componote.domain.design.domain.DesignSystem;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public record DesignSystemSearchResponse(
     String description,
     List<DesignFilterSearchResponse> filters,
     List<DesignLinkResponse> links,
-    Long recommendCount
+    Count recommendCount
 ) {
   public static DesignSystemSearchResponse from(DesignSystem designSystem) {
     return new DesignSystemSearchResponse(
