@@ -12,6 +12,7 @@ import ject.componote.domain.common.model.BaseImage;
 import ject.componote.domain.common.model.Count;
 import ject.componote.domain.common.model.converter.CountConverter;
 import ject.componote.domain.design.domain.summary.DesignSummary;
+import ject.componote.domain.design.model.DesignPhotoImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,7 @@ public class Design extends BaseEntity {
         this.bookmarkCount = Count.create();
     }
 
-    public static Design of(final String name, final String organization, final String description, final BaseImage thumbnail, final Count recommendCount) {
+    public static Design of(final String name, final String organization, final String description, final DesignPhotoImage thumbnail, final Count recommendCount) {
         return new Design(DesignSummary.of(name, organization, description, thumbnail, recommendCount));
     }
 }

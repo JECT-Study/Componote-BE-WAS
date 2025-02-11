@@ -7,6 +7,8 @@ import ject.componote.domain.common.model.BaseImage;
 import ject.componote.domain.common.model.Count;
 import ject.componote.domain.common.model.converter.BaseImageConverter;
 import ject.componote.domain.common.model.converter.CountConverter;
+import ject.componote.domain.design.model.DesignPhotoImage;
+import ject.componote.domain.design.model.converter.DesignPhotoImageConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,15 +28,15 @@ public class DesignSummary {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Convert(converter = BaseImageConverter.class)
+    @Convert(converter = DesignPhotoImageConverter.class)
     @Column(name = "thumbnail", nullable = false)
-    private BaseImage thumbnail;
+    private DesignPhotoImage thumbnail;
 
     @Convert(converter = CountConverter.class)
     @Column(name = "recommend_count", nullable = false)
     private Count recommendCount;
 
-    private DesignSummary(final String name, final String organization, final String description, final BaseImage thumbnail, final Count recommendCount) {
+    private DesignSummary(final String name, final String organization, final String description, final DesignPhotoImage thumbnail, final Count recommendCount) {
         this.name = name;
         this.organization = organization;
         this.description = description;
@@ -42,7 +44,7 @@ public class DesignSummary {
         this.recommendCount = recommendCount;
     }
 
-    public static DesignSummary of(final String name, final String organization, final String description, final BaseImage thumbnail, final Count recommendCount) {
+    public static DesignSummary of(final String name, final String organization, final String description, final DesignPhotoImage thumbnail, final Count recommendCount) {
         return new DesignSummary(name, organization, description, thumbnail, recommendCount);
     }
 }
