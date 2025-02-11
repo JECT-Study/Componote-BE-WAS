@@ -1,12 +1,12 @@
 package ject.componote.domain.auth.application;
 
 import ject.componote.domain.auth.dao.MemberRepository;
+import ject.componote.domain.auth.domain.Job;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
 import ject.componote.domain.auth.dto.image.event.ProfileImageMoveEvent;
 import ject.componote.domain.auth.dto.update.request.MemberEmailUpdateRequest;
-import ject.componote.domain.auth.dto.update.request.MemberNicknameUpdateRequest;
-import ject.componote.domain.auth.dto.update.request.MemberProfileImageUpdateRequest;
+import ject.componote.domain.auth.dto.update.request.MemberUpdateRequest;
 import ject.componote.domain.auth.dto.verify.event.EmailVerificationCodeSendEvent;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerificationRequest;
 import ject.componote.domain.auth.error.DuplicatedEmailException;
@@ -38,30 +38,11 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateProfileImage(final AuthPrincipal authPrincipal, final MemberProfileImageUpdateRequest request) {
+    public void updateMember(final AuthPrincipal authPrincipal, final MemberUpdateRequest request) {
         final Member member = findMemberById(authPrincipal.id());
-        final ProfileImage profileImage = ProfileImage.from(request.profileImageObjectKey());
-        if (member.equalsProfileImage(profileImage)) {
-            return;
-        }
-
-        member.updateProfileImage(profileImage);
-        eventPublisher.publishEvent(ProfileImageMoveEvent.from(member));
-    }
-
-    @Transactional
-    public void updateNickname(final AuthPrincipal authPrincipal, final MemberNicknameUpdateRequest request) {
-        final Member member = findMemberById(authPrincipal.id());
-        final Nickname nickname = Nickname.from(request.nickname());
-        if (member.equalsNickname(nickname)) {
-            return;
-        }
-
-        if (memberRepository.existsByNickname(nickname)) {
-            throw new DuplicatedNicknameException(nickname);
-        }
-
-        member.updateNickname(nickname);
+        updateProfileImage(member, request.profileImageObjectKey());
+        updateJob(member, request.job());
+        updateNickname(member, request.nickname());
     }
 
     @Transactional
@@ -72,6 +53,33 @@ public class MemberService {
         validateDuplicatedEmail(email);
         verificationCodeService.verifyEmailCode(request.email(), request.verificationCode());
         member.updateEmail(email);
+    }
+
+    private void updateProfileImage(final Member member, final String profileImageObjectKey) {
+        final ProfileImage profileImage = ProfileImage.from(profileImageObjectKey);
+        if (member.equalsProfileImage(profileImage)) {
+            return;
+        }
+
+        member.updateProfileImage(profileImage);
+        eventPublisher.publishEvent(ProfileImageMoveEvent.from(member));
+    }
+
+    private void updateJob(final Member member, final Job job) {
+        member.updateJob(job);
+    }
+
+    private void updateNickname(final Member member, final String nicknameValue) {
+        final Nickname nickname = Nickname.from(nicknameValue);
+        if (member.equalsNickname(nickname)) {
+            return;
+        }
+
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new DuplicatedNicknameException(nickname);
+        }
+
+        member.updateNickname(nickname);
     }
 
     public void sendVerificationCode(final AuthPrincipal authPrincipal, final MemberEmailVerificationRequest request) {

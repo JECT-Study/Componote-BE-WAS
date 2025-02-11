@@ -96,6 +96,10 @@ public class Member extends BaseEntity {
         this.email = email;
     }
 
+    public void updateJob(final Job job) {
+        this.job = job;
+    }
+
     public boolean hasEmail() {
         return this.email != null;
     }

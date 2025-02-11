@@ -3,9 +3,8 @@ package ject.componote.domain.auth.api;
 import jakarta.validation.Valid;
 import ject.componote.domain.auth.application.MemberService;
 import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
-import ject.componote.domain.auth.dto.update.request.MemberNicknameUpdateRequest;
-import ject.componote.domain.auth.dto.update.request.MemberProfileImageUpdateRequest;
 import ject.componote.domain.auth.dto.update.request.MemberEmailUpdateRequest;
+import ject.componote.domain.auth.dto.update.request.MemberUpdateRequest;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerificationRequest;
 import ject.componote.domain.auth.model.AuthPrincipal;
 import ject.componote.domain.auth.model.Authenticated;
@@ -33,18 +32,10 @@ public class MemberController {
         );
     }
 
-    @PutMapping("/profile-image")
-    public ResponseEntity<Void> updateProfileImage(@Authenticated final AuthPrincipal authPrincipal,
-                                                   @RequestBody @Valid final MemberProfileImageUpdateRequest request) {
-        memberService.updateProfileImage(authPrincipal, request);
-        return ResponseEntity.noContent()
-                .build();
-    }
-
-    @PutMapping("/nickname")
-    public ResponseEntity<Void> updateNickname(@Authenticated final AuthPrincipal authPrincipal,
-                                               @RequestBody @Valid final MemberNicknameUpdateRequest request) {
-        memberService.updateNickname(authPrincipal, request);
+    @PutMapping
+    public ResponseEntity<Void> updateMember(@Authenticated final AuthPrincipal authPrincipal,
+                                             @RequestBody @Valid final MemberUpdateRequest request) {
+        memberService.updateMember(authPrincipal, request);
         return ResponseEntity.noContent()
                 .build();
     }
