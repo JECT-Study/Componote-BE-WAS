@@ -2,11 +2,11 @@ package ject.componote.domain.auth.application;
 
 import ject.componote.domain.auth.dao.MemberRepository;
 import ject.componote.domain.auth.dao.MemberSummaryDao;
+import ject.componote.domain.auth.domain.Job;
 import ject.componote.domain.auth.domain.Member;
 import ject.componote.domain.auth.dto.find.response.MemberSummaryResponse;
 import ject.componote.domain.auth.dto.update.request.MemberEmailUpdateRequest;
-import ject.componote.domain.auth.dto.update.request.MemberNicknameUpdateRequest;
-import ject.componote.domain.auth.dto.update.request.MemberProfileImageUpdateRequest;
+import ject.componote.domain.auth.dto.update.request.MemberUpdateRequest;
 import ject.componote.domain.auth.dto.verify.event.EmailVerificationCodeSendEvent;
 import ject.componote.domain.auth.dto.verify.request.MemberEmailVerificationRequest;
 import ject.componote.domain.auth.error.DuplicatedNicknameException;
@@ -73,41 +73,29 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("프로필 사진 변경")
-    public void updateProfileImage() throws Exception {
+    @DisplayName("회원 정보 변경")
+    public void updateMember() throws Exception {
         // given
         final Long memberId = member.getId();
-        final String newObjectKey = "new.jpg";
-        final MemberProfileImageUpdateRequest request = new MemberProfileImageUpdateRequest(newObjectKey);
-        final ProfileImage newProfileImage = ProfileImage.from(newObjectKey);
-
-        // when
-        doReturn(Optional.of(member)).when(memberRepository)
-                .findById(memberId);
-        memberService.updateProfileImage(authPrincipal, request);
-
-        // then
-        assertThat(member.equalsProfileImage(newProfileImage)).isTrue();
-    }
-
-    @Test
-    @DisplayName("닉네임 변경")
-    public void updateNickname() throws Exception {
-        // given
-        final Long memberId = member.getId();
+        final String newProfileImageObjectKey = "new.jpg";
+        final ProfileImage newProfileImage = ProfileImage.from(newProfileImageObjectKey);
         final String newNicknameValue = "newNick";
         final Nickname newNickname = Nickname.from(newNicknameValue);
-        final MemberNicknameUpdateRequest request = new MemberNicknameUpdateRequest(newNicknameValue);
+        final Job newJob = Job.DESIGNER;
+
+        final MemberUpdateRequest request = new MemberUpdateRequest(newNicknameValue, newJob, newProfileImageObjectKey);
 
         // when
         doReturn(Optional.of(member)).when(memberRepository)
                 .findById(memberId);
         doReturn(false).when(memberRepository)
                 .existsByNickname(newNickname);
-        memberService.updateNickname(authPrincipal, request);
+        memberService.updateMember(authPrincipal, request);
 
         // then
+        assertThat(member.equalsProfileImage(newProfileImage)).isTrue();
         assertThat(member.equalsNickname(newNickname)).isTrue();
+        assertThat(member.getJob() == newJob).isTrue();
     }
 
     @Test
@@ -157,13 +145,16 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("닉네임 변경 시 이미 닉네임이 존재하는 경우 예외 발생")
-    public void updateNicknameWhenAlreadyExist() throws Exception {
+    @DisplayName("회원 정보 변경 시 이미 닉네임이 존재하는 경우 예외 발생")
+    public void updateMemberWhenNicknameAlreadyExist() throws Exception {
         // given
         final Long memberId = member.getId();
+        final String newProfileImageObjectKey = "new.jpg";
+        final ProfileImage newProfileImage = ProfileImage.from(newProfileImageObjectKey);
         final String newNicknameValue = "newNick";
         final Nickname newNickname = Nickname.from(newNicknameValue);
-        final MemberNicknameUpdateRequest request = new MemberNicknameUpdateRequest(newNicknameValue);
+        final Job newJob = Job.DESIGNER;
+        final MemberUpdateRequest request = new MemberUpdateRequest(newNicknameValue, newJob, newProfileImageObjectKey);
 
         // when
         doReturn(Optional.of(member)).when(memberRepository)
@@ -172,7 +163,7 @@ class MemberServiceTest {
                 .existsByNickname(newNickname);
 
         // then
-        assertThatThrownBy(() -> memberService.updateNickname(authPrincipal, request))
+        assertThatThrownBy(() -> memberService.updateMember(authPrincipal, request))
                 .isInstanceOf(DuplicatedNicknameException.class);
     }
 }
