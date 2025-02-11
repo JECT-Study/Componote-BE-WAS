@@ -31,7 +31,7 @@ public class DesignSummary {
     private BaseImage thumbnail;
 
     @Convert(converter = CountConverter.class)
-    @Column(name = "recommendCount", nullable = false)
+    @Column(name = "recommend_count", nullable = false)
     private Count recommendCount;
 
     private DesignSummary(final String name, final String organization, final String description, final BaseImage thumbnail, final Count recommendCount) {
