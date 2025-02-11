@@ -1,5 +1,6 @@
 package ject.componote.domain.design.dto.search.response;
 
+import ject.componote.domain.common.model.Count;
 import ject.componote.domain.design.domain.DesignSystem;
 
 import java.util.List;
@@ -10,7 +11,8 @@ public record DesignSystemSearchResponse(
     String organizationName,
     String description,
     List<DesignFilterSearchResponse> filters,
-    List<DesignLinkResponse> links
+    List<DesignLinkResponse> links,
+    Long recommendCount
 ) {
   public static DesignSystemSearchResponse from(DesignSystem designSystem) {
     return new DesignSystemSearchResponse(
@@ -21,12 +23,13 @@ public record DesignSystemSearchResponse(
                     .map(filter -> new DesignFilterSearchResponse(filter.getType().name(), List.of(filter.getValue())))
                     .collect(Collectors.toList()),
             designSystem.getLinks().getLinks().stream()
-                    .filter(link -> link.getUrl() != null) // ✅ URL이 null이 아닌 경우만 처리
+                    .filter(link -> link.getUrl() != null)
                     .map(link -> new DesignLinkResponse(
                             link.getType().name().toLowerCase(),
-                            link.getUrl().getValue() // ✅ null이면 빈 문자열 처리
+                            link.getUrl().getValue()
                     ))
-                    .collect(Collectors.toList())
+                    .collect(Collectors.toList()),
+            designSystem.getDesign().getSummary().getRecommendCount().getValue()
     );
   }
 

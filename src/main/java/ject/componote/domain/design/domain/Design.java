@@ -38,7 +38,7 @@ public class Design extends BaseEntity {
         this.bookmarkCount = Count.create();
     }
 
-    public static Design of(final String name, final String organization, final String description, final BaseImage thumbnail) {
-        return new Design(DesignSummary.of(name, organization, description, thumbnail));
+    public static Design of(final String name, final String organization, final String description, final BaseImage thumbnail, final Count recommendCount) {
+        return new Design(DesignSummary.of(name, organization, description, thumbnail, recommendCount));
     }
 }
