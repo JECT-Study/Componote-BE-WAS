@@ -2,9 +2,11 @@ package ject.componote.domain.design.dao;
 
 import java.util.List;
 import ject.componote.domain.design.domain.Design;
+import ject.componote.domain.design.domain.DesignSystem;
 import ject.componote.domain.design.domain.filter.DesignFilter;
 import ject.componote.domain.design.domain.filter.FilterType;
 import ject.componote.domain.design.domain.link.DesignLink;
+import ject.componote.domain.design.dto.search.request.DesignSystemSummaryRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -53,5 +55,9 @@ public interface DesignSystemRepository extends JpaRepository<Design, Long> {
   @Query("SELECT DISTINCT df.designId FROM DesignFilter df " +
           "WHERE df.type = :type AND df.value IN :values")
   List<Long> findAllDesignIdByCondition(@Param("type") FilterType type, @Param("values") List<String> values);
+
+  @Query("SELECT d FROM Design d WHERE LOWER(d.summary.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+  Page<Design> searchByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
 
 }
