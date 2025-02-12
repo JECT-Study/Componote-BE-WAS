@@ -1,6 +1,7 @@
 package ject.componote.domain.design.application;
 
 import ject.componote.domain.auth.model.AuthPrincipal;
+import ject.componote.domain.bookmark.dao.DesignBookmarkRepository;
 import ject.componote.domain.common.dto.response.PageResponse;
 import ject.componote.domain.design.dao.DesignSystemRepository;
 import ject.componote.domain.design.domain.Design;
@@ -9,7 +10,9 @@ import ject.componote.domain.design.domain.filter.DesignFilter;
 import ject.componote.domain.design.domain.filter.FilterType;
 import ject.componote.domain.design.domain.link.DesignLink;
 import ject.componote.domain.design.dto.search.request.DesignSystemSearchRequest;
+import ject.componote.domain.design.dto.search.request.DesignSystemSummaryRequest;
 import ject.componote.domain.design.dto.search.response.DesignSystemSearchResponse;
+import ject.componote.domain.design.dto.search.response.DesignSystemSummaryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,12 +30,11 @@ import java.util.stream.Collectors;
 public class DesignSystemService {
 
     private final DesignSystemRepository designSystemRepository;
+    private final DesignBookmarkRepository designBookmarkRepository;
 
-    public PageResponse<DesignSystemSearchResponse> searchDesignSystem(final AuthPrincipal authPrincipal,
-                                                                       final DesignSystemSearchRequest request,
-                                                                       final Pageable pageable) {
-        log.info("🔎 [START] searchDesignSystem() 호출 - AuthPrincipal: {}, Request: {}, Pageable: {}", authPrincipal, request, pageable);
-
+    public PageResponse<DesignSystemSummaryResponse> getAllDesignSummaries(final AuthPrincipal authPrincipal,
+                                                                           final DesignSystemSummaryRequest request,
+                                                                           final Pageable pageable) {
         // ✅ 필터 파싱 (List<String> → Map<FilterType, List<String>>)
         Map<FilterType, List<String>> parsedFilters = parseFilters(request.filters());
         log.info("📝 [FILTER] 파싱된 필터: {}", parsedFilters);
@@ -42,7 +44,7 @@ public class DesignSystemService {
         log.info("📌 [FILTERED IDs] 최종 필터링된 Design ID 목록: {}", filteredDesignIds);
 
         // ✅ 조건에 맞는 디자인 목록 조회
-        Page<Design> designs = searchByConditions(authPrincipal, request.keyword(), filteredDesignIds, pageable);
+        Page<Design> designs = searchByConditions(authPrincipal, filteredDesignIds, pageable);
         log.info("📌 [DESIGNS] 조회된 Design 개수: {}, 내용: {}", designs.getTotalElements(), designs.getContent());
 
         List<Long> designIds = designs.getContent().stream().map(Design::getId).collect(Collectors.toList());
@@ -58,11 +60,34 @@ public class DesignSystemService {
         log.info("🌍 [LINK MAP] DesignLink 개수: {}, 데이터: {}", linksMap.size(), linksMap);
 
         // ✅ 최종 변환
-        Page<DesignSystemSearchResponse> responsePage = designs.map(design -> {
+        Page<DesignSystemSummaryResponse> responsePage = designs.map(design -> {
             List<DesignFilter> filters = filtersMap.getOrDefault(design.getId(), List.of());
             List<DesignLink> links = linksMap.getOrDefault(design.getId(), List.of());
 
             DesignSystem designSystem = DesignSystem.of(design, links, filters);
+            boolean isBookmarked = isBookmarked(authPrincipal, design.getId());
+            return DesignSystemSummaryResponse.from(designSystem, isBookmarked);
+        });
+
+        log.info("✅ [RESULT] 최종 반환되는 데이터 개수: {}, 내용: {}", responsePage.getTotalElements(), responsePage.getContent());
+
+        return PageResponse.from(responsePage);
+    }
+
+    public PageResponse<DesignSystemSearchResponse> searchDesigns(final DesignSystemSearchRequest request,
+                                                                  final Pageable pageable) {
+        Page<Design> designs = designSystemRepository.searchByKeyword(request.keyword(), pageable);
+        log.info("📌 [SEARCH RESULTS] 조회된 Design 개수: {}, 내용: {}", designs.getTotalElements(), designs.getContent());
+
+        List<Long> designIds = designs.getContent().stream().map(Design::getId).collect(Collectors.toList());
+
+        Map<Long, List<DesignLink>> linksMap = designSystemRepository.findLinksByDesignIds(designIds)
+                .stream().collect(Collectors.groupingBy(DesignLink::getDesignId));
+
+        Page<DesignSystemSearchResponse> responsePage = designs.map(design -> {
+            List<DesignLink> links = linksMap.getOrDefault(design.getId(), List.of());
+
+            DesignSystem designSystem = DesignSystem.of(design, links, List.of());
             return DesignSystemSearchResponse.from(designSystem);
         });
 
@@ -71,9 +96,8 @@ public class DesignSystemService {
         return PageResponse.from(responsePage);
     }
 
-    /**
-     * 🔥 List<String> → Map<FilterType, List<String>> 변환
-     */
+
+
     private Map<FilterType, List<String>> parseFilters(List<String> filterValues) {
         if (filterValues == null || filterValues.isEmpty()) {
             return Collections.emptyMap();
@@ -114,26 +138,33 @@ public class DesignSystemService {
     /**
      * 🔍 조건에 따라 `Design`을 조회하는 메서드
      */
-    private Page<Design> searchByConditions(AuthPrincipal authPrincipal, String keyword, List<Long> filteredDesignIds, Pageable pageable) {
-        log.info("🔍 [SEARCH CONDITIONS] AuthPrincipal: {}, keyword: {}, filteredDesignIds: {}, pageable: {}",
-                authPrincipal, keyword, filteredDesignIds, pageable);
+    private Page<Design> searchByConditions(AuthPrincipal authPrincipal, List<Long> filteredDesignIds, Pageable pageable) {
+        log.info("🔍 [SEARCH CONDITIONS] AuthPrincipal: {}, filteredDesignIds: {}, pageable: {}",
+                authPrincipal, filteredDesignIds, pageable);
 
         if (authPrincipal != null) {
             if (!filteredDesignIds.isEmpty()) {
                 return designSystemRepository.findAllByIdInAndBookmarkStatus(authPrincipal.id(), filteredDesignIds, pageable);
-            } else if (keyword != null && !keyword.isBlank()) {
-                return designSystemRepository.findByKeywordAndBookmarkStatus(authPrincipal.id(), keyword, pageable);
             } else {
-                return designSystemRepository.findAllByBookmarkStatus(authPrincipal.id(), pageable); // 🔥 keyword가 없으면 전체 조회
+                return designSystemRepository.findAllByBookmarkStatus(authPrincipal.id(), pageable);
             }
         } else {
             if (!filteredDesignIds.isEmpty()) {
                 return designSystemRepository.findAllByIdIn(filteredDesignIds, pageable);
-            } else if (keyword != null && !keyword.isBlank()) {
-                return designSystemRepository.findByKeyword(keyword, pageable);
             } else {
-                return designSystemRepository.findAll(pageable); // 🔥 keyword가 없으면 전체 조회
+                return designSystemRepository.findAll(pageable);
             }
         }
+    }
+
+    private boolean isBookmarked(final AuthPrincipal authPrincipal, final Long designId) {
+        if (!isLoggedIn(authPrincipal)) {
+            return false;
+        }
+        return designBookmarkRepository.existsByMemberIdAndDesignId(authPrincipal.id(), designId);
+    }
+
+    private boolean isLoggedIn(final AuthPrincipal authPrincipal) {
+        return authPrincipal != null;
     }
 }
