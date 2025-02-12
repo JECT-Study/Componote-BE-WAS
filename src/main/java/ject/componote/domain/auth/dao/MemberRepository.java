@@ -13,7 +13,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsBySocialAccountId(final Long socialAccountId);
     Optional<Member> findBySocialAccountId(final Long socialAccountId);
 
-    @Query("SELECT NEW ject.componote.domain.auth.dao.MemberSummaryDao(m.email, m.nickname, m.profileImage) " +
+    @Query("SELECT NEW ject.componote.domain.auth.dao.MemberSummaryDao(m.email, m.nickname, m.profileImage, m.job) " +
             "FROM Member m " +
             "WHERE m.id =:id")
     Optional<MemberSummaryDao> findSummaryById(@Param("id") final Long id);
